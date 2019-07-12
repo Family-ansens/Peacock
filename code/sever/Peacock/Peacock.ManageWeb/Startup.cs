@@ -8,9 +8,11 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Peacock.BusinessLogic.Common;
+using Peacock.Dal;
 
 namespace Peacock.ManageWeb
 {
@@ -26,6 +28,12 @@ namespace Peacock.ManageWeb
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            // 注入数据库DbContext
+            string sqlConnectionStr = Configuration.GetConnectionString("PeacockSqlSeverProvider");
+            services.AddDbContext<PeacockDbContext>(options =>
+                options.UseSqlServer(sqlConnectionStr)
+            );
+
             services.Configure<CookiePolicyOptions>(options =>
             {
                 // This lambda determines whether user consent for non-essential cookies is needed for a given request.
@@ -37,7 +45,7 @@ namespace Peacock.ManageWeb
                 .AddCookie(o => o.LoginPath = new PathString("/Account/Login"));
 
             // 注入服务
-            services.AddSingleton<MenuService>();
+            services.AddTransient<MenuService>();
 
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);

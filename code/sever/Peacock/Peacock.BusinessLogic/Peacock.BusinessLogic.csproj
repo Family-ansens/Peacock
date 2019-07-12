@@ -5,6 +5,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.2.6" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Peacock.Dal\Peacock.Dal.csproj" />
     <ProjectReference Include="..\Peacock.ViewModel\Peacock.ViewModel.csproj" />
   </ItemGroup>
 
