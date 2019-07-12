@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Peacock.BusinessLogic.Common;
 
 namespace Peacock.ManageWeb
 {
@@ -34,6 +35,9 @@ namespace Peacock.ManageWeb
 
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(o => o.LoginPath = new PathString("/Account/Login"));
+
+            // ×¢Èë·þÎñ
+            services.AddSingleton<MenuService>();
 
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);

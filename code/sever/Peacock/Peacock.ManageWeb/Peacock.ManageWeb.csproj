@@ -33,4 +33,10 @@
     <None Include="Views\Shared\_Layout.cshtml" />
   </ItemGroup>
 
+
+  <ItemGroup>
+    <ProjectReference Include="..\Peacock.BusinessLogic\Peacock.BusinessLogic.csproj" />
+    <ProjectReference Include="..\Peacock.ViewModel\Peacock.ViewModel.csproj" />
+  </ItemGroup>
+
 </Project>
