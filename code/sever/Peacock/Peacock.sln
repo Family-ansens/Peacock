@@ -19,6 +19,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Peacock.ViewModel", "Peacoc
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Peacock.BusinessLogic", "Peacock.BusinessLogic\Peacock.BusinessLogic.csproj", "{3FE3BDE0-BC58-4FA2-AC4A-A1E28CA64950}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Peacock.Apis", "Peacock.Apis\Peacock.Apis.csproj", "{5DB6AB1E-C0DB-4BE3-97E1-7010CFBC41A0}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -41,6 +43,10 @@ Global
 		{3FE3BDE0-BC58-4FA2-AC4A-A1E28CA64950}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3FE3BDE0-BC58-4FA2-AC4A-A1E28CA64950}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3FE3BDE0-BC58-4FA2-AC4A-A1E28CA64950}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5DB6AB1E-C0DB-4BE3-97E1-7010CFBC41A0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5DB6AB1E-C0DB-4BE3-97E1-7010CFBC41A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5DB6AB1E-C0DB-4BE3-97E1-7010CFBC41A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5DB6AB1E-C0DB-4BE3-97E1-7010CFBC41A0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -50,6 +56,7 @@ Global
 		{5C040DE2-95CE-4BE7-8E2E-7DFA0536EA8A} = {1FEFE56D-FABA-4D90-9057-619A7006F64E}
 		{28665B83-21E0-45E8-A652-C23687B31D85} = {CF1956D3-D451-460D-99E5-901DD3F81AB4}
 		{3FE3BDE0-BC58-4FA2-AC4A-A1E28CA64950} = {657511B0-072B-4455-922A-C16DB1C6683A}
+		{5DB6AB1E-C0DB-4BE3-97E1-7010CFBC41A0} = {5D9E03BC-C6E7-4643-BA64-F912CDF65D0A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {07E978F1-7C3D-4DF2-857B-F0CF7C67BB65}
