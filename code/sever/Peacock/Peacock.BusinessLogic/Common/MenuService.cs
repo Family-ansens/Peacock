@@ -48,6 +48,15 @@ namespace Peacock.BusinessLogic.Common
                         Url = "/Account/Index",
                         Seq = 3,
                         Parent = topItem,
+                        Children = new List<MenuItem>
+                        {
+                            new MenuItem
+                            {
+                                Name = "二级",
+                                Url = "/Account/Index",
+                                Seq = 1,
+                            }
+                        }
                     },
                     new MenuItem
                     {

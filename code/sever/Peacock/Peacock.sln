@@ -9,15 +9,15 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Peacock.ManageWeb", "Peacoc
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{1FEFE56D-FABA-4D90-9057-619A7006F64E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Peacock.Dal", "Peacock.Dal\Peacock.Dal.csproj", "{5C040DE2-95CE-4BE7-8E2E-7DFA0536EA8A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Peacock.Dal", "Peacock.Dal\Peacock.Dal.csproj", "{5C040DE2-95CE-4BE7-8E2E-7DFA0536EA8A}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "BusinessLogic", "BusinessLogic", "{657511B0-072B-4455-922A-C16DB1C6683A}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Model", "Model", "{CF1956D3-D451-460D-99E5-901DD3F81AB4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Peacock.ViewModel", "Peacock.ViewModel\Peacock.ViewModel.csproj", "{28665B83-21E0-45E8-A652-C23687B31D85}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Peacock.ViewModel", "Peacock.ViewModel\Peacock.ViewModel.csproj", "{28665B83-21E0-45E8-A652-C23687B31D85}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Peacock.BusinessLogic", "Peacock.BusinessLogic\Peacock.BusinessLogic.csproj", "{3FE3BDE0-BC58-4FA2-AC4A-A1E28CA64950}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Peacock.BusinessLogic", "Peacock.BusinessLogic\Peacock.BusinessLogic.csproj", "{3FE3BDE0-BC58-4FA2-AC4A-A1E28CA64950}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
