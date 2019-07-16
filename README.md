@@ -15,3 +15,9 @@
 项目启动后，到浏览器访问终端显示的链接地址，demo页相对路径为/Home/Demo
 
 ![](doc/help/demo.png)
+
+## 数据库映射文件生成
+ORM工具使用了ef core，如果是使用db first，需要在程序包管理器控制台执行命令：
+Scaffold-DbContext "数据库连接字符串" EF组件名(Microsoft.EntityFrameworkCore.SqlServer/Pomelo.EntityFrameworkCore.MySql/等等) -OutputDir 输出文件夹名称
+
+将对应参数设置替换掉运行即可
