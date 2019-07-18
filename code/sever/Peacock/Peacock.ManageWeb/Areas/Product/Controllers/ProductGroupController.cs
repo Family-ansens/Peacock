@@ -2,30 +2,32 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Peacock.Dal;
 using Peacock.ViewModel.Manage;
+using Peacock.ViewModel.Manage.ProductGroup;
+using Peacock.ViewModel.Manage.Share;
 
 namespace Peacock.ManageWeb.Areas.Product.Controllers
 {
+    [Authorize]
     [Area("Product")]
-    public class ProductGroupController : Controller
+    public class ProductGroupController : BaseController
     {
-        private readonly PeacockDbContext _peacockDbContext;
         private readonly ILogger _logger;
 
-
-        public ProductGroupController(PeacockDbContext peacockDbContext)
+        public ProductGroupController(PeacockDbContext peacockDbContext) : base(peacockDbContext)
         {
-            _peacockDbContext = peacockDbContext;
             //_logger = logger;
         }
 
         public IActionResult Index()
         {
-            int count = _peacockDbContext.T_Pro_ProductGroup.Count();
-            var list = _peacockDbContext.T_Pro_ProductGroup.Take(10).ToList();
+            int count = peacockDbContext.T_Pro_ProductGroup.Count();
+            var list = peacockDbContext.T_Pro_ProductGroup.OrderBy(o=>o.Code).Take(10).ToList();
 
             var pageResult = new PageResult<T_Pro_ProductGroup>();
             pageResult.Pager = new Pager()
@@ -37,6 +39,113 @@ namespace Peacock.ManageWeb.Areas.Product.Controllers
             pageResult.List = list;
 
             return View(pageResult);
+        }
+
+        public JsonResult GetProductGroup(BaseSearchModel searchModel)
+        {
+            int count = peacockDbContext.T_Pro_ProductGroup.Count();
+            var list = peacockDbContext.T_Pro_ProductGroup.Skip(searchModel.offset).Take(searchModel.limit).ToList();
+            return Json(new { total = count, rows = list });
+        }
+
+        public ActionResult Edit(int id)
+        {
+            ProductGroupItem vm = new ProductGroupItem();
+            if (id == 0)
+                return View(vm);
+            var entity = peacockDbContext.T_Pro_ProductGroup
+                                         .Include(i => i.LanguageRelationByName).ThenInclude(i => i.TSystemLanguageContent)
+                                         .FirstOrDefault(i => i.Id == id);
+            if (entity != null)
+            {
+                vm.Id = entity.Id;
+                vm.Code = entity.Code;
+                vm.NameZh = entity.LanguageRelationByName.TSystemLanguageContent.FirstOrDefault(i => i.LanguageType == LanguageType.ZhCn)?.DisplayContent;
+                vm.NameEn = entity.LanguageRelationByName.TSystemLanguageContent.FirstOrDefault(i => i.LanguageType == LanguageType.En)?.DisplayContent;
+                vm.OrderId = entity.OrderId;
+            }
+            return View(vm);
+        }
+
+        [HttpPost]
+        public ActionResult Save(ProductGroupItem model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View("Edit", model);
+            }
+
+            DateTime dtNow = DateTime.Now;
+            bool isCreate = model.Id == 0;
+            int id = model.Id;
+            T_Pro_ProductGroup entity = new T_Pro_ProductGroup();
+
+            if (isCreate)
+            {
+                //设置多语言
+                T_System_LanguageContent nameZhContent = CreateLanguageContentEntity(model.NameZh, LanguageType.ZhCn);
+                T_System_LanguageContent nameEnContent = CreateLanguageContentEntity(model.NameEn, LanguageType.En);
+
+                T_System_LanguageRelation languageRelationEntity = new T_System_LanguageRelation()
+                {
+                    CreatedBy = userName,
+                    CreatedTime = dtNow,
+                    LastUpdatedBy = userName,
+                    LastUpdatedDate = dtNow,
+                    TSystemLanguageContent = new List<T_System_LanguageContent>()
+                    {
+                        nameZhContent,
+                        nameEnContent,
+                    }
+                };
+
+                entity = new T_Pro_ProductGroup()
+                {
+                    Name = model.NameZh,
+                    Code = model.Code,
+                    LanguageRelationByName = languageRelationEntity,
+                    OrderId = model.OrderId,
+                    IsDeleted = false,
+                    CreatedBy = userName,
+                    CreatedTime = dtNow,
+                    LastUpdatedBy = userName,
+                    LastUpdatedTime = dtNow,
+                };
+
+                peacockDbContext.Add(entity);
+            }
+            else
+            {
+                entity = peacockDbContext.T_Pro_ProductGroup.FirstOrDefault(i => i.Id == model.Id && !i.IsDeleted);
+                if (entity == null)
+                {
+                    ModelState.AddModelError("Code", "不存在记录，无法更新");
+                    return View("Edit", model);
+                }
+
+                entity.Code = model.Code;
+                entity.Name = model.NameZh;
+                entity.OrderId = model.OrderId;
+                entity.LastUpdatedTime = dtNow;
+                entity.LastUpdatedBy = userName;
+
+                var zhNameLanguageEntity = entity.LanguageRelationByName.TSystemLanguageContent.FirstOrDefault(i => i.LanguageType == LanguageType.ZhCn);
+                zhNameLanguageEntity.DisplayContent = model.NameZh;
+                zhNameLanguageEntity.LastUpdatedBy = userName;
+                zhNameLanguageEntity.LastUpdatedTime = dtNow;
+
+                var enNameLanguageEntity = entity.LanguageRelationByName.TSystemLanguageContent.FirstOrDefault(i => i.LanguageType == LanguageType.En);
+                enNameLanguageEntity.DisplayContent = model.NameEn;
+                enNameLanguageEntity.LastUpdatedBy = userName;
+                enNameLanguageEntity.LastUpdatedTime = dtNow;
+
+                peacockDbContext.Update(entity);
+            }
+            peacockDbContext.SaveChanges();
+
+
+
+            return RedirectToAction("Edit", new { id = entity.Id });
         }
     }
 }

@@ -16,6 +16,6 @@ namespace Peacock.Dal
         public string LastUpdatedBy { get; set; }
         public DateTime LastUpdatedTime { get; set; }
 
-        public virtual T_System_LanguageRelation LanguageRelation { get; set; }
+        public virtual T_System_LanguageRelation LanguageRelationByName { get; set; }
     }
 }

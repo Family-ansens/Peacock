@@ -59,7 +59,7 @@ namespace Peacock.Dal
                     .IsRequired()
                     .HasMaxLength(50);
 
-                entity.HasOne(d => d.LanguageRelation)
+                entity.HasOne(d => d.LanguageRelationByName)
                     .WithMany(p => p.T_Pro_ProductGroups)
                     .HasForeignKey(d => d.LanguageId)
                     .HasConstraintName("FK_T_Pro_ProductGroup_T_System_LanguageRelation");
