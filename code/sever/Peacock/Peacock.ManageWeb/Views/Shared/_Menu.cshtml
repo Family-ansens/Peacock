@@ -1,27 +1,27 @@
 ﻿@inject Peacock.BusinessLogic.Common.MenuService menuService
 
-@*<ul class="sidebar-menu" data-widget="tree">
+<ul class="sidebar-menu" data-widget="tree">
     <li class="header">菜单</li>
-    @foreach (var menuGroup in menuService.GetMenus().OrderBy(o => o.Seq))
+    @foreach (var menu in menuService.GetMenus().OrderBy(o => o.Seq))
     {
         <li class="treeview">
             <a href="#">
                 <i class="fa fa-files-o"></i>
-                <span>@menuGroup.Name</span>
+                <span>@menu.Name</span>
                 <span class="pull-right-container">
-                    <span class="label label-primary pull-right">@menuGroup.MenuItems.Count</span>
+                    <span class="label label-primary pull-right">@menu.Children.Count</span>
                     <i class="fa fa-angle-left pull-right"></i>
                 </span>
             </a>
             <ul class="treeview-menu">
-                @foreach (var menuItem in menuGroup.MenuItems.OrderBy(o => o.Seq))
+                @foreach (var menuItem in menu.Children.OrderBy(o => o.Seq))
                 {
                     <li><a href="@menuItem.Url"><i class="fa fa-circle-o"></i>@menuItem.Name</a></li>
                 }
             </ul>
         </li>
     }
-</ul>*@
+</ul>
 
 <ul class="sidebar-menu" data-widget="tree">
     <li class="treeview">

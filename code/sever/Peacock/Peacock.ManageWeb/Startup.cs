@@ -11,6 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using MySql.Data.EntityFrameworkCore.Extensions;
 using Peacock.BusinessLogic.Common;
 using Peacock.Dal;
 
@@ -29,9 +30,11 @@ namespace Peacock.ManageWeb
         public void ConfigureServices(IServiceCollection services)
         {
             // ×¢ÈëÊý¾Ý¿âDbContext
-            string sqlConnectionStr = Configuration.GetConnectionString("PeacockSqlSeverProvider");
+            //string sqlConnectionStr = Configuration.GetConnectionString("PeacockSqlSeverProvider");
+            string sqlConnectionStr = Configuration.GetConnectionString("PeacockMysqlProvider");
             services.AddDbContext<PeacockDbContext>(options =>
-                options.UseSqlServer(sqlConnectionStr)
+                //options.UseSqlServer(sqlConnectionStr
+                options.UseMySQL(sqlConnectionStr)
             );
 
             services.Configure<CookiePolicyOptions>(options =>

@@ -24,9 +24,13 @@ namespace Peacock.Dal
 //            if (!optionsBuilder.IsConfigured)
 //            {
 //#warning To protect potentially sensitive information in your connection string, you should move it out of source code. See http://go.microsoft.com/fwlink/?LinkId=723263 for guidance on storing connection strings.
-//                optionsBuilder.UseSqlServer("Data Source=10.10.14.178;Initial Catalog=antmgr;User Id=sa;Password=sa@123456;");
+//                //optionsBuilder.UseSqlServer("Data Source=10.10.14.178;Initial Catalog=antmgr;User Id=sa;Password=sa@123456;");
+//                optionsBuilder.UseMySQL("server=192.168.184.137;user id=dotnet_user;password=sa12345;persistsecurityinfo=True;port=3306;database=PeacockManage;SslMode=None;charset='utf8';TreatTinyAsBoolean=true");
 //            }
 //        }
+
+
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
