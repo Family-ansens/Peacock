@@ -26,6 +26,8 @@
 
 
   <ItemGroup>
+    <Folder Include="Areas\Product\Data\" />
+    <Folder Include="Areas\Product\Models\" />
     <Folder Include="wwwroot\lib\loginview\" />
   </ItemGroup>
 

@@ -15,6 +15,7 @@ namespace Peacock.Dal
         {
         }
 
+        public virtual DbSet<T_Pro_ProductGroup> T_Pro_ProductGroup { get; set; }
         public virtual DbSet<T_System_LanguageContent> T_System_LanguageContent { get; set; }
         public virtual DbSet<T_System_LanguageRelation> T_System_LanguageRelation { get; set; }
         public virtual DbSet<T_System_Menu> T_System_Menu { get; set; }
@@ -35,6 +36,42 @@ namespace Peacock.Dal
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.HasAnnotation("ProductVersion", "2.2.6-servicing-10079");
+
+            modelBuilder.Entity<T_Pro_ProductGroup>(entity =>
+            {
+                entity.ToTable("T_Pro_ProductGroup");
+
+                entity.Property(e => e.Id).HasColumnName("ID");
+
+                entity.Property(e => e.Code)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.IsDeleted)
+                    .HasColumnType("bit(1)")
+                    .HasDefaultValue(false);
+
+                entity.Property(e => e.CreatedBy)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.CreatedTime).HasColumnType("datetime");
+
+                entity.Property(e => e.LastUpdatedBy)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.LastUpdatedTime).HasColumnType("datetime");
+
+                entity.Property(e => e.Name)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+                entity.HasOne(d => d.LanguageRelationByName)
+                    .WithMany(p => p.T_Pro_ProductGroups)
+                    .HasForeignKey(d => d.LanguageId)
+                    .HasConstraintName("FK_T_Pro_ProductGroup_T_System_LanguageRelation");
+            });
 
             modelBuilder.Entity<T_System_LanguageContent>(entity =>
             {
@@ -121,6 +158,10 @@ namespace Peacock.Dal
                     .HasMaxLength(100)
                     .IsUnicode(false);
 
+                // Mysql定义布尔类型
+                entity.Property(e => e.IsDeleted)
+                    .HasColumnType("bit(1)")
+                    .HasDefaultValue(false);
 
                 entity.HasOne(d => d.LanguageRelation)
                     .WithMany(p => p.TSystemMenu)

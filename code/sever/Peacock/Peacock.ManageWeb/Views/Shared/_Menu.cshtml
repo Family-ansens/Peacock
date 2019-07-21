@@ -1,29 +1,10 @@
 ﻿@inject Peacock.BusinessLogic.Common.MenuService menuService
 
-<ul class="sidebar-menu" data-widget="tree">
-    <li class="header">菜单</li>
-    @foreach (var menu in menuService.GetMenus().OrderBy(o => o.Seq))
-    {
-        <li class="treeview">
-            <a href="#">
-                <i class="fa fa-files-o"></i>
-                <span>@menu.Name</span>
-                <span class="pull-right-container">
-                    <span class="label label-primary pull-right">@menu.Children.Count</span>
-                    <i class="fa fa-angle-left pull-right"></i>
-                </span>
-            </a>
-            <ul class="treeview-menu">
-                @foreach (var menuItem in menu.Children.OrderBy(o => o.Seq))
-                {
-                    <li><a href="@menuItem.Url"><i class="fa fa-circle-o"></i>@menuItem.Name</a></li>
-                }
-            </ul>
-        </li>
-    }
-</ul>
+@using Peacock.ManageWeb.Helper
 
-<ul class="sidebar-menu" data-widget="tree">
+@Html.MenuFor(menuService.GetMenus())
+
+@*<ul class="sidebar-menu" data-widget="tree">
     <li class="treeview">
         <a href="#">
             <i class="fa fa-share"></i> <span>Multilevel</span>
@@ -59,4 +40,4 @@
             <li><a href="#"><i class="fa fa-circle-o"></i> Level One</a></li>
         </ul>
     </li>
-</ul>
+</ul>*@

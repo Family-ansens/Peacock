@@ -46,6 +46,12 @@
     <![endif]-->
     <!-- Google Font -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic">
+
+    <!-- BootStrapTable CSS -->
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.13.1/bootstrap-table.min.css">
+
+    @RenderSection("Header", false)
+
 </head>
 <body class="hold-transition skin-blue sidebar-mini">
     <div class="wrapper">
@@ -86,23 +92,23 @@
                                 <!-- Menu Body -->
                                 <li class="user-body">
                                     @*<div class="row">
-                                        <div class="col-xs-4 text-center">
-                                            <a href="#">Followers</a>
-                                        </div>
-                                        <div class="col-xs-4 text-center">
-                                            <a href="#">Sales</a>
-                                        </div>
-                                        <div class="col-xs-4 text-center">
-                                            <a href="#">Friends</a>
-                                        </div>
-                                    </div>*@
+                                            <div class="col-xs-4 text-center">
+                                                <a href="#">Followers</a>
+                                            </div>
+                                            <div class="col-xs-4 text-center">
+                                                <a href="#">Sales</a>
+                                            </div>
+                                            <div class="col-xs-4 text-center">
+                                                <a href="#">Friends</a>
+                                            </div>
+                                        </div>*@
                                     <!-- /.row -->
                                 </li>
                                 <!-- Menu Footer-->
                                 <li class="user-footer">
                                     @*<div class="pull-left">
-                                        <a href="#" class="btn btn-default btn-flat">个人信息</a>
-                                    </div>*@
+                                            <a href="#" class="btn btn-default btn-flat">个人信息</a>
+                                        </div>*@
                                     <div class="pull-right">
                                         <a href="@Url.Action("Logout", "Account")" class="btn btn-success btn-flat">登出</a>
                                     </div>
@@ -369,6 +375,8 @@
     <script>
         $.widget.bridge('uibutton', $.ui.button);
     </script>
+
+    <script src="https://cdn.bootcss.com/popper.js/1.15.0/umd/popper.js"></script>
     <!-- Bootstrap 3.3.7 -->
     @*<script src="bower_components/bootstrap/dist/js/bootstrap.min.js"></script>*@
     <script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
@@ -414,5 +422,13 @@
     <!-- AdminLTE for demo purposes -->
     @*<script src="dist/js/demo.js"></script>*@
     <script src="~/lib/AdminLTE-2.4.11/dist/js/demo.js"></script>
+
+    <!-- BootStrapTable -->
+    <script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.13.1/bootstrap-table.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-table/1.13.1/locale/bootstrap-table-zh-CN.min.js"></script>
+    <script src="https://cdn.bootcss.com/bootstrap-table/1.15.3/extensions/natural-sorting/bootstrap-table-natural-sorting.min.js"></script>
+
+
+    @RenderSection("Scripts", false)
 </body>
 </html>

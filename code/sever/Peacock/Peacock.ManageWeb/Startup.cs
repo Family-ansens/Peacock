@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
@@ -11,7 +12,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Newtonsoft.Json;
 using MySql.Data.EntityFrameworkCore.Extensions;
+using Newtonsoft.Json.Serialization;
 using Peacock.BusinessLogic.Common;
 using Peacock.Dal;
 
@@ -22,6 +25,18 @@ namespace Peacock.ManageWeb
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+
+            var setting = new JsonSerializerSettings();
+            JsonConvert.DefaultSettings = () =>
+            {
+                //空值处理
+                setting.NullValueHandling = NullValueHandling.Ignore;
+                //首字母小写
+                //setting.ContractResolver = new CamelCasePropertyNamesContractResolver();
+                setting.ContractResolver = new DefaultContractResolver();
+
+                return setting;
+            };
         }
 
         public IConfiguration Configuration { get; }
@@ -37,6 +52,8 @@ namespace Peacock.ManageWeb
                 options.UseMySQL(sqlConnectionStr)
             );
 
+            services.AddLogging();
+
             services.Configure<CookiePolicyOptions>(options =>
             {
                 // This lambda determines whether user consent for non-essential cookies is needed for a given request.
@@ -51,7 +68,11 @@ namespace Peacock.ManageWeb
             services.AddTransient<MenuService>();
 
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
+                    .AddJsonOptions(options => {
+                        options.SerializerSettings.ContractResolver = new DefaultContractResolver();
+                        options.SerializerSettings.DateFormatString = "yyyy-MM-dd HH:mm:ss";
+                    });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -65,10 +86,10 @@ namespace Peacock.ManageWeb
             {
                 app.UseExceptionHandler("/Error");
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-                app.UseHsts();
+                //app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
+            //app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseCookiePolicy();
 
@@ -76,6 +97,10 @@ namespace Peacock.ManageWeb
 
             app.UseMvc(routes =>
             {
+                routes.MapRoute(
+                    name: "areaRoute",
+                    template: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+
                 routes.MapRoute(
                    name: "default",
                    template: "{controller=Home}/{action=Demo}/{id?}");
