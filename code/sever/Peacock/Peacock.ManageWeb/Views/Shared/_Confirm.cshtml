@@ -1,0 +1,31 @@
+﻿<!-- Modal -->
+<div class="modal fade" id="confirmModel" tabindex="-1" role="dialog" aria-labelledby="modalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="modalLabel">确认框</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <img src="~/img/loading.gif" style="text-align:center;width:200px;height:150px;" />
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary j-btn-confirm">确定</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+    function peacockConfirm(msg, callback) {
+        $('#confirmModel').modal('show');
+        $('#confirmModel .modal-body').html(msg);
+        $('#confirmModel .j-btn-confirm').on('click', function () {
+            callback();
+            $('#confirmModel').modal('hide');
+        });
+    }
+</script>

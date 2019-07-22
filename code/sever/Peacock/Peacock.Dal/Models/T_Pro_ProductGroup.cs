@@ -5,6 +5,11 @@ namespace Peacock.Dal
 {
     public partial class T_Pro_ProductGroup
     {
+        public T_Pro_ProductGroup()
+        {
+            Products = new HashSet<T_Pro_Product>();
+        }
+
         public int Id { get; set; }
         public string Code { get; set; }
         public string Name { get; set; }
@@ -17,5 +22,7 @@ namespace Peacock.Dal
         public DateTime LastUpdatedTime { get; set; }
 
         public virtual T_System_LanguageRelation LanguageRelationByName { get; set; }
+
+        public ICollection<T_Pro_Product> Products { get; set; }
     }
 }

@@ -10,6 +10,8 @@ namespace Peacock.Dal
             TSystemLanguageContent = new HashSet<T_System_LanguageContent>();
             TSystemMenu = new HashSet<T_System_Menu>();
             T_Pro_ProductGroups = new HashSet<T_Pro_ProductGroup>();
+            ProductsWithName = new HashSet<T_Pro_Product>();
+            ProductsWithDescription = new HashSet<T_Pro_Product>();
         }
 
         public int Id { get; set; }
@@ -21,5 +23,7 @@ namespace Peacock.Dal
         public virtual ICollection<T_System_LanguageContent> TSystemLanguageContent { get; set; }
         public virtual ICollection<T_System_Menu> TSystemMenu { get; set; }
         public virtual ICollection<T_Pro_ProductGroup> T_Pro_ProductGroups { get; set; }
+        public virtual ICollection<T_Pro_Product> ProductsWithName { get; set; }
+        public virtual ICollection<T_Pro_Product> ProductsWithDescription { get; set; }
     }
 }

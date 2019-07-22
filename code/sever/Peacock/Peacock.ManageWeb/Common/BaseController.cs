@@ -31,5 +31,17 @@ namespace Peacock.ManageWeb
             entity.LastUpdatedTime = dtNow;
             return entity;
         }
+
+        protected OperationResult Success(string message = "", object content = null)
+        {
+            OperationResult operationResult = new OperationResult("0", true, message, content);
+            return operationResult;
+        }
+
+        protected OperationResult Fail(string message = "", object content = null)
+        {
+            OperationResult operationResult = new OperationResult("-1", false, message, content);
+            return operationResult;
+        }
     }
 }

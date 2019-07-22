@@ -26,25 +26,26 @@ namespace Peacock.ManageWeb.Areas.Product.Controllers
 
         public IActionResult Index()
         {
-            int count = peacockDbContext.T_Pro_ProductGroup.Count();
-            var list = peacockDbContext.T_Pro_ProductGroup.OrderBy(o => o.Code).Take(10).ToList();
+            //int count = peacockDbContext.T_Pro_ProductGroup.Where(i => !i.IsDeleted).Count();
+            //var list = peacockDbContext.T_Pro_ProductGroup.Where(i => !i.IsDeleted).OrderBy(o => o.Code).Take(10).ToList();
 
-            var pageResult = new PageResult<T_Pro_ProductGroup>();
-            pageResult.Pager = new Pager()
-            {
-                Total = count,
-                PageNumber = 1,
-                PageSize = 10,
-            };
-            pageResult.List = list;
+            //var pageResult = new PageResult<T_Pro_ProductGroup>();
+            //pageResult.Pager = new Pager()
+            //{
+            //    Total = count,
+            //    PageNumber = 1,
+            //    PageSize = 10,
+            //};
+            //pageResult.List = list;
 
-            return View(pageResult);
+            //return View(pageResult);
+            return View();
         }
 
         public JsonResult GetProductGroup(BaseSearchModel searchModel)
         {
-            int count = peacockDbContext.T_Pro_ProductGroup.Count();
-            var list = peacockDbContext.T_Pro_ProductGroup.Skip(searchModel.offset).Take(searchModel.limit).ToList();
+            int count = peacockDbContext.T_Pro_ProductGroup.Where(i => !i.IsDeleted).Count();
+            var list = peacockDbContext.T_Pro_ProductGroup.Where(i => !i.IsDeleted).Skip(searchModel.offset).Take(searchModel.limit).ToList();
             return Json(new { total = count, rows = list });
         }
 
@@ -147,6 +148,37 @@ namespace Peacock.ManageWeb.Areas.Product.Controllers
 
 
             return RedirectToAction("Edit", new { id = entity.Id });
+        }
+
+        [HttpPost]
+        public ActionResult DeleteByIds(List<int> ids)
+        {
+            var list = peacockDbContext.T_Pro_ProductGroup.Where(i => ids.Contains(i.Id));
+            List<T_Pro_ProductGroup> updateList = new List<T_Pro_ProductGroup>();
+            foreach(var item in list)
+            {
+                if (item.IsDeleted)
+                {
+                    return Json(Fail("记录已删除，不能重复操作"));
+                }
+                else
+                {
+                    item.IsDeleted = true;
+                    item.LastUpdatedTime = DateTime.Now;
+                    item.LastUpdatedBy = userName;
+
+                    updateList.Add(item);
+                }
+            }
+            if (updateList.Count > 0)
+            {
+                peacockDbContext.UpdateRange(updateList);
+                peacockDbContext.SaveChanges();
+
+                return Json(Success("删除成功"));
+            }
+
+            return Json(Fail("删除失败"));
         }
     }
 }

@@ -1,9 +1,4 @@
-﻿@using Peacock.ViewModel.Manage
-@using Peacock.Dal
-
-@model PageResult<T_Pro_ProductGroup>
-
-<section class="content-header">
+﻿<section class="content-header">
     <h1>商品分组</h1>
 
     <div class="row">
@@ -18,20 +13,18 @@
             <table id="table"></table>
         </div>
     </div>
-
 </section>
 
-
-
+@Html.Partial("_Confirm")
 
 @section Scripts {
-
 
     <script type="text/javascript">
 
         $(function () {
             let page = new pageHelper();
             page.Init();
+            page.bindBtnEvent();
         });
 
         function pageHelper() { };
@@ -92,6 +85,7 @@
                 classes: 'table table-bordered table-hover',
                 theadClasses: '',
                 onLoadSuccess: function () {
+                    self.bindTableActionEvent()
                 },
                 onLoadError: function () {
                     //showTips("数据加载失败！");
@@ -100,9 +94,9 @@
         }
 
         pageHelper.prototype.queryParams = function (params) {
-            var temp = {   //这里的键的名字和控制器的变量名必须一直，这边改动，控制器也需要改成一样的
-                limit: params.limit,   //页面大小
-                offset: params.offset,  //页码
+            var temp = {
+                limit: params.limit,
+                offset: params.offset,
                 order: params.order,
                 orderName: params.sort,
                 //departmentname: $("#txt_search_departmentname").val(),
@@ -112,13 +106,18 @@
             return temp;
         }
 
+        pageHelper.prototype.reload = function () {
+            $("#table").bootstrapTable('refresh');
+        }
+
         //操作栏的格式化
         pageHelper.prototype.actionFormatter = function (value, row, index) {
             var id = value;
-            var result = "";
-            result += "<a href='/Product/ProductGroup/Edit?id=" + id +"' class='btn btn-xs green' onclick=\"EditViewById('" + id + "', view='view')\" title='查看'><span class='fa fa-fw fa-eye'></span></a>";
-            result += "<a href='/Product/ProductGroup/Edit?id=" + id +"' class='btn btn-xs blue' onclick=\"EditViewById('" + id + "')\" title='编辑'><span class='fa fa-fw fa-edit'></span></a>";
-            result += "<a href='javascript:;' class='btn btn-xs red' onclick=\"DeleteByIds('" + id + "')\" title='删除'><span class='fa fa-fw fa-close'></span></a>";
+            var result = "<div class='j-area-action' data-id='" + id + "'>";
+            //result += "<a href='javascript:;' class='btn btn-xs green' title='查看' data-action='view'><span class='fa fa-fw fa-eye'></span></a>";
+            result += "<a href='javascript:;' class='btn btn-xs blue' title='编辑' data-action='edit'><span class='fa fa-fw fa-edit'></span></a>";
+            result += "<a href='javascript:;' class='btn btn-xs red' title='删除' data-action='remove'><span class='fa fa-fw fa-close'></span></a>";
+            result += "</div>";
             return result;
         }
 
@@ -127,6 +126,59 @@
 
             $('.j-btn-add').on('click', function () {
 
+            });
+        }
+
+        pageHelper.prototype.bindTableActionEvent = function () {
+            let self = this;
+
+            $('.j-area-action').on('click', function (e) {
+                e.preventDefault();
+                let $btn = $(e.target).parent('a');
+                let $recordId = $btn.parent('.j-area-action').attr('data-id');
+                let $action = $btn.attr('data-action');
+                if ($action == 'remove') {
+                    self.showDeleteConfirm($recordId);
+                } else if ($action == 'edit') {
+                    window.location.href = '/Product/ProductGroup/Edit?id=' + $recordId;
+                } else if ($action == 'view') {
+                }
+            });
+        }
+
+        pageHelper.prototype.showDeleteConfirm = function (id) {
+            let self = this;
+
+            peacockConfirm('确定要删除该条记录吗？', function () {
+                self.deleteItem(id);
+            });
+        }
+
+        pageHelper.prototype.deleteItem = function (id) {
+            let self = this;
+
+            $.ajax({
+                url: '/Product/ProductGroup/DeleteByIds',
+                data: { ids: [id] },
+                method: 'POST',
+                dataType: 'JSON',
+                beforeSend: function () {
+
+                },
+                success: function (r) {
+                    if (r.Success) {
+                        window.location.reload();
+                    } else {
+                        alert("删除失败, " + r.Message);
+                        console.log(r);
+                    }
+                },
+                error: function (err) {
+                    console.log(err);
+                },
+                complete: function () {
+
+                }
             });
         }
     </script>

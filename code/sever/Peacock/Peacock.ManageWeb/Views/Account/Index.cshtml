@@ -194,18 +194,26 @@
 
 </section>
 
+<div class="alert alert-danger alert-dismissible">
+    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+    <h4><i class="icon fa fa-ban"></i> Alert!</h4>
+    Danger alert preview. This alert is dismissable. A wonderful serenity has taken possession of my entire
+    soul, like these sweet mornings of spring which I enjoy with my whole heart.
+</div>
 
 <!-- Button trigger modal -->
 <button class="btn btn-success j-btn-popup">打开弹窗</button>
-<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#customModal">
     Launch demo modal
 </button>
+
+@Html.Partial("_Confirm")
 
 @section Scripts {
     <script type="text/javascript">
         $(function () {
             $('.j-btn-save').on('click', function () {
-                $('#exampleModal').modal('hide');
+                $('#customModal').modal('hide');
             })
         });
     </script>

@@ -15,6 +15,7 @@ namespace Peacock.Dal
         {
         }
 
+        public virtual DbSet<T_Pro_Product> T_Pro_Product { get; set; }
         public virtual DbSet<T_Pro_ProductGroup> T_Pro_ProductGroup { get; set; }
         public virtual DbSet<T_System_LanguageContent> T_System_LanguageContent { get; set; }
         public virtual DbSet<T_System_LanguageRelation> T_System_LanguageRelation { get; set; }
@@ -36,6 +37,42 @@ namespace Peacock.Dal
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.HasAnnotation("ProductVersion", "2.2.6-servicing-10079");
+
+            modelBuilder.Entity<T_Pro_Product>(entity =>
+            {
+                entity.ToTable("T_Pro_Product");
+
+                entity.Property(e => e.ID).HasColumnName("ID");
+
+                entity.Property(e => e.Name).IsRequired().HasMaxLength(200);
+
+                entity.Property(e => e.OrderId).IsRequired();
+
+                entity.Property(e => e.IsDeleted).HasColumnType("bit(1)").HasDefaultValue(false);
+
+                entity.Property(e => e.CreatedBy).IsRequired().HasMaxLength(50);
+
+                entity.Property(e => e.CreatedTime).HasColumnType("datetime");
+
+                entity.Property(e => e.LastUpdatedBy).IsRequired().HasMaxLength(50);
+
+                entity.Property(e => e.LastUpdatedTime).HasColumnType("datetime");
+
+                entity.HasOne(d => d.LanguageRelationByName)
+                    .WithMany(p => p.ProductsWithName)
+                    .HasForeignKey(d => d.NameLanguageId)
+                    .HasConstraintName("FK_T_Pro_Product_T_System_LanguageRelation_Name");
+
+                entity.HasOne(d => d.LanguageRelationByDescription)
+                    .WithMany(p => p.ProductsWithDescription)
+                    .HasForeignKey(d => d.NameLanguageId)
+                    .HasConstraintName("FK_T_Pro_Product_T_System_LanguageRelation_Description");
+
+                entity.HasOne(d => d.ProductGourp)
+                    .WithMany(p => p.Products)
+                    .HasForeignKey(d => d.GroupId)
+                    .HasConstraintName("FK_T_Pro_Product_T_Pro_ProductGroup");
+            });
 
             modelBuilder.Entity<T_Pro_ProductGroup>(entity =>
             {
