@@ -1,0 +1,180 @@
+﻿<section class="content-header">
+    <h1>商品</h1>
+
+    <div class="row">
+        <div class="col-sm-4">
+            <a href="/Product/Product/Edit" class="btn btn-success">新增</a>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-12">
+            <table id="table"></table>
+        </div>
+    </div>
+</section>
+
+@Html.Partial("_Confirm")
+
+@section Scripts {
+
+    <script type="text/javascript">
+
+        $(function () {
+            let page = new pageHelper();
+            page.Init();
+            page.bindBtnEvent();
+        });
+
+        function pageHelper() { };
+        pageHelper.prototype.Init = function () {
+            let self = this;
+            $('#table').bootstrapTable({
+                url: '/Product/Product/GetProduct',
+                //url: '/Home/GetDepartment',         //请求后台的URL（*）
+                method: 'get',                      //请求方式（*）
+                //toolbar: '#toolbar',                //工具按钮用哪个容器
+                striped: true,                      //是否显示行间隔色
+                cache: false,                       //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+                pagination: true,                   //是否显示分页（*）
+                sortable: true,                     //是否启用排序  列中也有此变量
+                sortName: 'Id',                     //定义要排序的列   没定义默认都不排列，同sortOrder结合使用，sortOrder没写的话列默认递增（asc）
+                sortOrder: "asc",                   //定义列排序顺序，只能是'asc'或'desc'。
+                sortStable: false,                   //如果你把此属性设为了true）我们将为此行添加'_position'属性 （别看错了，是sortStable，sortable在下面）设为true，则和sort部分一样，区别是：在排序过程中，如果存在相等的元素，则原来的顺序不会改变
+                queryParams: self.queryParams,//传递参数（*）
+                sidePagination: "server",           //分页方式：client客户端分页，server服务端分页（*）
+                pageNumber: 1,                       //初始化加载第一页，默认第一页
+                pageSize: 10,                       //每页的记录行数（*）
+                pageList: [10, 25, 50, 100],        //可供选择的每页的行数（*）
+                search: true,                       //是否显示表格搜索
+                searchOnEnterKey: true,             //是否输入回车才触发搜索
+                strictSearch: true,
+                showColumns: true,                  //是否显示所有的列
+                showRefresh: true,                  //是否显示刷新按钮
+                minimumCountColumns: 2,             //最少允许的列数
+                clickToSelect: true,                //是否启用点击选中行
+                height: 500,                        //行高，如果没有设置height属性，表格自动根据记录条数觉得表格高度
+                uniqueId: "Id",                     //每一行的唯一标识，一般为主键列
+                showToggle: true,                    //是否显示详细视图和列表视图的切换按钮
+                cardView: false,                    //是否显示详细视图
+                detailView: false,                   //是否显示父子表
+                columns: [{
+                    checkbox: true
+                }, {
+                    field: 'Name',
+                    title: '商品名',
+                    sortable: true
+                }, {
+                    field: 'OrderId',
+                    title: '序号',
+                    sortable: true
+                }, {
+                    field: 'LastUpdatedTime',
+                    title: '最后更新时间',
+                    sortable: true
+                }, {
+                    field: 'Id',
+                    title: '操作',
+                    formatter: self.actionFormatter
+                }],
+                classes: 'table table-bordered table-hover',
+                theadClasses: '',
+                onLoadSuccess: function () {
+                    self.bindTableActionEvent()
+                },
+                onLoadError: function () {
+                    //showTips("数据加载失败！");
+                },
+            });
+        }
+
+        pageHelper.prototype.queryParams = function (params) {
+            var temp = {
+                limit: params.limit,
+                offset: params.offset,
+                order: params.order,
+                orderName: params.sort,
+                //departmentname: $("#txt_search_departmentname").val(),
+                //statu: $("#txt_search_statu").val(),
+                search: params.search
+            };
+            return temp;
+        }
+
+        pageHelper.prototype.reload = function () {
+            $("#table").bootstrapTable('refresh');
+        }
+
+        //操作栏的格式化
+        pageHelper.prototype.actionFormatter = function (value, row, index) {
+            var id = value;
+            var result = "<div class='j-area-action' data-id='" + id + "'>";
+            //result += "<a href='javascript:;' class='btn btn-xs green' title='查看' data-action='view'><span class='fa fa-fw fa-eye'></span></a>";
+            result += "<a href='javascript:;' class='btn btn-xs blue' title='编辑' data-action='edit'><span class='fa fa-fw fa-edit'></span></a>";
+            result += "<a href='javascript:;' class='btn btn-xs red' title='删除' data-action='remove'><span class='fa fa-fw fa-close'></span></a>";
+            result += "</div>";
+            return result;
+        }
+
+        pageHelper.prototype.bindBtnEvent = function () {
+            let self = this;
+
+            $('.j-btn-add').on('click', function () {
+
+            });
+        }
+
+        pageHelper.prototype.bindTableActionEvent = function () {
+            let self = this;
+
+            $('.j-area-action').on('click', function (e) {
+                e.preventDefault();
+                let $btn = $(e.target).parent('a');
+                let $recordId = $btn.parent('.j-area-action').attr('data-id');
+                let $action = $btn.attr('data-action');
+                if ($action == 'remove') {
+                    self.showDeleteConfirm($recordId);
+                } else if ($action == 'edit') {
+                    window.location.href = '/Product/Product/Edit?id=' + $recordId;
+                } else if ($action == 'view') {
+                }
+            });
+        }
+
+        pageHelper.prototype.showDeleteConfirm = function (id) {
+            let self = this;
+
+            peacockConfirm('确定要删除该条记录吗？', function () {
+                self.deleteItem(id);
+            });
+        }
+
+        pageHelper.prototype.deleteItem = function (id) {
+            let self = this;
+
+            $.ajax({
+                url: '/Product/Product/DeleteByIds',
+                data: { ids: [id] },
+                method: 'POST',
+                dataType: 'JSON',
+                beforeSend: function () {
+
+                },
+                success: function (r) {
+                    if (r.Success) {
+                        window.location.reload();
+                    } else {
+                        alert("删除失败, " + r.Message);
+                        console.log(r);
+                    }
+                },
+                error: function (err) {
+                    console.log(err);
+                },
+                complete: function () {
+
+                }
+            });
+        }
+    </script>
+}

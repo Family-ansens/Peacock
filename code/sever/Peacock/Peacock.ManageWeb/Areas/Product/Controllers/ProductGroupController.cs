@@ -9,7 +9,6 @@ using Microsoft.Extensions.Logging;
 using Peacock.Dal;
 using Peacock.ViewModel.Manage;
 using Peacock.ViewModel.Manage.ProductGroup;
-using Peacock.ViewModel.Manage.Share;
 
 namespace Peacock.ManageWeb.Areas.Product.Controllers
 {
@@ -26,19 +25,6 @@ namespace Peacock.ManageWeb.Areas.Product.Controllers
 
         public IActionResult Index()
         {
-            //int count = peacockDbContext.T_Pro_ProductGroup.Where(i => !i.IsDeleted).Count();
-            //var list = peacockDbContext.T_Pro_ProductGroup.Where(i => !i.IsDeleted).OrderBy(o => o.Code).Take(10).ToList();
-
-            //var pageResult = new PageResult<T_Pro_ProductGroup>();
-            //pageResult.Pager = new Pager()
-            //{
-            //    Total = count,
-            //    PageNumber = 1,
-            //    PageSize = 10,
-            //};
-            //pageResult.List = list;
-
-            //return View(pageResult);
             return View();
         }
 
@@ -83,6 +69,12 @@ namespace Peacock.ManageWeb.Areas.Product.Controllers
 
             if (isCreate)
             {
+                entity.Code = model.Code;
+                entity.Name = model.NameZh;
+                entity.CreatedTime = dtNow;
+                entity.CreatedBy = userName;
+                entity.LastUpdatedTime = dtNow;
+                entity.LastUpdatedBy = userName;
                 //设置多语言
                 T_System_LanguageContent nameZhContent = CreateLanguageContentEntity(model.NameZh, LanguageType.ZhCn);
                 T_System_LanguageContent nameEnContent = CreateLanguageContentEntity(model.NameEn, LanguageType.En);
@@ -99,19 +91,7 @@ namespace Peacock.ManageWeb.Areas.Product.Controllers
                         nameEnContent,
                     }
                 };
-
-                entity = new T_Pro_ProductGroup()
-                {
-                    Name = model.NameZh,
-                    Code = model.Code,
-                    LanguageRelationByName = languageRelationEntity,
-                    OrderId = model.OrderId,
-                    IsDeleted = false,
-                    CreatedBy = userName,
-                    CreatedTime = dtNow,
-                    LastUpdatedBy = userName,
-                    LastUpdatedTime = dtNow,
-                };
+                entity.LanguageRelationByName = languageRelationEntity;
 
                 peacockDbContext.Add(entity);
             }

@@ -48,6 +48,12 @@ namespace Peacock.Dal
 
                 entity.Property(e => e.OrderId).IsRequired();
 
+                entity.Property(e => e.Description);
+
+                entity.Property(e => e.NameLanguageId);
+
+                entity.Property(e => e.DescriptionLanguageId);
+
                 entity.Property(e => e.IsDeleted).HasColumnType("bit(1)").HasDefaultValue(false);
 
                 entity.Property(e => e.CreatedBy).IsRequired().HasMaxLength(50);

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Peacock.ViewModel.Manage.Share
+namespace Peacock.ViewModel.Manage
 {
     public class BaseSearchModel
     {
