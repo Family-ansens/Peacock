@@ -14,6 +14,7 @@
 
   <ItemGroup>
     <Content Remove="Views\Shared\_Layout.cshtml" />
+    <Content Remove="Views\Shared\_Upload.cshtml" />
   </ItemGroup>
 
 
@@ -34,6 +35,7 @@
 
   <ItemGroup>
     <None Include="Views\Shared\_Layout.cshtml" />
+    <None Include="Views\Shared\_Upload.cshtml" />
     <None Include="wwwroot\lib\ckeditor\adapters\jquery.js" />
     <None Include="wwwroot\lib\ckeditor\CHANGES.md" />
     <None Include="wwwroot\lib\ckeditor\ckeditor.js" />
@@ -274,6 +276,7 @@
     <None Include="wwwroot\lib\ckeditor\skins\moono-lisa\readme.md" />
     <None Include="wwwroot\lib\ckeditor\styles.js" />
     <None Include="wwwroot\lib\ckeditor\vendor\promise.js" />
+    <None Include="wwwroot\upload\img\test.txt" />
   </ItemGroup>
 
 
