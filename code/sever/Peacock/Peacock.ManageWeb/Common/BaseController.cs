@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -53,13 +54,13 @@ namespace Peacock.ManageWeb
         }
 
         [HttpPost]
-        public ActionResult UploadImg([FromServices]IHostingEnvironment env, List<IFormFile> files)
+        public ActionResult UploadImg([FromServices]IHostingEnvironment env)
         {
-            long size = files.Sum(f => f.Length);
-
+            var files = HttpContext.Request.Form.Files.GetFiles("file");
             // full path to file in temp location
             var fileBasePath = Path.Combine(env.WebRootPath, "upload", "img");
             List<string> fileList = new List<string>();
+            string t = string.Empty;
 
             foreach (var formFile in files)
             {
@@ -73,6 +74,7 @@ namespace Peacock.ManageWeb
                         //fileList.Add(fileName);
                         fileList.Add(Request.Host + "/upload/img/" + fileName);
                         formFile.CopyTo(stream);
+                        t = "/upload/img/" + fileName;
                     }
                 }
             }
@@ -80,7 +82,11 @@ namespace Peacock.ManageWeb
             // process uploaded files
             // Don't rely on or trust the FileName property without validation.
 
-            return Ok(new { count = files.Count, size, fileList });
+            Hashtable imageUrl = new Hashtable();
+            imageUrl.Add("link", t);
+
+            return Json(imageUrl);
+            //return Ok(new { count = files.Count, size, fileList });
         }
     }
 }

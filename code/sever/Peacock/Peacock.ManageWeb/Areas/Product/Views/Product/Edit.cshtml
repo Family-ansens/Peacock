@@ -49,7 +49,7 @@
                                         </div>
                                         <div class="col-sm-12">
                                             详细说明(中文)
-                                            @Html.TextAreaFor(m=>m.DescriptionZh)
+                                            @Html.TextAreaFor(m => m.DescriptionZh)
                                         </div>
                                     </div>
                                     <div class="tab-pane" id="tab_en">
@@ -89,6 +89,13 @@
 
     <script type="text/javascript">
         $(function () {
+            debugger;
+            CKEDITOR.editorConfig = function (config) {
+                debugger;
+                config.image_previewText = ' '; //预览区域显示内容
+                config.filebrowserImageUploadUrl = '/Base/UploadImg?'; //要上传的action或servlet
+                removePlugins: 'elementspath,resize';
+            };
             CKEDITOR.replace('DescriptionZh');
             CKEDITOR.replace('DescriptionEn');
         });
