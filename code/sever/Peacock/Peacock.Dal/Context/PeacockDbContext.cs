@@ -20,6 +20,8 @@ namespace Peacock.Dal
         public virtual DbSet<T_System_LanguageContent> T_System_LanguageContent { get; set; }
         public virtual DbSet<T_System_LanguageRelation> T_System_LanguageRelation { get; set; }
         public virtual DbSet<T_System_Menu> T_System_Menu { get; set; }
+        public virtual DbSet<T_New> T_New { get; set; }
+        public virtual DbSet<T_Announcement> T_Announcement { get; set; }
 
 //        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 //        {
@@ -37,6 +39,80 @@ namespace Peacock.Dal
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.HasAnnotation("ProductVersion", "2.2.6-servicing-10079");
+
+            modelBuilder.Entity<T_New>(entity =>
+            {
+                entity.ToTable("T_New");
+
+                entity.Property(e => e.ID).HasColumnName("ID");
+
+                entity.Property(e => e.Title).IsRequired().HasMaxLength(200);
+
+                entity.Property(e => e.Content);
+
+                entity.Property(e => e.TitleLanguageId);
+
+                entity.Property(e => e.ContentLanguageId);
+
+                entity.Property(e => e.IsPublish).HasColumnType("bit(1)").HasDefaultValue(false);
+
+                entity.Property(e => e.PublishTime).HasColumnType("datetime");
+
+                entity.Property(e => e.IsDeleted).HasColumnType("bit(1)").HasDefaultValue(false);
+
+                entity.Property(e => e.CreatedBy).IsRequired().HasMaxLength(50);
+
+                entity.Property(e => e.CreatedTime).HasColumnType("datetime");
+
+                entity.Property(e => e.LastUpdatedBy).IsRequired().HasMaxLength(50);
+
+                entity.Property(e => e.LastUpdatedTime).HasColumnType("datetime");
+
+                entity.HasOne(d => d.LanguageRelationByTitle)
+                    .WithMany(p => p.NewsWithTitle)
+                    .HasForeignKey(d => d.TitleLanguageId)
+                    .HasConstraintName("FK_T_New_T_System_LanguageRelation_Title");
+
+                entity.HasOne(d => d.LanguageRelationByContent)
+                    .WithMany(p => p.NewsWithContent)
+                    .HasForeignKey(d => d.ContentLanguageId)
+                    .HasConstraintName("FK_T_New_T_System_LanguageRelation_Content");
+            });
+
+            modelBuilder.Entity<T_Announcement>(entity =>
+            {
+                entity.ToTable("T_Announcement");
+
+                entity.Property(e => e.ID).HasColumnName("ID");
+
+                entity.Property(e => e.Title).IsRequired().HasMaxLength(200);
+
+                entity.Property(e => e.Content);
+
+                entity.Property(e => e.TitleLanguageId);
+
+                entity.Property(e => e.ContentLanguageId);
+
+                entity.Property(e => e.IsDeleted).HasColumnType("bit(1)").HasDefaultValue(false);
+
+                entity.Property(e => e.CreatedBy).IsRequired().HasMaxLength(50);
+
+                entity.Property(e => e.CreatedTime).HasColumnType("datetime");
+
+                entity.Property(e => e.LastUpdatedBy).IsRequired().HasMaxLength(50);
+
+                entity.Property(e => e.LastUpdatedTime).HasColumnType("datetime");
+
+                entity.HasOne(d => d.LanguageRelationByTitle)
+                    .WithMany(p => p.AnnouncementsWithTitle)
+                    .HasForeignKey(d => d.TitleLanguageId)
+                    .HasConstraintName("FK_T_New_T_Announcement_Title");
+
+                entity.HasOne(d => d.LanguageRelationByContent)
+                    .WithMany(p => p.AnnouncementsWithContent)
+                    .HasForeignKey(d => d.ContentLanguageId)
+                    .HasConstraintName("FK_T_New_T_Announcement_Content");
+            });
 
             modelBuilder.Entity<T_Pro_Product>(entity =>
             {

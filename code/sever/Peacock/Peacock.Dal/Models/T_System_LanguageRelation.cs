@@ -12,6 +12,10 @@ namespace Peacock.Dal
             T_Pro_ProductGroups = new HashSet<T_Pro_ProductGroup>();
             ProductsWithName = new HashSet<T_Pro_Product>();
             ProductsWithDescription = new HashSet<T_Pro_Product>();
+            NewsWithTitle = new HashSet<T_New>();
+            NewsWithContent = new HashSet<T_New>();
+            AnnouncementsWithTitle = new HashSet<T_Announcement>();
+            AnnouncementsWithContent = new HashSet<T_Announcement>();
         }
 
         public int Id { get; set; }
@@ -25,5 +29,9 @@ namespace Peacock.Dal
         public virtual ICollection<T_Pro_ProductGroup> T_Pro_ProductGroups { get; set; }
         public virtual ICollection<T_Pro_Product> ProductsWithName { get; set; }
         public virtual ICollection<T_Pro_Product> ProductsWithDescription { get; set; }
+        public virtual ICollection<T_New> NewsWithTitle { get; set; }
+        public virtual ICollection<T_New> NewsWithContent { get; set; }
+        public virtual ICollection<T_Announcement> AnnouncementsWithTitle { get; set; }
+        public virtual ICollection<T_Announcement> AnnouncementsWithContent { get; set; }
     }
 }

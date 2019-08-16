@@ -1,0 +1,98 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model Peacock.ViewModel.Manage.NewItem
+
+<section class="content-header">
+    <h1>
+        @(Model.Id == 0 ? "新增" : "编辑")新闻
+    </h1>
+</section>
+
+<section class="content">
+    <div class="row">
+        <div class="box box-primary">
+            <form role="form" method="post" action="@Url.Action("Save", "New", new { area = "News" })">
+                <div class="box-body">
+                    @*<div class="row">
+                        <div class="col-md-12">
+                            <div class="col-md-6">
+                                @Html.HiddenFor(m => m.Id)
+
+                                <div class="form-group">
+                                    @Html.LabelFor(m => m.Code)
+                                    @Html.TextBoxFor(m => m.Code, new { @class = "form-control" })
+                                </div>
+                                <div class="form-group">
+                                    @Html.LabelFor(m => m.OrderId)
+                                    @Html.TextBoxFor(m => m.OrderId, new { @class = "form-control" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>*@
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="j-lang-tab">
+                                <ul class="nav nav-pills ">
+                                    <li class="active">
+                                        <a class="nav-link active" href="#tab_zh" data-toggle="tab" aria-expanded="true">中文语言</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="#tab_en" data-toggle="tab" aria-expanded="false">英文语言</a>
+                                    </li>
+                                </ul>
+                                <div class="tab-content">
+                                    <div class="tab-pane active" id="tab_zh">
+                                        <div class="col-sm-6">
+                                            <div class="form-group">
+                                                @Html.LabelFor(m => m.TitleZh)
+                                                @Html.TextBoxFor(m => m.TitleZh, new { @class = "form-control" })
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-12">
+                                            详细说明(中文)
+                                            @Html.TextAreaFor(m => m.ContentZh)
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane" id="tab_en">
+                                        <div class="col-sm-6">
+                                            <div class="form-group">
+                                                @Html.LabelFor(m => m.TitleEn)
+                                                @Html.TextBoxFor(m => m.TitleEn, new { @class = "form-control" })
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-12">
+                                            详细说明(英文)
+                                            @Html.TextAreaFor(m => m.ContentEn)
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row text-danger">
+                        @Html.ValidationSummary()
+                    </div>
+                </div>
+
+                <div class="box-footer">
+                    <button type="submit" class="btn btn-primary">保存</button>
+                    <a href="@Url.Action("Index", "New", new { area = "News" })" class="btn btn-default">返回</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+
+@section Scripts {
+
+    <script src="~/lib/ckeditor/ckeditor.js"></script>
+    <script src="~/lib/ckeditor/config.js"></script>
+
+    <script type="text/javascript">
+        $(function () {
+            CKEDITOR.replace('ContentZh');
+            CKEDITOR.replace('ContentEn');
+        });
+    </script>
+}
