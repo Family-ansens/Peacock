@@ -24,33 +24,33 @@ namespace Peacock.ManageWeb.Areas.News.Controllers
 
         public JsonResult GetList(BaseSearchModel searchModel)
         {
-            int count = peacockDbContext.T_New.Where(i => !i.IsDeleted).Count();
-            var list = peacockDbContext.T_New.Where(i => !i.IsDeleted).Skip(searchModel.offset).Take(searchModel.limit).ToList();
+            int count = peacockDbContext.T_Announcement.Where(i => !i.IsDeleted).Count();
+            var list = peacockDbContext.T_Announcement.Where(i => !i.IsDeleted).Skip(searchModel.offset).Take(searchModel.limit).ToList();
             return Json(new { total = count, rows = list });
         }
 
         public ActionResult Edit(int id)
         {
-            NewItem vm = new NewItem();
+            AnnouncementItem vm = new AnnouncementItem();
             if (id == 0)
                 return View(vm);
-            var entity = peacockDbContext.T_New
+            var entity = peacockDbContext.T_Announcement
                                          .Include(i => i.LanguageRelationByTitle).ThenInclude(i => i.TSystemLanguageContent)
                                          .Include(i => i.LanguageRelationByContent).ThenInclude(i => i.TSystemLanguageContent)
                                          .FirstOrDefault(i => i.ID == id);
             if (entity != null)
             {
                 vm.Id = entity.ID;
-                vm.TitleZh = entity.LanguageRelationByTitle.TSystemLanguageContent.FirstOrDefault(i => i.LanguageType == LanguageType.ZhCn)?.DisplayContent;
-                vm.TitleEn = entity.LanguageRelationByTitle.TSystemLanguageContent.FirstOrDefault(i => i.LanguageType == LanguageType.En)?.DisplayContent;
-                vm.ContentZh = entity.LanguageRelationByContent.TSystemLanguageContent.FirstOrDefault(i => i.LanguageType == LanguageType.ZhCn)?.DisplayContent;
-                vm.ContentEn = entity.LanguageRelationByContent.TSystemLanguageContent.FirstOrDefault(i => i.LanguageType == LanguageType.En)?.DisplayContent;
+                vm.TitleZh = GetLanguageContent(entity.LanguageRelationByTitle, LanguageType.ZhCn);
+                vm.TitleEn = GetLanguageContent(entity.LanguageRelationByTitle, LanguageType.En);
+                vm.ContentZh = GetLanguageContent(entity.LanguageRelationByContent, LanguageType.ZhCn);
+                vm.ContentEn = GetLanguageContent(entity.LanguageRelationByContent, LanguageType.En);
             }
             return View(vm);
         }
 
         [HttpPost]
-        public ActionResult Save(NewItem model)
+        public ActionResult Save(AnnouncementItem model)
         {
             if (!ModelState.IsValid)
             {
@@ -60,54 +60,26 @@ namespace Peacock.ManageWeb.Areas.News.Controllers
             DateTime dtNow = DateTime.Now;
             bool isCreate = model.Id == 0;
             int id = model.Id;
-            T_New entity = new T_New();
+            T_Announcement entity = new T_Announcement();
 
             if (isCreate)
             {
                 entity.Title = model.TitleZh;
                 entity.IsDeleted = false;
-                entity.IsPublish = false;
                 entity.Content = model.ContentZh;
                 entity.CreatedBy = userName;
                 entity.CreatedTime = dtNow;
                 entity.LastUpdatedBy = userName;
                 entity.LastUpdatedTime = dtNow;
                 //设置多语言
-                T_System_LanguageContent titleZhContent = CreateLanguageContentEntity(model.TitleZh, LanguageType.ZhCn);
-                T_System_LanguageContent titleEnContent = CreateLanguageContentEntity(model.TitleEn, LanguageType.En);
-                T_System_LanguageContent contentZhContent = CreateLanguageContentEntity(model.ContentZh, LanguageType.ZhCn);
-                T_System_LanguageContent contentEnContent = CreateLanguageContentEntity(model.ContentEn, LanguageType.En);
-
-                entity.LanguageRelationByTitle = new T_System_LanguageRelation()
-                {
-                    CreatedBy = userName,
-                    CreatedTime = dtNow,
-                    LastUpdatedBy = userName,
-                    LastUpdatedDate = dtNow,
-                    TSystemLanguageContent = new List<T_System_LanguageContent>()
-                    {
-                        titleZhContent,
-                        titleEnContent,
-                    }
-                };
-                entity.LanguageRelationByContent = new T_System_LanguageRelation()
-                {
-                    CreatedBy = userName,
-                    CreatedTime = dtNow,
-                    LastUpdatedBy = userName,
-                    LastUpdatedDate = dtNow,
-                    TSystemLanguageContent = new List<T_System_LanguageContent>()
-                    {
-                        contentZhContent,
-                        contentEnContent,
-                    }
-                };
+                entity.LanguageRelationByTitle = EditLanguageContent(entity.LanguageRelationByTitle, model.TitleLanguageDict);
+                entity.LanguageRelationByContent = EditLanguageContent(entity.LanguageRelationByContent, model.ContentLanguageDict);
 
                 peacockDbContext.Add(entity);
             }
             else
             {
-                entity = peacockDbContext.T_New.Include(i => i.LanguageRelationByTitle).ThenInclude(i => i.TSystemLanguageContent)
+                entity = peacockDbContext.T_Announcement.Include(i => i.LanguageRelationByTitle).ThenInclude(i => i.TSystemLanguageContent)
                                          .Include(i => i.LanguageRelationByContent).ThenInclude(i => i.TSystemLanguageContent)
                                          .FirstOrDefault(i => i.ID == model.Id);
 
@@ -122,15 +94,8 @@ namespace Peacock.ManageWeb.Areas.News.Controllers
                 entity.LastUpdatedTime = dtNow;
                 entity.LastUpdatedBy = userName;
 
-                var zhTitleLanguageEntity = entity.LanguageRelationByTitle.TSystemLanguageContent.FirstOrDefault(i => i.LanguageType == LanguageType.ZhCn);
-                zhTitleLanguageEntity.DisplayContent = model.TitleZh;
-                zhTitleLanguageEntity.LastUpdatedBy = userName;
-                zhTitleLanguageEntity.LastUpdatedTime = dtNow;
-
-                var enTitleLanguageEntity = entity.LanguageRelationByTitle.TSystemLanguageContent.FirstOrDefault(i => i.LanguageType == LanguageType.En);
-                enTitleLanguageEntity.DisplayContent = model.TitleEn;
-                enTitleLanguageEntity.LastUpdatedBy = userName;
-                enTitleLanguageEntity.LastUpdatedTime = dtNow;
+                entity.LanguageRelationByTitle = EditLanguageContent(entity.LanguageRelationByTitle, model.TitleLanguageDict);
+                entity.LanguageRelationByContent = EditLanguageContent(entity.LanguageRelationByContent, model.ContentLanguageDict);
 
                 peacockDbContext.Update(entity);
             }
@@ -141,8 +106,8 @@ namespace Peacock.ManageWeb.Areas.News.Controllers
         [HttpPost]
         public ActionResult DeleteByIds(List<int> ids)
         {
-            var list = peacockDbContext.T_New.Where(i => ids.Contains(i.ID));
-            List<T_New> updateList = new List<T_New>();
+            var list = peacockDbContext.T_Announcement.Where(i => ids.Contains(i.ID));
+            List<T_Announcement> updateList = new List<T_Announcement>();
             foreach (var item in list)
             {
                 if (item.IsDeleted)
@@ -167,19 +132,6 @@ namespace Peacock.ManageWeb.Areas.News.Controllers
             }
 
             return Json(Fail("删除失败"));
-        }
-
-        [HttpPost]
-        public ActionResult SwitchPublish(int id)
-        {
-            var item = peacockDbContext.T_New.Where(i => i.ID == id).FirstOrDefault();
-            item.IsPublish = !item.IsPublish;
-            item.LastUpdatedTime = DateTime.Now;
-            item.LastUpdatedBy = userName;
-            peacockDbContext.Update(item);
-            peacockDbContext.SaveChanges();
-
-            return Json(Success(item.IsPublish ? "发布成功" : "取消发布成功"));
         }
     }
 }

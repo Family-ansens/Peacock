@@ -15,21 +15,21 @@
             <form role="form" method="post" action="@Url.Action("Save", "New", new { area = "News" })">
                 <div class="box-body">
                     @*<div class="row">
-                        <div class="col-md-12">
-                            <div class="col-md-6">
-                                @Html.HiddenFor(m => m.Id)
+                            <div class="col-md-12">
+                                <div class="col-md-6">
+                                    @Html.HiddenFor(m => m.Id)
 
-                                <div class="form-group">
-                                    @Html.LabelFor(m => m.Code)
-                                    @Html.TextBoxFor(m => m.Code, new { @class = "form-control" })
-                                </div>
-                                <div class="form-group">
-                                    @Html.LabelFor(m => m.OrderId)
-                                    @Html.TextBoxFor(m => m.OrderId, new { @class = "form-control" })
+                                    <div class="form-group">
+                                        @Html.LabelFor(m => m.Code)
+                                        @Html.TextBoxFor(m => m.Code, new { @class = "form-control" })
+                                    </div>
+                                    <div class="form-group">
+                                        @Html.LabelFor(m => m.OrderId)
+                                        @Html.TextBoxFor(m => m.OrderId, new { @class = "form-control" })
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>*@
+                        </div>*@
                     <div class="row">
                         <div class="col-md-12">
                             <div class="j-lang-tab">
@@ -50,7 +50,7 @@
                                             </div>
                                         </div>
                                         <div class="col-sm-12">
-                                            详细说明(中文)
+                                            @Html.LabelFor(m => m.ContentZh)
                                             @Html.TextAreaFor(m => m.ContentZh)
                                         </div>
                                     </div>
@@ -62,7 +62,7 @@
                                             </div>
                                         </div>
                                         <div class="col-sm-12">
-                                            详细说明(英文)
+                                            @Html.LabelFor(m => m.ContentEn)
                                             @Html.TextAreaFor(m => m.ContentEn)
                                         </div>
                                     </div>
@@ -86,13 +86,27 @@
 
 @section Scripts {
 
-    <script src="~/lib/ckeditor/ckeditor.js"></script>
-    <script src="~/lib/ckeditor/config.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/froala-editor@3.0.0-beta.1/css/froala_editor.pkgd.min.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/froala-editor@3.0.0-beta.1//js/froala_editor.pkgd.min.js"></script>
 
     <script type="text/javascript">
         $(function () {
-            CKEDITOR.replace('ContentZh');
-            CKEDITOR.replace('ContentEn');
+            new FroalaEditor('#ContentZh', {
+                // Set the image upload URL.
+                imageUploadURL: '/Base/UploadImg',
+
+                imageUploadParams: {
+                    id: 'ContentZh'
+                }
+            });
+            new FroalaEditor('#ContentEn', {
+                // Set the image upload URL.
+                imageUploadURL: '/Base/UploadImg',
+
+                imageUploadParams: {
+                    id: 'ContentEn'
+                }
+            });
         });
     </script>
 }

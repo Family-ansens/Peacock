@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Text;
@@ -26,5 +27,29 @@ namespace Peacock.ViewModel.Manage
         [Display(Name = "内容(英文)")]
         [Required(ErrorMessage = "{0}新闻内容为必填项")]
         public string ContentEn { get; set; }
+
+        [JsonIgnore]
+        public Dictionary<string, string> TitleLanguageDict
+        {
+            get
+            {
+                Dictionary<string, string> dict = new Dictionary<string, string>();
+                dict.Add(LanguageType.ZhCn, TitleZh);
+                dict.Add(LanguageType.En, TitleEn);
+                return dict;
+            }
+        }
+
+        [JsonIgnore]
+        public Dictionary<string, string> ContentLanguageDict
+        {
+            get
+            {
+                Dictionary<string, string> dict = new Dictionary<string, string>();
+                dict.Add(LanguageType.ZhCn, ContentZh);
+                dict.Add(LanguageType.En, ContentEn);
+                return dict;
+            }
+        }
     }
 }

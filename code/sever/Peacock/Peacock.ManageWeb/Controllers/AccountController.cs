@@ -47,6 +47,10 @@ namespace Peacock.ManageWeb.Controllers
                 {
                     redirectAction = HttpContext.Request.Query["ReturnUrl"].FirstOrDefault();
                 }
+                else
+                {
+                    redirectAction = Url.Action("Index","GroupGroup", new { area = "Product" });
+                }
 
                 return Redirect(redirectAction);
             }

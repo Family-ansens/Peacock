@@ -6,6 +6,8 @@ namespace Peacock.Dal
 {
     public partial class PeacockDbContext : DbContext
     {
+        private const bool IS_MYSQL = false;
+
         public PeacockDbContext()
         {
         }
@@ -38,7 +40,7 @@ namespace Peacock.Dal
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.HasAnnotation("ProductVersion", "2.2.6-servicing-10079");
+            //modelBuilder.HasAnnotation("ProductVersion", "2.2.6-servicing-10079");
 
             modelBuilder.Entity<T_New>(entity =>
             {
@@ -54,11 +56,15 @@ namespace Peacock.Dal
 
                 entity.Property(e => e.ContentLanguageId);
 
-                entity.Property(e => e.IsPublish).HasColumnType("bit(1)").HasDefaultValue(false);
+                if (IS_MYSQL)
+                {
+                    entity.Property(e => e.IsDeleted).HasColumnType("bit(1)").HasDefaultValue(false);
+                    entity.Property(e => e.IsPublish).HasColumnType("bit(1)").HasDefaultValue(false);
+                }
 
                 entity.Property(e => e.PublishTime).HasColumnType("datetime");
 
-                entity.Property(e => e.IsDeleted).HasColumnType("bit(1)").HasDefaultValue(false);
+                
 
                 entity.Property(e => e.CreatedBy).IsRequired().HasMaxLength(50);
 
@@ -93,7 +99,10 @@ namespace Peacock.Dal
 
                 entity.Property(e => e.ContentLanguageId);
 
-                entity.Property(e => e.IsDeleted).HasColumnType("bit(1)").HasDefaultValue(false);
+                if (IS_MYSQL)
+                {
+                    entity.Property(e => e.IsDeleted).HasColumnType("bit(1)").HasDefaultValue(false);
+                }
 
                 entity.Property(e => e.CreatedBy).IsRequired().HasMaxLength(50);
 
@@ -130,7 +139,10 @@ namespace Peacock.Dal
 
                 entity.Property(e => e.DescriptionLanguageId);
 
-                entity.Property(e => e.IsDeleted).HasColumnType("bit(1)").HasDefaultValue(false);
+                if (IS_MYSQL)
+                {
+                    entity.Property(e => e.IsDeleted).HasColumnType("bit(1)").HasDefaultValue(false);
+                }
 
                 entity.Property(e => e.CreatedBy).IsRequired().HasMaxLength(50);
 
@@ -147,7 +159,7 @@ namespace Peacock.Dal
 
                 entity.HasOne(d => d.LanguageRelationByDescription)
                     .WithMany(p => p.ProductsWithDescription)
-                    .HasForeignKey(d => d.NameLanguageId)
+                    .HasForeignKey(d => d.DescriptionLanguageId)
                     .HasConstraintName("FK_T_Pro_Product_T_System_LanguageRelation_Description");
 
                 entity.HasOne(d => d.ProductGourp)
@@ -166,9 +178,10 @@ namespace Peacock.Dal
                     .IsRequired()
                     .HasMaxLength(50);
 
-                entity.Property(e => e.IsDeleted)
-                    .HasColumnType("bit(1)")
-                    .HasDefaultValue(false);
+                if (IS_MYSQL)
+                {
+                    entity.Property(e => e.IsDeleted).HasColumnType("bit(1)").HasDefaultValue(false);
+                }
 
                 entity.Property(e => e.CreatedBy)
                     .IsRequired()
@@ -272,15 +285,10 @@ namespace Peacock.Dal
                     .IsRequired()
                     .HasMaxLength(100);
 
-                entity.Property(e => e.Url)
-                    .IsRequired()
-                    .HasMaxLength(100)
-                    .IsUnicode(false);
-
-                // Mysql定义布尔类型
-                entity.Property(e => e.IsDeleted)
-                    .HasColumnType("bit(1)")
-                    .HasDefaultValue(false);
+                if (IS_MYSQL)
+                {
+                    entity.Property(e => e.IsDeleted).HasColumnType("bit(1)").HasDefaultValue(false);
+                }
 
                 entity.HasOne(d => d.LanguageRelation)
                     .WithMany(p => p.TSystemMenu)

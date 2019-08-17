@@ -52,8 +52,8 @@ namespace Peacock.ManageWeb.Areas.Product.Controllers
                                                         Text = c.Name,
                                                     }).ToList();
 
-            if (id == 0)
-                return View(vm);
+            if (id == 0) return View(vm);
+
             var entity = peacockDbContext.T_Pro_Product
                                          .Include(i => i.LanguageRelationByName).ThenInclude(i => i.TSystemLanguageContent)
                                          .Include(i => i.LanguageRelationByDescription).ThenInclude(i => i.TSystemLanguageContent)
@@ -63,15 +63,12 @@ namespace Peacock.ManageWeb.Areas.Product.Controllers
                 vm.Id = entity.ID;
                 vm.NameZh = entity.LanguageRelationByName.TSystemLanguageContent.FirstOrDefault(i => i.LanguageType == LanguageType.ZhCn)?.DisplayContent;
                 vm.NameEn = entity.LanguageRelationByName.TSystemLanguageContent.FirstOrDefault(i => i.LanguageType == LanguageType.En)?.DisplayContent;
-                vm.DescriptionZh = entity.LanguageRelationByDescription.TSystemLanguageContent.FirstOrDefault(i => i.LanguageType == LanguageType.ZhCn)?.DisplayContent;
-                vm.DescriptionEn = entity.LanguageRelationByDescription.TSystemLanguageContent.FirstOrDefault(i => i.LanguageType == LanguageType.En)?.DisplayContent;
+                vm.DescriptionZh = entity.LanguageRelationByDescription?.TSystemLanguageContent?.FirstOrDefault(i => i.LanguageType == LanguageType.ZhCn)?.DisplayContent ?? string.Empty;
+                vm.DescriptionEn = entity.LanguageRelationByDescription?.TSystemLanguageContent?.FirstOrDefault(i => i.LanguageType == LanguageType.En)?.DisplayContent ?? string.Empty;
 
                 vm.OrderId = entity.OrderId;
                 vm.GroupId = entity.GroupId.ToString();
             }
-
-
-
             return View(vm);
         }
 
@@ -105,53 +102,24 @@ namespace Peacock.ManageWeb.Areas.Product.Controllers
                 entity.LastUpdatedTime = dtNow;
                 entity.LastUpdatedBy = userName;
                 //设置多语言
-                T_System_LanguageContent nameZhContent = CreateLanguageContentEntity(model.NameZh, LanguageType.ZhCn);
-                T_System_LanguageContent nameEnContent = CreateLanguageContentEntity(model.NameEn, LanguageType.En);
-                T_System_LanguageRelation languageRelationByName = new T_System_LanguageRelation()
-                {
-                    CreatedBy = userName,
-                    CreatedTime = dtNow,
-                    LastUpdatedBy = userName,
-                    LastUpdatedDate = dtNow,
-                    TSystemLanguageContent = new List<T_System_LanguageContent>()
-                    {
-                        nameZhContent,
-                        nameEnContent,
-                    }
-                };
-                entity.LanguageRelationByName = languageRelationByName;
+                var nameLanguageDict = new Dictionary<string, string>();
+                nameLanguageDict.Add(LanguageType.ZhCn, model.NameZh);
+                nameLanguageDict.Add(LanguageType.En, model.NameEn);
+                entity.LanguageRelationByName = EditLanguageContent(entity.LanguageRelationByName, nameLanguageDict);
 
-                if (!string.IsNullOrEmpty(model.DescriptionZh) || !string.IsNullOrEmpty(model.DescriptionEn))
-                {
-                    T_System_LanguageRelation languageRelationByDescription = new T_System_LanguageRelation()
-                    {
-                        CreatedBy = userName,
-                        CreatedTime = dtNow,
-                        LastUpdatedBy = userName,
-                        LastUpdatedDate = dtNow,
-                        TSystemLanguageContent = new List<T_System_LanguageContent>()
-                    };
-                    if (!string.IsNullOrEmpty(model.DescriptionZh))
-                    {
-                        T_System_LanguageContent descZhContent = CreateLanguageContentEntity(model.DescriptionZh, LanguageType.ZhCn);
-                        languageRelationByDescription.TSystemLanguageContent.Add(descZhContent);
-                    }
-                    if (!string.IsNullOrEmpty(model.DescriptionEn))
-                    {
-                        T_System_LanguageContent descEnContent = CreateLanguageContentEntity(model.DescriptionEn, LanguageType.En);
-                        languageRelationByDescription.TSystemLanguageContent.Add(descEnContent);
-                    }
-
-                    entity.LanguageRelationByDescription = languageRelationByDescription;
-                }
+                var descLanguageDict = new Dictionary<string, string>();
+                descLanguageDict.Add(LanguageType.ZhCn, model.DescriptionZh);
+                descLanguageDict.Add(LanguageType.En, model.DescriptionEn);
+                entity.LanguageRelationByDescription = EditLanguageContent(entity.LanguageRelationByDescription, descLanguageDict);
 
                 peacockDbContext.Add(entity);
             }
             else
             {
-                entity = peacockDbContext.T_Pro_Product.Include(i => i.LanguageRelationByName).ThenInclude(i => i.TSystemLanguageContent)
-                                            .Include(i => i.LanguageRelationByDescription).ThenInclude(i => i.TSystemLanguageContent)
-                                            .FirstOrDefault(i => i.ID == model.Id && !i.IsDeleted);
+                entity = peacockDbContext.T_Pro_Product
+                                         .Include(i => i.LanguageRelationByName).ThenInclude(i => i.TSystemLanguageContent)
+                                         .Include(i => i.LanguageRelationByDescription).ThenInclude(i => i.TSystemLanguageContent)
+                                         .FirstOrDefault(i => i.ID == model.Id && !i.IsDeleted);
                 if (entity == null)
                 {
                     ModelState.AddModelError("Code", "不存在记录，无法更新");
@@ -165,25 +133,15 @@ namespace Peacock.ManageWeb.Areas.Product.Controllers
                 entity.LastUpdatedTime = dtNow;
                 entity.LastUpdatedBy = userName;
 
-                var zhNameLanguageEntity = entity.LanguageRelationByName.TSystemLanguageContent.FirstOrDefault(i => i.LanguageType == LanguageType.ZhCn);
-                zhNameLanguageEntity.DisplayContent = model.NameZh;
-                zhNameLanguageEntity.LastUpdatedBy = userName;
-                zhNameLanguageEntity.LastUpdatedTime = dtNow;
+                var nameLanguageDict = new Dictionary<string, string>();
+                nameLanguageDict.Add(LanguageType.ZhCn, model.NameZh);
+                nameLanguageDict.Add(LanguageType.En, model.NameEn);
+                entity.LanguageRelationByName = EditLanguageContent(entity.LanguageRelationByName, nameLanguageDict);
 
-                var enNameLanguageEntity = entity.LanguageRelationByName.TSystemLanguageContent.FirstOrDefault(i => i.LanguageType == LanguageType.En);
-                enNameLanguageEntity.DisplayContent = model.NameEn;
-                enNameLanguageEntity.LastUpdatedBy = userName;
-                enNameLanguageEntity.LastUpdatedTime = dtNow;
-
-                var zhDescLanguageEntity = entity.LanguageRelationByDescription.TSystemLanguageContent.FirstOrDefault(i => i.LanguageType == LanguageType.ZhCn);
-                zhDescLanguageEntity.DisplayContent = model.NameZh;
-                zhDescLanguageEntity.LastUpdatedBy = userName;
-                zhDescLanguageEntity.LastUpdatedTime = dtNow;
-
-                var enDescLanguageEntity = entity.LanguageRelationByDescription.TSystemLanguageContent.FirstOrDefault(i => i.LanguageType == LanguageType.En);
-                enDescLanguageEntity.DisplayContent = model.NameEn;
-                enDescLanguageEntity.LastUpdatedBy = userName;
-                enDescLanguageEntity.LastUpdatedTime = dtNow;
+                var descLanguageDict = new Dictionary<string, string>();
+                descLanguageDict.Add(LanguageType.ZhCn, model.DescriptionZh);
+                descLanguageDict.Add(LanguageType.En, model.DescriptionEn);
+                entity.LanguageRelationByDescription = EditLanguageContent(entity.LanguageRelationByDescription, descLanguageDict);
 
                 peacockDbContext.Update(entity);
             }

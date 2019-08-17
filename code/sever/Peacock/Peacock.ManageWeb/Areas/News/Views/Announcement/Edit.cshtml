@@ -67,13 +67,27 @@
 
 @section Scripts {
 
-    <script src="~/lib/ckeditor/ckeditor.js"></script>
-    <script src="~/lib/ckeditor/config.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/froala-editor@3.0.0-beta.1/css/froala_editor.pkgd.min.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/froala-editor@3.0.0-beta.1//js/froala_editor.pkgd.min.js"></script>
 
     <script type="text/javascript">
         $(function () {
-            CKEDITOR.replace('ContentZh');
-            CKEDITOR.replace('ContentEn');
+            new FroalaEditor('#ContentZh', {
+                // Set the image upload URL.
+                imageUploadURL: '/Base/UploadImg',
+
+                imageUploadParams: {
+                    id: 'ContentZh'
+                }
+            });
+            new FroalaEditor('#ContentEn', {
+                // Set the image upload URL.
+                imageUploadURL: '/Base/UploadImg',
+
+                imageUploadParams: {
+                    id: 'ContentEn'
+                }
+            });
         });
     </script>
 }

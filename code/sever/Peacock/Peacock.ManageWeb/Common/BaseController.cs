@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -12,6 +13,7 @@ using Peacock.ViewModel.Manage;
 
 namespace Peacock.ManageWeb
 {
+    [Authorize]
     public class BaseController : Controller
     {
         protected readonly PeacockDbContext peacockDbContext;
@@ -36,6 +38,41 @@ namespace Peacock.ManageWeb
             return entity;
         }
 
+        protected T_System_LanguageRelation EditLanguageContent(T_System_LanguageRelation relation, Dictionary<string, string> languageContentDict)
+        {
+            DateTime dtNow = DateTime.Now;
+            if (relation == null)
+            {
+                relation = new T_System_LanguageRelation()
+                {
+                    CreatedBy = userName,
+                    CreatedTime = dtNow,
+                    LastUpdatedBy = userName,
+                    LastUpdatedDate = dtNow,
+                };
+            }
+            foreach(var item in languageContentDict)
+            {
+                var content = relation.TSystemLanguageContent.FirstOrDefault(i => i.LanguageType == item.Key);
+                if (content == null)
+                {
+                    relation.TSystemLanguageContent.Add(CreateLanguageContentEntity(item.Value ?? string.Empty, item.Key));
+                }
+                else
+                {
+                    content.DisplayContent = item.Value ?? string.Empty;
+                    content.LastUpdatedBy = userName;
+                    content.LastUpdatedTime = dtNow;
+                }
+            }
+            return relation;
+        }
+
+        protected string GetLanguageContent(T_System_LanguageRelation r, string languageType)
+        {
+            return r?.TSystemLanguageContent?.FirstOrDefault(i => i.LanguageType == languageType)?.DisplayContent ?? string.Empty;
+        }
+
         protected OperationResult Success(string message = "", object content = null)
         {
             OperationResult operationResult = new OperationResult("0", true, message, content);
@@ -48,19 +85,23 @@ namespace Peacock.ManageWeb
             return operationResult;
         }
 
-        public ActionResult GetUploadView()
+        public ActionResult GetUploadView(string path)
         {
-            return View("_Upload");
+            ViewData["uploadPath"] = path;
+            return PartialView("_Upload", "test");
         }
 
         [HttpPost]
         public ActionResult UploadImg([FromServices]IHostingEnvironment env)
         {
             var files = HttpContext.Request.Form.Files.GetFiles("file");
-            // full path to file in temp location
             var fileBasePath = Path.Combine(env.WebRootPath, "upload", "img");
             List<string> fileList = new List<string>();
             string t = string.Empty;
+
+            string uploadPath = HttpContext.Request.Form["uploadPath"];
+            if (!string.IsNullOrEmpty(uploadPath)) fileBasePath = Path.Combine(fileBasePath, uploadPath);
+            if (!Directory.Exists(fileBasePath)) Directory.CreateDirectory(fileBasePath);
 
             foreach (var formFile in files)
             {

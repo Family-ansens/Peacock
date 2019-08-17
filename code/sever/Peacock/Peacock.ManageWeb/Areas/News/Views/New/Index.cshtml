@@ -39,7 +39,7 @@
                 cache: false,                       //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
                 pagination: true,                   //是否显示分页（*）
                 sortable: true,                     //是否启用排序  列中也有此变量
-                sortName: 'Id',                     //定义要排序的列   没定义默认都不排列，同sortOrder结合使用，sortOrder没写的话列默认递增（asc）
+                sortName: 'ID',                     //定义要排序的列   没定义默认都不排列，同sortOrder结合使用，sortOrder没写的话列默认递增（asc）
                 sortOrder: "asc",                   //定义列排序顺序，只能是'asc'或'desc'。
                 sortStable: false,                   //如果你把此属性设为了true）我们将为此行添加'_position'属性 （别看错了，是sortStable，sortable在下面）设为true，则和sort部分一样，区别是：在排序过程中，如果存在相等的元素，则原来的顺序不会改变
                 queryParams: self.queryParams,//传递参数（*）
@@ -55,14 +55,14 @@
                 minimumCountColumns: 2,             //最少允许的列数
                 clickToSelect: true,                //是否启用点击选中行
                 height: 500,                        //行高，如果没有设置height属性，表格自动根据记录条数觉得表格高度
-                uniqueId: "Id",                     //每一行的唯一标识，一般为主键列
+                uniqueId: "ID",                     //每一行的唯一标识，一般为主键列
                 showToggle: true,                    //是否显示详细视图和列表视图的切换按钮
                 cardView: false,                    //是否显示详细视图
                 detailView: false,                   //是否显示父子表
                 columns: [{
                     checkbox: true
                 }, {
-                    field: 'Titel',
+                    field: 'Title',
                     title: '标题',
                     sortable: true
                 }, {
@@ -79,7 +79,7 @@
                     title: '最后更新时间',
                     sortable: true
                 }, {
-                    field: 'Id',
+                    field: 'ID',
                     title: '操作',
                     formatter: self.actionFormatter
                 }],
@@ -147,7 +147,7 @@
                 } else if ($action == 'edit') {
                     window.location.href = '/News/New/Edit?id=' + $recordId;
                 } else if ($action == 'switchPublish') {
-                    window.location.href = '/News/New/SwitchPublish?id=' + $recordId;
+                    self.switchPublish($recordId);
                 }
             });
         }
@@ -176,6 +176,35 @@
                         window.location.reload();
                     } else {
                         alert("删除失败, " + r.Message);
+                        console.log(r);
+                    }
+                },
+                error: function (err) {
+                    console.log(err);
+                },
+                complete: function () {
+
+                }
+            });
+        }
+
+        pageHelper.prototype.switchPublish = function (id) {
+            let self = this;
+
+            $.ajax({
+                url: '/News/New/SwitchPublish',
+                data: { id: id },
+                method: 'POST',
+                dataType: 'JSON',
+                beforeSend: function () {
+
+                },
+                success: function (r) {
+                    if (r.Success) {
+                        alert(r.Message);
+                        window.location.reload();
+                    } else {
+                        alert("操作失败, " + r.Message);
                         console.log(r);
                     }
                 },

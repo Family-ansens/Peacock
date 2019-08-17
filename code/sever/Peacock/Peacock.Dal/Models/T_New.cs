@@ -20,7 +20,7 @@ namespace Peacock.Dal
 
         public bool IsPublish { get; set; }
 
-        public DateTime PublishTime { get; set; }
+        public DateTime? PublishTime { get; set; }
 
         public string CreatedBy { get; set; }
 

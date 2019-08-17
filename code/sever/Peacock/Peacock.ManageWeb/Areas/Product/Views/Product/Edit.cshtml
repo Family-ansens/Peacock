@@ -84,20 +84,27 @@
 
 @section Scripts {
 
-    <script src="~/lib/ckeditor/ckeditor.js"></script>
-    <script src="~/lib/ckeditor/config.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/froala-editor@3.0.0-beta.1/css/froala_editor.pkgd.min.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/froala-editor@3.0.0-beta.1//js/froala_editor.pkgd.min.js"></script>
 
     <script type="text/javascript">
         $(function () {
-            debugger;
-            CKEDITOR.editorConfig = function (config) {
-                debugger;
-                config.image_previewText = ' '; //预览区域显示内容
-                config.filebrowserImageUploadUrl = '/Base/UploadImg?'; //要上传的action或servlet
-                removePlugins: 'elementspath,resize';
-            };
-            CKEDITOR.replace('DescriptionZh');
-            CKEDITOR.replace('DescriptionEn');
+            new FroalaEditor('#DescriptionZh', {
+                // Set the image upload URL.
+                imageUploadURL: '/Base/UploadImg',
+
+                imageUploadParams: {
+                    id: 'DescriptionZh'
+                }
+            });
+            new FroalaEditor('#DescriptionEn', {
+                // Set the image upload URL.
+                imageUploadURL: '/Base/UploadImg',
+
+                imageUploadParams: {
+                    id: 'DescriptionEn'
+                }
+            });
         });
     </script>
 }

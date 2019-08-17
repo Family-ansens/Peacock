@@ -1,13 +1,14 @@
 ﻿<form method="post" enctype="multipart/form-data" action="/Base/UploadImg">
 	<div class="form-group">
 		<div class="col-md-10">
-			<p>Upload one or more files using this form:</p>
+			<p>请选择图片:</p>
 			<input type="file" name="files" multiple>
+            <input type="hidden" name="uploadPath" value="@ViewData["uploadPath"]" /> 
 		</div>
 	</div>
 	<div class="form-group">
 		<div class="col-md-10">
-			<input type="submit" value="Upload">
+			<input class="btn btn-default" type="submit" value="上传">
 		</div>
 	</div>
 </form>

@@ -75,6 +75,7 @@ namespace Peacock.ManageWeb.Areas.Product.Controllers
                 entity.CreatedBy = userName;
                 entity.LastUpdatedTime = dtNow;
                 entity.LastUpdatedBy = userName;
+                entity.IsDeleted = false;
                 //设置多语言
                 T_System_LanguageContent nameZhContent = CreateLanguageContentEntity(model.NameZh, LanguageType.ZhCn);
                 T_System_LanguageContent nameEnContent = CreateLanguageContentEntity(model.NameEn, LanguageType.En);
