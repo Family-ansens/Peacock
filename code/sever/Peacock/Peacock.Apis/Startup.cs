@@ -6,11 +6,15 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using Peacock.Apis.Swagger;
+using Peacock.Dal;
 using Swashbuckle.AspNetCore.Swagger;
 
 namespace Peacock.Apis
@@ -20,6 +24,19 @@ namespace Peacock.Apis
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+
+            var setting = new JsonSerializerSettings();
+            JsonConvert.DefaultSettings = () =>
+            {
+                //空值处理
+                setting.NullValueHandling = NullValueHandling.Ignore;
+                //首字母小写
+                //setting.ContractResolver = new CamelCasePropertyNamesContractResolver();
+                setting.ContractResolver = new DefaultContractResolver();
+                setting.DateFormatString = "yyyy-MM-dd HH:mm:ss";
+
+                return setting;
+            };
         }
 
         public IConfiguration Configuration { get; }
@@ -27,6 +44,14 @@ namespace Peacock.Apis
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            // 注入数据库DbContext
+            string sqlConnectionStr = Configuration.GetConnectionString("PeacockSqlSeverProvider");
+            //string sqlConnectionStr = Configuration.GetConnectionString("PeacockMysqlProvider");
+            services.AddDbContext<PeacockDbContext>(options =>
+                options.UseSqlServer(sqlConnectionStr)
+            //options.UseMySQL(sqlConnectionStr)
+            );
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new Info { Title = "Peacock.Apis", Version = "v1.0.0" });
@@ -52,6 +77,12 @@ namespace Peacock.Apis
             });
 
             app.UseMvc();
+            //app.UseMvc(routes =>
+            //{
+            //    routes.MapRoute(
+            //        name: "language",
+            //        template: "{language=Chinese}/{controller}/{action}");
+            //});
         }
     }
 }
