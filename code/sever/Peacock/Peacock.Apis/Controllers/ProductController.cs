@@ -38,7 +38,7 @@ namespace Peacock.Apis.Controllers
                                 {
                                     ID = c.Id,
                                     Code = c.Code,
-                                    Name = GetLanguageContent(c.LanguageRelationByName, search.language),
+                                    Name = c.LanguageRelationByName.TSystemLanguageContent.FirstOrDefault(i => i.LanguageType == search.language).DisplayContent,
                                 }).ToList();
             var result = new PageResponseDto<ProductGroupResDto>()
             {

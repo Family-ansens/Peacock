@@ -27,14 +27,14 @@ namespace Peacock.Apis.Controllers
         {
             var query = dbContext.T_New.Where(i => i.IsPublish && !i.IsDeleted);
             int count = query.Count();
-            var list = query.AsTracking()//.Include(i => i.LanguageRelationByTitle).ThenInclude(i => i.TSystemLanguageContent)
+            var list = query.Include(i => i.LanguageRelationByTitle).ThenInclude(i => i.TSystemLanguageContent)
                             .OrderByDescending(o => o.PublishTime)
                             .Skip(search.Skip)
                             .Take(search.size)
                             .Select(c => new NewResDto
                             {
                                 ID = c.ID,
-                                Title = GetLanguageContent(c.LanguageRelationByTitle, search.language),
+                                Title = c.LanguageRelationByTitle.TSystemLanguageContent.FirstOrDefault(i => i.LanguageType == search.language).DisplayContent,
                                 PublishTime = c.PublishTime,
                             }).ToList();
             var result = new PageResponseDto<NewResDto>()
