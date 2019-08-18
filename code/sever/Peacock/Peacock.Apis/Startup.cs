@@ -45,11 +45,13 @@ namespace Peacock.Apis
         public void ConfigureServices(IServiceCollection services)
         {
             // 注入数据库DbContext
-            string sqlConnectionStr = Configuration.GetConnectionString("PeacockSqlSeverProvider");
             //string sqlConnectionStr = Configuration.GetConnectionString("PeacockMysqlProvider");
+            //services.AddDbContext<PeacockDbContext>(options =>
+            //    options.UseMySQL(sqlConnectionStr)
+            //);
+            string sqlConnectionStr = Configuration.GetConnectionString("PeacockSqlSeverProvider");
             services.AddDbContext<PeacockDbContext>(options =>
                 options.UseSqlServer(sqlConnectionStr)
-            //options.UseMySQL(sqlConnectionStr)
             );
 
             services.AddSwaggerGen(c =>

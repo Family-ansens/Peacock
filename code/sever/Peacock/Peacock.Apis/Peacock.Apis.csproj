@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.2</TargetFramework>
@@ -21,6 +21,10 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Peacock.Dal\Peacock.Dal.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Filter\" />
   </ItemGroup>
 
 </Project>
