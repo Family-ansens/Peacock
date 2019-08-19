@@ -20,5 +20,10 @@ namespace Peacock.Apis.Controllers
         {
             return r?.TSystemLanguageContent?.FirstOrDefault(i => i.LanguageType == languageType)?.DisplayContent ?? string.Empty;
         }
+
+        protected string GetLanguage()
+        {
+            return string.Empty;
+        }
     }
 }

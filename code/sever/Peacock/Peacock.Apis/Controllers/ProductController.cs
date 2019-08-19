@@ -25,7 +25,7 @@ namespace Peacock.Apis.Controllers
         /// <param name="search"></param>
         /// <returns></returns>
         [HttpPost("product-groups")]
-        public PageResponseDto<ProductGroupResDto> GetProductGroups(BasePageSearch search)
+        public PageResponseDto<ProductGroupResDto> GetProductGroups([FromBody]BasePageSearch search)
         {
             var query = dbContext.T_Pro_ProductGroup
                                 .Include(i => i.LanguageRelationByName).ThenInclude(i => i.TSystemLanguageContent)
@@ -45,6 +45,73 @@ namespace Peacock.Apis.Controllers
                 success = true,
                 count = count,
                 rows = list,
+            };
+            return result;
+        }
+
+        /// <summary>
+        /// 获取产品列表
+        /// </summary>
+        /// <param name="search"></param>
+        /// <returns></returns>
+        [HttpPost("products")]
+        public PageResponseDto<ProductResDto> GetProducts([FromBody]ProductPageSearch search)
+        {
+            string languageType = GetLanguage();
+            var query = dbContext.T_Pro_Product
+                                 .Include(i => i.LanguageRelationByName).ThenInclude(i => i.TSystemLanguageContent)
+                                 .Include(i => i.LanguageRelationByDescription).ThenInclude(i => i.TSystemLanguageContent)
+                                 .Where(i => !i.IsDeleted);
+            if (!string.IsNullOrEmpty(search.Query))
+            {
+                query = query.Where(i => i.LanguageRelationByName.TSystemLanguageContent
+                                            .Any(a => a.DisplayContent.Contains(search.Query))
+                                         || i.LanguageRelationByDescription.TSystemLanguageContent
+                                               .Any(a=>a.DisplayContent.Contains(search.Query)));
+            }
+            int count = query.Count();
+            var list = query.Skip(search.Skip).Take(search.size).OrderBy(o => o.OrderId)
+                .Select(c => new ProductResDto
+                {
+                    Id = c.ID,
+                    Name = c.LanguageRelationByName.TSystemLanguageContent.FirstOrDefault(i=>i.LanguageType == languageType).DisplayContent,
+                    ImgUrl = c.ImgPath,
+                }).ToList();
+            var result = new PageResponseDto<ProductResDto>()
+            {
+                count = count,
+                rows = list,
+                success = true,
+            };
+            return result;
+        }
+
+        /// <summary>
+        /// 获取商品详情
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpGet("get/{id}")]
+        public ProductDetailResDto GetProduct(int id)
+        {
+            string languageType = GetLanguage();
+            var query = dbContext.T_Pro_Product
+                                 .Include(i => i.LanguageRelationByName).ThenInclude(i => i.TSystemLanguageContent)
+                                 .Include(i => i.LanguageRelationByDescription).ThenInclude(i => i.TSystemLanguageContent)
+                                 .Include(i => i.ProductImgs)
+                                 .Where(i => !i.IsDeleted && i.ID == id);
+            var entity = query.FirstOrDefault();
+            if (entity == null)
+            {
+                return new ProductDetailResDto();
+            }
+            ProductDetailResDto result = new ProductDetailResDto()
+            {
+                Id = entity.ID,
+                Name = entity.LanguageRelationByName.TSystemLanguageContent.FirstOrDefault(i => i.LanguageType == languageType).DisplayContent,
+                ImgUrl = entity.ImgPath,
+                Desc = entity.LanguageRelationByDescription.TSystemLanguageContent.FirstOrDefault(i => i.LanguageType == languageType).DisplayContent,
+                ImgList = entity.ProductImgs.Select(c => c.ImgUrl).ToList(),
             };
             return result;
         }

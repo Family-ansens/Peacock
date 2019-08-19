@@ -223,6 +223,11 @@ namespace Peacock.Dal
                     .HasMaxLength(50);
 
                 entity.Property(e => e.LastUpdatedTime).HasColumnType("datetime");
+
+                entity.HasOne(d => d.Product)
+                    .WithMany(p => p.ProductImgs)
+                    .HasForeignKey(d => d.ProductId)
+                    .HasConstraintName("FK_T_Pro_ProductImg_T_Pro_Product");
             });
 
             modelBuilder.Entity<T_System_LanguageContent>(entity =>
