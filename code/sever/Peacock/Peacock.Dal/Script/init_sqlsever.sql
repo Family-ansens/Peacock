@@ -10,8 +10,8 @@ values(0,'BUsinessManagement','业务管理','',1,null,0,-1,GETDATE(),-1,GETDATE
 
 
 CREATE TABLE [dbo].[T_Pro_ProductImg](
-	[ID] [bigint] IDENTITY(1,1) NOT NULL,
-	[ProductId] [bigint] NOT NULL,
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[ProductId] [int] NOT NULL,
 	[OrderId] [int] NULL,
 	[ImgUrl] [nvarchar](500) NOT NULL,
 	[CreatedBy] [nvarchar](50) NOT NULL,

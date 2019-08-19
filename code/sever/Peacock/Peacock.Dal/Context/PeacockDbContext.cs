@@ -19,6 +19,7 @@ namespace Peacock.Dal
 
         public virtual DbSet<T_Pro_Product> T_Pro_Product { get; set; }
         public virtual DbSet<T_Pro_ProductGroup> T_Pro_ProductGroup { get; set; }
+        public virtual DbSet<T_Pro_ProductImg> T_Pro_ProductImg { get; set; }
         public virtual DbSet<T_System_LanguageContent> T_System_LanguageContent { get; set; }
         public virtual DbSet<T_System_LanguageRelation> T_System_LanguageRelation { get; set; }
         public virtual DbSet<T_System_Menu> T_System_Menu { get; set; }
@@ -203,6 +204,25 @@ namespace Peacock.Dal
                     .WithMany(p => p.T_Pro_ProductGroups)
                     .HasForeignKey(d => d.LanguageId)
                     .HasConstraintName("FK_T_Pro_ProductGroup_T_System_LanguageRelation");
+            });
+
+            modelBuilder.Entity<T_Pro_ProductImg>(entity =>
+            {
+                entity.ToTable("T_Pro_ProductImg");
+
+                entity.Property(e => e.ID).HasColumnName("ID");
+
+                entity.Property(e => e.CreatedTime).HasColumnType("datetime");
+
+                entity.Property(e => e.CreatedBy)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.LastUpdatedBy)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.LastUpdatedTime).HasColumnType("datetime");
             });
 
             modelBuilder.Entity<T_System_LanguageContent>(entity =>

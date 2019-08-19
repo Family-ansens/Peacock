@@ -88,7 +88,7 @@ namespace Peacock.ManageWeb
         public ActionResult GetUploadView(string path)
         {
             ViewData["uploadPath"] = path;
-            return PartialView("_Upload", "test");
+            return PartialView("_Upload");
         }
 
         [HttpPost]

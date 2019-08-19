@@ -6,6 +6,11 @@ namespace Peacock.Dal
 {
     public partial class T_Pro_Product
     {
+        public T_Pro_Product()
+        {
+            ProductImgs = new HashSet<T_Pro_ProductImg>();
+        }
+
         public int ID { get; set; }
 
         public int GroupId { get; set; }
@@ -37,5 +42,7 @@ namespace Peacock.Dal
         public virtual T_System_LanguageRelation LanguageRelationByName { get; set; }
 
         public virtual T_System_LanguageRelation LanguageRelationByDescription { get; set; }
+
+        private HashSet<T_Pro_ProductImg> ProductImgs { get; set; }
     }
 }

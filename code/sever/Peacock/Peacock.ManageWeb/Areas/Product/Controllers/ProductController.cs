@@ -182,5 +182,40 @@ namespace Peacock.ManageWeb.Areas.Product.Controllers
 
             return Json(Fail("删除失败"));
         }
+
+
+        public ActionResult GetImgList(int productId)
+        {
+            var list = peacockDbContext.T_Pro_ProductImg.Where(i => i.ProductId == productId)
+                .OrderBy(o => o.OrderId)
+                .Select(c => new ProductImgItem
+                {
+                    Id = c.ID,
+                    ProductId = c.ProductId,
+                    OrderId = c.OrderId,
+                    ImgUrl = c.ImgUrl,
+                }).ToList();
+
+            ViewData["ProductId"] = productId;
+
+            return View("ImgList", list);
+        }
+
+        [HttpPost]
+        public JsonResult SaveImg(int productId, string filePath)
+        {
+            var entity = new T_Pro_ProductImg()
+            {
+                ProductId = productId,
+                ImgUrl = filePath,
+                CreatedBy = userName,
+                CreatedTime = DateTime.Now,
+                LastUpdatedBy = userName,
+                LastUpdatedTime = DateTime.Now,
+            };
+            peacockDbContext.T_Pro_ProductImg.Add(entity);
+            peacockDbContext.SaveChanges();
+            return Json(Success());
+        }
     }
 }
