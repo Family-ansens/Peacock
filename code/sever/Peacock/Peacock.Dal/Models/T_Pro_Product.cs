@@ -9,6 +9,7 @@ namespace Peacock.Dal
         public T_Pro_Product()
         {
             ProductImgs = new HashSet<T_Pro_ProductImg>();
+            HotSaleProducts = new HashSet<T_Pro_HotSaleProduct>();
         }
 
         public int ID { get; set; }
@@ -44,5 +45,7 @@ namespace Peacock.Dal
         public virtual T_System_LanguageRelation LanguageRelationByDescription { get; set; }
 
         public HashSet<T_Pro_ProductImg> ProductImgs { get; set; }
+
+        public HashSet<T_Pro_HotSaleProduct> HotSaleProducts { get; set; }
     }
 }

@@ -25,6 +25,11 @@
                                     @Html.LabelFor(m => m.OrderId)
                                     @Html.TextBoxFor(m => m.OrderId, new { @class = "form-control" })
                                 </div>
+                                <div class="form-group">
+                                    @Html.HiddenFor(m => m.ImgPath)
+                                    @Html.LabelFor(m => m.ImgPath)
+                                    <img id="ImgArea" src='@Model.ImgPath' class="form-control" style="height:200px;width:200px;" />
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -82,6 +87,8 @@
     </div>
 </section>
 
+@Html.Partial("_Modal")
+
 @section Scripts {
 
     <link href="https://cdn.jsdelivr.net/npm/froala-editor@3.0.0-beta.1/css/froala_editor.pkgd.min.css" rel="stylesheet" type="text/css" />
@@ -105,7 +112,39 @@
                     id: 'DescriptionEn'
                 }
             });
+
+            // 上传图片
+            let $modal = $('#customModal');
+
+            $('#ImgArea').on('click', function () {
+                $modal.modal('show');
+                //$('#customModal').modal('hide');
+                $modal.find('#modalLabel').text('上传图片');
+                //$modal.find('#modal-body');
+                $.ajax({
+                    url: '/Base/GetUploadView',
+                    method: 'GET',
+                    dataType: 'HTML',
+                    success: function (r) {
+                        $modal.find('.modal-body').html(r);
+                    }
+                })
+            });
+
+            $modal.find('.j-btn-save').on('click', function () {
+
+                $modal.modal('hide');
+
+            });
+        
         });
+
+        function uploadCallback(d) {
+            alert('上传成功');
+            debugger;
+            $('#ImgArea').attr('src', d);
+            $('#ImgPath').val(d);
+        }
     </script>
 }
 

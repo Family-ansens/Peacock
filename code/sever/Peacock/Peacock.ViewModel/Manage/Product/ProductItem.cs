@@ -22,8 +22,12 @@ namespace Peacock.ViewModel.Manage
         [Required(ErrorMessage = "{0}为必填项")]
         public int OrderId { get; set; }
 
+        [Display(Name = "商品详情(中文)")]
+        [Required(ErrorMessage = "{0}为必填项")]
         public string DescriptionZh { get; set; }
 
+        [Display(Name = "商品详情(英文)")]
+        [Required(ErrorMessage = "{0}为必填项")]
         public string DescriptionEn { get; set; }
 
         [Display(Name = "商品分组")]
@@ -31,5 +35,9 @@ namespace Peacock.ViewModel.Manage
         public string GroupId { get; set; }
 
         public IEnumerable<SelectListItem> GroupSelectList { get; set; }
+
+        [Display(Name = "商品主图")]
+        [Required(ErrorMessage = "{0}为必须的")]
+        public string ImgPath { get; set; }
     }
 }

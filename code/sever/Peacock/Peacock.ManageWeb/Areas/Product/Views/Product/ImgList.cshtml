@@ -35,7 +35,7 @@
                                                 <tr role="row" class="odd">
                                                     <td class="sorting_1"><img src="@item.ImgUrl" /></td>
                                                     <td>@item.OrderId</td>
-                                                    <td><input type="button" class="btn btn-default" value="删除" /></td>
+                                                    <td><button class="btn btn-default" onclick="deleteProductImg(@item.Id)">删除</button></td>
                                                 </tr>
                                             }
                                         </tbody>
@@ -65,6 +65,8 @@
 
     @Html.Partial("_Modal")
 
+    @Html.Partial("_Confirm")
+
 </section>
 
 
@@ -89,15 +91,19 @@
             });
 
             $modal.find('.j-btn-save').on('click', function () {
-                debugger;
-                $modal.modal('hide');
 
                 $.ajax({
-                    url: '/Product/Product',
+                    url: '/Product/Product/SaveImg',
                     method: 'POST',
                     data: { productId: productImg.productId, filePath: productImg.filePath },
                     success: function (r) {
-
+                        if (r.Success) {
+                            $modal.modal('hide');
+                            alert('保存成功');
+                            window.location.reload();
+                        } else {
+                            console.log(r);
+                        }
                     }
                 });
 
@@ -107,8 +113,39 @@
         let productImg = {};
 
         function uploadCallback(d) {
+            alert('上传成功');
             productImg.productId = @ViewData["ProductId"];
             productImg.filePath = d;
+        }
+
+        function deleteProductImg(id) {
+            peacockConfirm('确定要删除该条记录吗？', function () {
+
+                $.ajax({
+                    url: '/Product/Product/DeleteProductImg',
+                    data: { id: id },
+                    method: 'POST',
+                    dataType: 'JSON',
+                    beforeSend: function () {
+
+                    },
+                    success: function (r) {
+                        if (r.Success) {
+                            window.location.reload();
+                        } else {
+                            alert("删除失败, " + r.Message);
+                            console.log(r);
+                        }
+                    },
+                    error: function (err) {
+                        console.log(err);
+                    },
+                    complete: function () {
+
+                    }
+                })
+
+            });
         }
     </script>
 }

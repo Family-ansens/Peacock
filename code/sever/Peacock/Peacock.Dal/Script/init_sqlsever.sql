@@ -63,4 +63,17 @@ CREATE TABLE [dbo].[T_Announcement](
 ) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
 GO
 
-
+CREATE TABLE [dbo].[T_Pro_HotSaleProduct](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[ProductId] [int] NOT NULL,
+	[OrderId] [int] NOT NULL,
+	[CreatedBy] [nvarchar](50) NOT NULL,
+	[CreatedTime] [datetime] NOT NULL,
+	[LastUpdatedBy] [nvarchar](50) NOT NULL,
+	[LastUpdatedTime] [datetime] NOT NULL,
+ CONSTRAINT [PK_T_Pro_HotSaleProduct] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO

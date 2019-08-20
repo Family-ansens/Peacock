@@ -1,0 +1,50 @@
+﻿@model Peacock.ViewModel.Manage.HotSaleProductItem
+
+<section class="content-header">
+    <h1>
+        @(Model.Id == 0 ? "新增" : "编辑")热门商品
+    </h1>
+</section>
+
+<section class="content">
+    <div class="row">
+        <div class="box box-primary">
+            <form role="form" method="post" action="@Url.Action("Save", "HotSaleProduct", new { area = "Product" })">
+                <div class="box-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="col-md-6">
+                                @Html.HiddenFor(m => m.Id)
+
+                                <div class="form-group">
+                                    @Html.LabelFor(m => m.ProductId)
+                                    @Html.DropDownListFor(m => m.ProductId, Model.ProductSelectList, new { @class = "form-control" })
+                                </div>
+                                <div class="form-group">
+                                    @Html.LabelFor(m => m.OrderId)
+                                    @Html.TextBoxFor(m => m.OrderId, new { @class = "form-control" })
+                                </div>
+                                <div class="form-group">
+                                    @Html.LabelFor(m => m.ProductName)
+                                    @Html.TextBoxFor(m => m.ProductName, new { @class = "form-control" })
+                                </div>
+                                <div class="form-group">
+                                    @Html.LabelFor(m => m.ProductImgPath)
+                                    <img src='@Model.ProductImgPath' style="height:200px;width:200px;" class = "form-control" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row text-danger">
+                        @Html.ValidationSummary()
+                    </div>
+                </div>
+
+                <div class="box-footer">
+                    <button type="submit" class="btn btn-primary">保存</button>
+                    <a href="@Url.Action("Index", "HotSaleProduct", new { area = "Product" })" class="btn btn-default">返回</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>

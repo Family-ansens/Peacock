@@ -65,7 +65,7 @@ namespace Peacock.ManageWeb.Areas.Product.Controllers
                 vm.NameEn = entity.LanguageRelationByName.TSystemLanguageContent.FirstOrDefault(i => i.LanguageType == LanguageType.En)?.DisplayContent;
                 vm.DescriptionZh = entity.LanguageRelationByDescription?.TSystemLanguageContent?.FirstOrDefault(i => i.LanguageType == LanguageType.ZhCn)?.DisplayContent ?? string.Empty;
                 vm.DescriptionEn = entity.LanguageRelationByDescription?.TSystemLanguageContent?.FirstOrDefault(i => i.LanguageType == LanguageType.En)?.DisplayContent ?? string.Empty;
-
+                vm.ImgPath = entity.ImgPath;
                 vm.OrderId = entity.OrderId;
                 vm.GroupId = entity.GroupId.ToString();
             }
@@ -93,6 +93,7 @@ namespace Peacock.ManageWeb.Areas.Product.Controllers
 
             if (isCreate)
             {
+                entity.ImgPath = model.ImgPath;
                 entity.GroupId = int.Parse(model.GroupId);
                 entity.Name = model.NameZh;
                 entity.Description = model.DescriptionZh;
@@ -126,6 +127,7 @@ namespace Peacock.ManageWeb.Areas.Product.Controllers
                     return View("Edit", model);
                 }
 
+                entity.ImgPath = model.ImgPath;
                 entity.GroupId = int.Parse(model.GroupId);
                 entity.Name = model.NameZh;
                 entity.Description = model.DescriptionZh;
@@ -216,6 +218,16 @@ namespace Peacock.ManageWeb.Areas.Product.Controllers
             peacockDbContext.T_Pro_ProductImg.Add(entity);
             peacockDbContext.SaveChanges();
             return Json(Success());
+        }
+
+        [HttpPost]
+        public JsonResult DeleteProductImg(int id)
+        {
+            var entity = peacockDbContext.T_Pro_ProductImg.FirstOrDefault(i => i.ID == id);
+            if (entity == null) return Json(Fail("不存在记录"));
+            peacockDbContext.T_Pro_ProductImg.Remove(entity);
+            peacockDbContext.SaveChanges();
+            return Json(Success("删除成功"));
         }
     }
 }
