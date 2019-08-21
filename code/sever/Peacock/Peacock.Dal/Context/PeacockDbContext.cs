@@ -6,7 +6,7 @@ namespace Peacock.Dal
 {
     public partial class PeacockDbContext : DbContext
     {
-        private const bool IS_MYSQL = false;
+        private const bool IS_MYSQL = true;
 
         public PeacockDbContext()
         {

@@ -42,7 +42,7 @@ namespace Peacock.ManageWeb.Areas.Product.Controllers
                     OrderId = c.OrderId,
                     LastUpdatedTime = c.LastUpdatedTime,
                 }).ToList();
-            return Json(new { total = count, row = list });
+            return Json(new { total = count, rows = list });
         }
 
         public ActionResult Edit(int id)
@@ -132,6 +132,7 @@ namespace Peacock.ManageWeb.Areas.Product.Controllers
             else
             {
                 peacockDbContext.T_Pro_HotSaleProduct.Remove(entity);
+                peacockDbContext.SaveChanges();
             }
 
             return Json(Success("删除成功"));

@@ -115,5 +115,38 @@ namespace Peacock.Apis.Controllers
             };
             return result;
         }
+
+        /// <summary>
+        /// 获取热销商品列表
+        /// </summary>
+        /// <param name="search"></param>
+        /// <returns></returns>
+        [HttpPost("hot-sale-products")]
+        public PageResponseDto<HotSaleProductResDto> GetHotSaleProducts([FromBody]ProductPageSearch search)
+        {
+            string languageType = GetLanguage();
+            var query = dbContext.T_Pro_HotSaleProduct
+                                 .Include(i=>i.Product)
+                                 .ThenInclude(i => i.LanguageRelationByName).ThenInclude(i => i.TSystemLanguageContent)
+                                 .Include(i => i.Product)
+                                 .ThenInclude(i => i.LanguageRelationByDescription).ThenInclude(i => i.TSystemLanguageContent)
+                                 .OrderBy(i => i.OrderId);
+            int count = query.Count();
+            var list = query.Skip(search.Skip).Take(search.size).OrderBy(o => o.OrderId)
+                .Select(c => new HotSaleProductResDto
+                {
+                    ProductId = c.ID,
+                    ProductName = c.Product.LanguageRelationByName.TSystemLanguageContent.FirstOrDefault(i => i.LanguageType == languageType).DisplayContent,
+                    ImgUrl = c.Product.ImgPath,
+                    Desc = c.Product.LanguageRelationByDescription.TSystemLanguageContent.FirstOrDefault(i => i.LanguageType == languageType).DisplayContent,
+                }).ToList();
+            var result = new PageResponseDto<HotSaleProductResDto>()
+            {
+                count = count,
+                rows = list,
+                success = true,
+            };
+            return result;
+        }
     }
 }

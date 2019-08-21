@@ -44,15 +44,15 @@ namespace Peacock.Apis
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            // 注入数据库DbContext
-            //string sqlConnectionStr = Configuration.GetConnectionString("PeacockMysqlProvider");
-            //services.AddDbContext<PeacockDbContext>(options =>
-            //    options.UseMySQL(sqlConnectionStr)
-            //);
-            string sqlConnectionStr = Configuration.GetConnectionString("PeacockSqlSeverProvider");
+            //注入数据库DbContext
+            string sqlConnectionStr = Configuration.GetConnectionString("PeacockMysqlProvider");
             services.AddDbContext<PeacockDbContext>(options =>
-                options.UseSqlServer(sqlConnectionStr)
+                options.UseMySQL(sqlConnectionStr)
             );
+            //string sqlConnectionStr = Configuration.GetConnectionString("PeacockSqlSeverProvider");
+            //services.AddDbContext<PeacockDbContext>(options =>
+            //    options.UseSqlServer(sqlConnectionStr)
+            //);
 
             services.AddSwaggerGen(c =>
             {
