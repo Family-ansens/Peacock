@@ -16,6 +16,9 @@ namespace Peacock.Dal
             NewsWithContent = new HashSet<T_New>();
             AnnouncementsWithTitle = new HashSet<T_Announcement>();
             AnnouncementsWithContent = new HashSet<T_Announcement>();
+            ExampleGroups = new HashSet<T_Pro_ExampleGroup>();
+            ExamplesWithName = new HashSet<T_Pro_Example>();
+            ExamplesWithDescription = new HashSet<T_Pro_Example>();
         }
 
         public int Id { get; set; }
@@ -33,5 +36,8 @@ namespace Peacock.Dal
         public virtual ICollection<T_New> NewsWithContent { get; set; }
         public virtual ICollection<T_Announcement> AnnouncementsWithTitle { get; set; }
         public virtual ICollection<T_Announcement> AnnouncementsWithContent { get; set; }
+        public virtual ICollection<T_Pro_ExampleGroup> ExampleGroups { get; set; }
+        public virtual ICollection<T_Pro_Example> ExamplesWithName { get; set; }
+        public virtual ICollection<T_Pro_Example> ExamplesWithDescription { get; set; }
     }
 }

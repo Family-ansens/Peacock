@@ -26,6 +26,10 @@ namespace Peacock.Dal
         public virtual DbSet<T_System_Menu> T_System_Menu { get; set; }
         public virtual DbSet<T_New> T_New { get; set; }
         public virtual DbSet<T_Announcement> T_Announcement { get; set; }
+        public virtual DbSet<T_Pro_Example> T_Pro_Example { get; set; }
+        public virtual DbSet<T_Pro_ExampleGroup> T_Pro_ExampleGroup { get; set; }
+        public virtual DbSet<T_Pro_ExampleImg> T_Pro_ExampleImg { get; set; }
+
 
 //        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 //        {
@@ -344,7 +348,113 @@ namespace Peacock.Dal
                     .WithMany(p => p.TSystemMenu)
                     .HasForeignKey(d => d.LanguageRelationId)
                     .HasConstraintName("FK_T_System_Menu_T_System_LanguageRelation");
-            });            
+            });
+
+            modelBuilder.Entity<T_Pro_Example>(entity =>
+            {
+                entity.ToTable("T_Pro_Example");
+
+                entity.Property(e => e.ID).HasColumnName("ID");
+
+                entity.Property(e => e.Name).IsRequired().HasMaxLength(200);
+
+                entity.Property(e => e.OrderId).IsRequired();
+
+                entity.Property(e => e.Description);
+
+                entity.Property(e => e.NameLanguageId);
+
+                entity.Property(e => e.DescriptionLanguageId);
+
+                if (IS_MYSQL)
+                {
+                    entity.Property(e => e.IsDeleted).HasColumnType("bit(1)").HasDefaultValue(false);
+                }
+
+                entity.Property(e => e.CreatedBy).IsRequired().HasMaxLength(50);
+
+                entity.Property(e => e.CreatedTime).HasColumnType("datetime");
+
+                entity.Property(e => e.LastUpdatedBy).IsRequired().HasMaxLength(50);
+
+                entity.Property(e => e.LastUpdatedTime).HasColumnType("datetime");
+
+                entity.HasOne(d => d.LanguageRelationByName)
+                    .WithMany(p => p.ExamplesWithName)
+                    .HasForeignKey(d => d.NameLanguageId)
+                    .HasConstraintName("FK_T_Pro_Example_T_System_LanguageRelation_Name");
+
+                entity.HasOne(d => d.LanguageRelationByDescription)
+                    .WithMany(p => p.ExamplesWithDescription)
+                    .HasForeignKey(d => d.DescriptionLanguageId)
+                    .HasConstraintName("FK_T_Pro_Example_T_System_LanguageRelation_Description");
+
+                entity.HasOne(d => d.ExampleGourp)
+                    .WithMany(p => p.Examples)
+                    .HasForeignKey(d => d.GroupId)
+                    .HasConstraintName("FK_T_Pro_Example_T_Pro_ExampleGroup");
+            });
+
+            modelBuilder.Entity<T_Pro_ExampleGroup>(entity =>
+            {
+                entity.ToTable("T_Pro_ExampleGroup");
+
+                entity.Property(e => e.ID).HasColumnName("ID");
+
+                entity.Property(e => e.Code)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+                if (IS_MYSQL)
+                {
+                    entity.Property(e => e.IsDeleted).HasColumnType("bit(1)").HasDefaultValue(false);
+                }
+
+                entity.Property(e => e.CreatedBy)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.CreatedTime).HasColumnType("datetime");
+
+                entity.Property(e => e.LastUpdatedBy)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.LastUpdatedTime).HasColumnType("datetime");
+
+                entity.Property(e => e.Name)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+                entity.HasOne(d => d.LanguageRelationByName)
+                    .WithMany(p => p.ExampleGroups)
+                    .HasForeignKey(d => d.LanguageId)
+                    .HasConstraintName("FK_T_Pro_ExampleGroup_T_System_LanguageRelation");
+            });
+
+            modelBuilder.Entity<T_Pro_ExampleImg>(entity =>
+            {
+                entity.ToTable("T_Pro_ExampleImg");
+
+                entity.Property(e => e.ID).HasColumnName("ID");
+
+                entity.Property(e => e.CreatedTime).HasColumnType("datetime");
+
+                entity.Property(e => e.CreatedBy)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.LastUpdatedBy)
+                    .IsRequired()
+                    .HasMaxLength(50);
+
+                entity.Property(e => e.LastUpdatedTime).HasColumnType("datetime");
+
+                entity.HasOne(d => d.Example)
+                    .WithMany(p => p.ExampleImgs)
+                    .HasForeignKey(d => d.ExampleId)
+                    .HasConstraintName("FK_T_Pro_ExampleImg_T_Pro_Example");
+            });
         }
     }
 }
