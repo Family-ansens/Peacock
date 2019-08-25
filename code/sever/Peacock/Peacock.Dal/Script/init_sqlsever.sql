@@ -77,3 +77,59 @@ CREATE TABLE [dbo].[T_Pro_HotSaleProduct](
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
+
+CREATE TABLE [dbo].[T_Pro_ExampleGroup](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[Code] [nvarchar](50) NOT NULL,
+	[Name] [nvarchar](50) NOT NULL,
+	[OrderId] [int] NOT NULL,
+	[LanguageId] [int] NULL,
+	[IsDeleted] [bit] NOT NULL,
+	[CreatedBy] [nvarchar](50) NOT NULL,
+	[CreatedTime] [datetime] NOT NULL,
+	[LastUpdatedBy] [nvarchar](50) NOT NULL,
+	[LastUpdatedTime] [datetime] NOT NULL,
+ CONSTRAINT [PK_T_Pro_ExampleGroup] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+CREATE TABLE [dbo].[T_Pro_Example](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[GroupId] [int] NOT NULL,
+	[Name] [nvarchar](200) NOT NULL,
+	[Description] [text] NULL,
+	[OrderId] [int] NOT NULL,
+	[NameLanguageId] [int] NULL,
+	[DescriptionLanguageId] [int] NULL,
+	[ImgPath] [nvarchar](2000) NULL,
+	[IsDeleted] [bit] NOT NULL,
+	[CreatedBy] [nvarchar](50) NOT NULL,
+	[CreatedTime] [datetime] NOT NULL,
+	[LastUpdatedBy] [nvarchar](50) NOT NULL,
+	[LastUpdatedTime] [datetime] NOT NULL,
+ CONSTRAINT [PK_T_Pro_Example] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+
+CREATE TABLE [dbo].[T_Pro_ExampleImg](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[ExampleId] [int] NOT NULL,
+	[OrderId] [int] NULL,
+	[ImgUrl] [nvarchar](500) NOT NULL,
+	[CreatedBy] [nvarchar](50) NOT NULL,
+	[CreatedTime] [datetime] NOT NULL,
+	[LastUpdatedBy] [nvarchar](50) NOT NULL,
+	[LastUpdatedTime] [datetime] NOT NULL,
+ CONSTRAINT [PK_T_Pro_ExampleImg] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+

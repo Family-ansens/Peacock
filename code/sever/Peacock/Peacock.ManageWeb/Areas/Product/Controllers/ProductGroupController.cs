@@ -69,6 +69,7 @@ namespace Peacock.ManageWeb.Areas.Product.Controllers
 
             if (isCreate)
             {
+                entity.OrderId = model.OrderId;
                 entity.Code = model.Code;
                 entity.Name = model.NameZh;
                 entity.CreatedTime = dtNow;
@@ -112,15 +113,10 @@ namespace Peacock.ManageWeb.Areas.Product.Controllers
                 entity.LastUpdatedTime = dtNow;
                 entity.LastUpdatedBy = userName;
 
-                var zhNameLanguageEntity = entity.LanguageRelationByName.TSystemLanguageContent.FirstOrDefault(i => i.LanguageType == LanguageType.ZhCn);
-                zhNameLanguageEntity.DisplayContent = model.NameZh;
-                zhNameLanguageEntity.LastUpdatedBy = userName;
-                zhNameLanguageEntity.LastUpdatedTime = dtNow;
-
-                var enNameLanguageEntity = entity.LanguageRelationByName.TSystemLanguageContent.FirstOrDefault(i => i.LanguageType == LanguageType.En);
-                enNameLanguageEntity.DisplayContent = model.NameEn;
-                enNameLanguageEntity.LastUpdatedBy = userName;
-                enNameLanguageEntity.LastUpdatedTime = dtNow;
+                var nameLanguageDict = new Dictionary<string, string>();
+                nameLanguageDict.Add(LanguageType.ZhCn, model.NameZh);
+                nameLanguageDict.Add(LanguageType.En, model.NameEn);
+                entity.LanguageRelationByName = EditLanguageContent(entity.LanguageRelationByName, nameLanguageDict);
 
                 peacockDbContext.Update(entity);
             }

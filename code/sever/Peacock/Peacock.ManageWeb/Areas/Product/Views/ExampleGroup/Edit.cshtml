@@ -1,16 +1,15 @@
-﻿@model Peacock.ViewModel.Manage.ProductItem
+﻿@model Peacock.ViewModel.Manage.ExampleGroupItem
 
 <section class="content-header">
     <h1>
-        @(Model.Id == 0 ? "新增" : "编辑")商品
+        @(Model.Id == 0 ? "新增" : "编辑")应用分组
     </h1>
 </section>
-
 
 <section class="content">
     <div class="row">
         <div class="box box-primary">
-            <form role="form" method="post" action="@Url.Action("Save", "Product", new { area = "Product" })">
+            <form role="form" method="post" action="@Url.Action("Save", "ExampleGroup", new { area = "Product" })">
                 <div class="box-body">
                     <div class="row">
                         <div class="col-md-12">
@@ -18,17 +17,12 @@
                                 @Html.HiddenFor(m => m.Id)
 
                                 <div class="form-group">
-                                    @Html.LabelFor(m => m.GroupId)
-                                    @Html.DropDownListFor(m => m.GroupId, Model.GroupSelectList, new { @class = "form-control" })
+                                    @Html.LabelFor(m => m.Code)
+                                    @Html.TextBoxFor(m => m.Code, new { @class = "form-control" })
                                 </div>
                                 <div class="form-group">
                                     @Html.LabelFor(m => m.OrderId)
                                     @Html.TextBoxFor(m => m.OrderId, new { @class = "form-control" })
-                                </div>
-                                <div class="form-group">
-                                    @Html.HiddenFor(m => m.ImgPath)
-                                    @Html.LabelFor(m => m.ImgPath)
-                                    <img id="ImgArea" src='@Model.ImgPath' class="form-control" style="height:200px;width:200px;" />
                                 </div>
                             </div>
                         </div>
@@ -52,10 +46,10 @@
                                                 @Html.TextBoxFor(m => m.NameZh, new { @class = "form-control" })
                                             </div>
                                         </div>
-                                        <div class="col-sm-12">
-                                            详细说明(中文)
+                                        @*<div class="col-sm-12">
+                                            @Html.LabelFor(m => m.DescriptionZh)
                                             @Html.TextAreaFor(m => m.DescriptionZh)
-                                        </div>
+                                        </div>*@
                                     </div>
                                     <div class="tab-pane" id="tab_en">
                                         <div class="col-sm-6">
@@ -64,10 +58,10 @@
                                                 @Html.TextBoxFor(m => m.NameEn, new { @class = "form-control" })
                                             </div>
                                         </div>
-                                        <div class="col-sm-12">
-                                            详细说明(英文)
+                                        @*<div class="col-sm-12">
+                                            @Html.LabelFor(m => m.DescriptionEn)
                                             @Html.TextAreaFor(m => m.DescriptionEn)
-                                        </div>
+                                        </div>*@
                                     </div>
                                 </div>
                             </div>
@@ -80,21 +74,20 @@
 
                 <div class="box-footer">
                     <button type="submit" class="btn btn-primary">保存</button>
-                    <a href="@Url.Action("Index", "Product", new { area = "Product" })" class="btn btn-default">返回</a>
+                    <a href="@Url.Action("Index", "ExampleGroup", new { area = "Product" })" class="btn btn-default">返回</a>
                 </div>
             </form>
         </div>
     </div>
 </section>
 
-@Html.Partial("_Modal")
 
-@section Scripts {
+@*@section Scripts {
 
     <link href="https://cdn.jsdelivr.net/npm/froala-editor@3.0.0-beta.1/css/froala_editor.pkgd.min.css" rel="stylesheet" type="text/css" />
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/froala-editor@3.0.0-beta.1//js/froala_editor.pkgd.min.js"></script>
 
-    <script type="text/javascript">
+    <script>
         $(function () {
             new FroalaEditor('#DescriptionZh', {
                 // Set the image upload URL.
@@ -112,38 +105,7 @@
                     id: 'DescriptionEn'
                 }
             });
-
-            // 上传图片
-            let $modal = $('#customModal');
-
-            $('#ImgArea').on('click', function () {
-                $modal.modal('show');
-                //$('#customModal').modal('hide');
-                $modal.find('#modalLabel').text('上传图片');
-                //$modal.find('#modal-body');
-                $.ajax({
-                    url: '/Base/GetUploadView',
-                    method: 'GET',
-                    dataType: 'HTML',
-                    success: function (r) {
-                        $modal.find('.modal-body').html(r);
-                    }
-                })
-            });
-
-            $modal.find('.j-btn-save').on('click', function () {
-
-                $modal.modal('hide');
-
-            });
-        
         });
 
-        function uploadCallback(d) {
-            alert('上传成功');
-            $('#ImgArea').attr('src', d);
-            $('#ImgPath').val(d);
-        }
     </script>
-}
-
+}*@

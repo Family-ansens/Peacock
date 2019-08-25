@@ -29,8 +29,6 @@
   <ItemGroup>
     <Folder Include="Areas\Product\Data\" />
     <Folder Include="Areas\Product\Models\" />
-    <Folder Include="Areas\Product\Views\ExampleGroup\" />
-    <Folder Include="Areas\Product\Views\Example\" />
     <Folder Include="wwwroot\lib\loginview\" />
   </ItemGroup>
 

@@ -1,8 +1,8 @@
 ﻿@using Peacock.ViewModel.Manage
-@model List<ProductImgItem>
+@model List<ExampleImgItem>
 
 <section class="content">
-    <h1>商品图片</h1>
+    <h1>应用图片</h1>
 
     <div class="row">
         <div class="col-sm-12">
@@ -13,7 +13,7 @@
                 <div class="row">
                     <div class="col-sm-4">
                         <button class="btn btn-info j-btn-add">添加</button>
-                        <a href="@Url.Action("Index", "Product", new { area = "Product" })" class="btn btn-default">返回</a>
+                        <a href="@Url.Action("Index", "Example", new { area = "Product" })" class="btn btn-default">返回</a>
                     </div>
                 </div>
                 <!-- /.box-header -->
@@ -82,10 +82,10 @@
             $('.j-btn-add').on('click', function () {
                 $modal.modal('show');
                 //$('#customModal').modal('hide');
-                $modal.find('#modalLabel').text('新增商品图片');
+                $modal.find('#modalLabel').text('新增应用图片');
                 //$modal.find('#modal-body');
                 $.ajax({
-                    url: '/Product/Product/EditProductImg?id=0&productId=' + @ViewData["ProductId"],
+                    url: '/Product/Example/EditExampleImg?id=0&exampleId=' + @ViewData["ExampleId"],
                     method: 'GET',
                     dataType: 'HTML',
                     success: function (r) {
@@ -99,12 +99,12 @@
                 let postData = {
                     Id : $modal.find('#Id').val(),
                     ImgUrl : $modal.find('#ImgUrl').val(),
-                    ProductId: $modal.find('#ProductId').val(),
+                    ExampleId: $modal.find('#ExampleId').val(),
                     OrderId: $modal.find('#OrderId').val()
                 };
 
                 $.ajax({
-                    url: '/Product/Product/SaveImg',
+                    url: '/Product/Example/SaveImg',
                     method: 'POST',
                     data: postData,
                     success: function (r) {
@@ -125,10 +125,10 @@
             let $modal = $('#customModal');
             $modal.modal('show');
                 //$('#customModal').modal('hide');
-                $modal.find('#modalLabel').text('编辑商品图片');
+            $modal.find('#modalLabel').text('编辑应用图片');
                 //$modal.find('#modal-body');
                 $.ajax({
-                    url: '/Product/Product/EditProductImg?id='+ id +'&productId=' + @ViewData["ProductId"],
+                    url: '/Product/Example/EditExampleImg?id='+ id +'&exampleId=' + @ViewData["ExampleId"],
                     method: 'GET',
                     dataType: 'HTML',
                     success: function (r) {
@@ -141,7 +141,7 @@
             peacockConfirm('确定要删除该条记录吗？', function () {
 
                 $.ajax({
-                    url: '/Product/Product/DeleteProductImg',
+                    url: '/Product/Example/DeleteExampleImg',
                     data: { id: id },
                     method: 'POST',
                     dataType: 'JSON',

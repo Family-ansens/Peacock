@@ -1,8 +1,8 @@
-﻿@model Peacock.ViewModel.Manage.ProductItem
+﻿@model Peacock.ViewModel.Manage.ExampleItem
 
 <section class="content-header">
     <h1>
-        @(Model.Id == 0 ? "新增" : "编辑")商品
+        @(Model.Id == 0 ? "新增" : "编辑")应用
     </h1>
 </section>
 
@@ -10,7 +10,7 @@
 <section class="content">
     <div class="row">
         <div class="box box-primary">
-            <form role="form" method="post" action="@Url.Action("Save", "Product", new { area = "Product" })">
+            <form role="form" method="post" action="@Url.Action("Save", "Example", new { area = "Product" })">
                 <div class="box-body">
                     <div class="row">
                         <div class="col-md-12">
@@ -19,7 +19,7 @@
 
                                 <div class="form-group">
                                     @Html.LabelFor(m => m.GroupId)
-                                    @Html.DropDownListFor(m => m.GroupId, Model.GroupSelectList, new { @class = "form-control" })
+                                    @Html.DropDownListFor(m => m.GroupId, Model.ExampleSelectList, new { @class = "form-control" })
                                 </div>
                                 <div class="form-group">
                                     @Html.LabelFor(m => m.OrderId)
@@ -80,7 +80,7 @@
 
                 <div class="box-footer">
                     <button type="submit" class="btn btn-primary">保存</button>
-                    <a href="@Url.Action("Index", "Product", new { area = "Product" })" class="btn btn-default">返回</a>
+                    <a href="@Url.Action("Index", "Example", new { area = "Product" })" class="btn btn-default">返回</a>
                 </div>
             </form>
         </div>

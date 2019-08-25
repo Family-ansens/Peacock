@@ -1,4 +1,4 @@
-﻿@model Peacock.ViewModel.Manage.ProductImgItem
+﻿@model Peacock.ViewModel.Manage.ExampleImgItem
 
 <div class="form-group">
     <div class="col-md-10">
@@ -16,19 +16,16 @@
 
 @Html.HiddenFor(m => m.Id)
 @Html.HiddenFor(m => m.ImgUrl)
-@Html.HiddenFor(m => m.ProductId)
+@Html.HiddenFor(m => m.ExampleId)
 
 <script type="text/javascript">
     $(function () {
-        let productImg = new productImgHelper();
-        productImg.loadPage();
-
-
-
+        let exampleImg = new exampleImgHelper();
+        exampleImg.loadPage();
     });
 
-    function productImgHelper() { };
-    productImgHelper.prototype.loadPage = function () {
+    function exampleImgHelper() { };
+    exampleImgHelper.prototype.loadPage = function () {
         $.ajax({
             url: '/Base/GetUploadView',
             method: 'GET',
