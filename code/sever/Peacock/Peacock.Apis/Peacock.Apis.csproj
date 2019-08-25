@@ -21,6 +21,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Peacock.Dal\Peacock.Dal.csproj" />
+    <ProjectReference Include="..\Peacock.ViewModel\Peacock.ViewModel.csproj" />
   </ItemGroup>
 
   <ItemGroup>

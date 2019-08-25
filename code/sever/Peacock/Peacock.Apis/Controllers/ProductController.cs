@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
+
 namespace Peacock.Apis.Controllers
 {
     /// <summary>
@@ -24,9 +25,10 @@ namespace Peacock.Apis.Controllers
         /// </summary>
         /// <param name="search"></param>
         /// <returns></returns>
-        [HttpPost("product-groups")]
-        public PageResponseDto<ProductGroupResDto> GetProductGroups([FromBody]BasePageSearch search)
+        [HttpGet("product-groups")]
+        public PageResponseDto<ProductGroupResDto> GetProductGroups(BasePageSearch search)
         {
+            string languageType = GetLanguage();
             var query = dbContext.T_Pro_ProductGroup
                                 .Include(i => i.LanguageRelationByName).ThenInclude(i => i.TSystemLanguageContent)
                                 .Where(i => !i.IsDeleted);
@@ -38,7 +40,7 @@ namespace Peacock.Apis.Controllers
                                 {
                                     ID = c.Id,
                                     Code = c.Code,
-                                    Name = c.LanguageRelationByName.TSystemLanguageContent.FirstOrDefault(i => i.LanguageType == search.language).DisplayContent,
+                                    Name = c.LanguageRelationByName.TSystemLanguageContent.FirstOrDefault(i => i.LanguageType == languageType).DisplayContent,
                                 }).ToList();
             var result = new PageResponseDto<ProductGroupResDto>()
             {
@@ -54,29 +56,33 @@ namespace Peacock.Apis.Controllers
         /// </summary>
         /// <param name="search"></param>
         /// <returns></returns>
-        [HttpPost("products")]
-        public PageResponseDto<ProductResDto> GetProducts([FromBody]ProductPageSearch search)
+        [HttpGet("products")]
+        public PageResponseDto<ProductResDto> GetProducts(ProductPageSearch search)
         {
             string languageType = GetLanguage();
             var query = dbContext.T_Pro_Product
                                  .Include(i => i.LanguageRelationByName).ThenInclude(i => i.TSystemLanguageContent)
                                  .Include(i => i.LanguageRelationByDescription).ThenInclude(i => i.TSystemLanguageContent)
+                                 .Include(i => i.ProductGourp).ThenInclude(i => i.LanguageRelationByName).ThenInclude(i => i.TSystemLanguageContent)
                                  .Where(i => !i.IsDeleted);
             if (!string.IsNullOrEmpty(search.Query))
             {
+                search.Query = search.Query.Replace(" ", string.Empty);
                 query = query.Where(i => i.LanguageRelationByName.TSystemLanguageContent
                                             .Any(a => a.DisplayContent.Contains(search.Query))
                                          || i.LanguageRelationByDescription.TSystemLanguageContent
-                                               .Any(a=>a.DisplayContent.Contains(search.Query)));
+                                               .Any(a => a.DisplayContent.Contains(search.Query))
+                                         || i.ProductGourp.LanguageRelationByName.TSystemLanguageContent
+                                                .Any(a => a.DisplayContent.Contains(search.Query)));
             }
             int count = query.Count();
-            var list = query.Skip(search.Skip).Take(search.size).OrderBy(o => o.OrderId)
-                .Select(c => new ProductResDto
-                {
-                    Id = c.ID,
-                    Name = c.LanguageRelationByName.TSystemLanguageContent.FirstOrDefault(i=>i.LanguageType == languageType).DisplayContent,
-                    ImgUrl = c.ImgPath,
-                }).ToList();
+            var entities = query.Skip(search.Skip).Take(search.size).OrderBy(o => o.OrderId).ToList();
+            var list = entities.Select(c => new ProductResDto
+            {
+                Id = c.ID,
+                Name = c.LanguageRelationByName.TSystemLanguageContent.FirstOrDefault(i => i.LanguageType == languageType).DisplayContent,
+                ImgUrl = c.ImgPath,
+            }).ToList();
             var result = new PageResponseDto<ProductResDto>()
             {
                 count = count,
@@ -121,12 +127,12 @@ namespace Peacock.Apis.Controllers
         /// </summary>
         /// <param name="search"></param>
         /// <returns></returns>
-        [HttpPost("hot-sale-products")]
-        public PageResponseDto<HotSaleProductResDto> GetHotSaleProducts([FromBody]ProductPageSearch search)
+        [HttpGet("hot-sale-products")]
+        public PageResponseDto<HotSaleProductResDto> GetHotSaleProducts(ProductPageSearch search)
         {
             string languageType = GetLanguage();
             var query = dbContext.T_Pro_HotSaleProduct
-                                 .Include(i=>i.Product)
+                                 .Include(i => i.Product)
                                  .ThenInclude(i => i.LanguageRelationByName).ThenInclude(i => i.TSystemLanguageContent)
                                  .Include(i => i.Product)
                                  .ThenInclude(i => i.LanguageRelationByDescription).ThenInclude(i => i.TSystemLanguageContent)

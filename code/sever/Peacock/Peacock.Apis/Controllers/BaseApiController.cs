@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Peacock.Apis.Common;
 using Peacock.Dal;
 using System;
 using System.Collections.Generic;
@@ -23,7 +24,7 @@ namespace Peacock.Apis.Controllers
 
         protected string GetLanguage()
         {
-            return string.Empty;
+            return Request.GetLanguage();
         }
     }
 }

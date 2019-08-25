@@ -228,6 +228,7 @@ namespace Peacock.ManageWeb.Areas.Product.Controllers
             if (vm.Id > 0)
             {
                 var entity = peacockDbContext.T_Pro_ExampleImg.Where(i => i.ID == vm.Id).FirstOrDefault();
+                entity.ExampleId = vm.ExampleId;
                 entity.ImgUrl = vm.ImgUrl;
                 entity.OrderId = vm.OrderId;
                 entity.LastUpdatedBy = userName;

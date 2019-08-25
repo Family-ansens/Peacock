@@ -31,9 +31,8 @@ namespace Peacock.Apis.Controllers
         [HttpGet("list")]
         public PageResponseDto<AnnouncementResDto> GetList(BasePageSearch search)
         {
-            //string languageType = Request.Headers["Accept-Language"];
+            string languageType = GetLanguage();
 
-            //if (string.IsNullOrEmpty(languageType)) languageType = "Chinese";
 
             var query = dbContext.T_Announcement.Where(i => !i.IsDeleted);
             int count = query.Count();
@@ -43,8 +42,8 @@ namespace Peacock.Apis.Controllers
                             .Select(c => new AnnouncementResDto
                             {
                                 Id = c.ID,
-                                Title = c.LanguageRelationByTitle.TSystemLanguageContent.FirstOrDefault(i => i.LanguageType == search.language).DisplayContent,
-                                Content = c.LanguageRelationByContent.TSystemLanguageContent.FirstOrDefault(i => i.LanguageType == search.language).DisplayContent,
+                                Title = c.LanguageRelationByTitle.TSystemLanguageContent.FirstOrDefault(i => i.LanguageType == languageType).DisplayContent,
+                                Content = c.LanguageRelationByContent.TSystemLanguageContent.FirstOrDefault(i => i.LanguageType == languageType).DisplayContent,
                             }).ToList();
 
             return new PageResponseDto<AnnouncementResDto>()

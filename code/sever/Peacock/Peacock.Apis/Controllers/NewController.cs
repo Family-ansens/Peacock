@@ -22,9 +22,10 @@ namespace Peacock.Apis.Controllers
         /// </summary>
         /// <param name="search"></param>
         /// <returns></returns>
-        [HttpPost("news")]
+        [HttpGet("news")]
         public PageResponseDto<NewResDto> GetNews(BasePageSearch search)
         {
+            string languageType = GetLanguage();
             var query = dbContext.T_New.Where(i => i.IsPublish && !i.IsDeleted);
             int count = query.Count();
             var list = query.Include(i => i.LanguageRelationByTitle).ThenInclude(i => i.TSystemLanguageContent)
@@ -34,7 +35,7 @@ namespace Peacock.Apis.Controllers
                             .Select(c => new NewResDto
                             {
                                 ID = c.ID,
-                                Title = c.LanguageRelationByTitle.TSystemLanguageContent.FirstOrDefault(i => i.LanguageType == search.language).DisplayContent,
+                                Title = c.LanguageRelationByTitle.TSystemLanguageContent.FirstOrDefault(i => i.LanguageType == languageType).DisplayContent,
                                 PublishTime = c.PublishTime,
                             }).ToList();
             var result = new PageResponseDto<NewResDto>()
@@ -53,8 +54,9 @@ namespace Peacock.Apis.Controllers
         /// <param name="language"></param>
         /// <returns></returns>
         [HttpGet("detail")]
-        public IStatusCodeActionResult GetNewDetail(int id, string language)
+        public IStatusCodeActionResult GetNewDetail(int id)
         {
+            string languageType = GetLanguage();
             var entity = dbContext.T_New.Include(i => i.LanguageRelationByTitle).ThenInclude(i => i.TSystemLanguageContent)
                                          .Include(i => i.LanguageRelationByContent).ThenInclude(i => i.TSystemLanguageContent)
                                          .FirstOrDefault(i => i.ID == id && !i.IsDeleted && i.IsPublish);
@@ -63,8 +65,8 @@ namespace Peacock.Apis.Controllers
             var data = new NewDetailResDto()
             {
                 ID = entity.ID,
-                Title = GetLanguageContent(entity.LanguageRelationByTitle, language),
-                Content = GetLanguageContent(entity.LanguageRelationByContent, language),
+                Title = GetLanguageContent(entity.LanguageRelationByTitle, languageType),
+                Content = GetLanguageContent(entity.LanguageRelationByContent, languageType),
                 PublishTime = entity.PublishTime,
             };
             return Ok(data);
