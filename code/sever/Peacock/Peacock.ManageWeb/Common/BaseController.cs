@@ -3,11 +3,13 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
 using Peacock.Dal;
 using Peacock.ViewModel.Manage;
 
@@ -92,7 +94,7 @@ namespace Peacock.ManageWeb
         }
 
         [HttpPost]
-        public ActionResult UploadImg([FromServices]IHostingEnvironment env)
+        public ActionResult UploadImg([FromServices]IHostingEnvironment env, [FromServices]IConfiguration config)
         {
             var files = HttpContext.Request.Form.Files.GetFiles("file");
             var fileBasePath = Path.Combine(env.WebRootPath, "upload", "img");
@@ -120,8 +122,14 @@ namespace Peacock.ManageWeb
                 }
             }
 
-            // process uploaded files
-            // Don't rely on or trust the FileName property without validation.
+            string remoteUploadUrl = config["ApiUrl"] + "/file/uploadimg";
+            string apiToken = config["ApiToken"];
+            var httpClient = new HttpClient();
+            var httpContent = new MultipartFormDataContent();
+            httpContent.Add(new StringContent(apiToken), "apiToken");
+
+
+            var uploadResult = httpClient.PostAsync(remoteUploadUrl, httpContent).Result;
 
             Hashtable imageUrl = new Hashtable();
             imageUrl.Add("link", t);
