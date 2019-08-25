@@ -89,6 +89,35 @@ namespace Peacock.Apis.Controllers
         }
 
         /// <summary>
+        /// 获取应用列表
+        /// </summary>
+        /// <param name="search"></param>
+        /// <returns></returns>
+        [HttpGet("newest-examples")]
+        public PageResponseDto<ExampleResDto> GetNewestExamples(BasePageSearch search)
+        {
+            string languageType = GetLanguage();
+            var query = dbContext.T_Pro_Example
+                                 .Include(i => i.LanguageRelationByName).ThenInclude(i => i.TSystemLanguageContent)
+                                 .Where(i => !i.IsDeleted);
+            int count = query.Count();
+            var entities = query.Skip(search.Skip).Take(search.size).OrderByDescending(o => o.CreatedTime).ToList();
+            var list = entities.Select(c => new ExampleResDto
+            {
+                Id = c.ID,
+                Name = c.LanguageRelationByName.TSystemLanguageContent.FirstOrDefault(i => i.LanguageType == languageType).DisplayContent,
+                ImgUrl = c.ImgPath,
+            }).ToList();
+            var result = new PageResponseDto<ExampleResDto>()
+            {
+                count = count,
+                rows = list,
+                success = true,
+            };
+            return result;
+        }
+
+        /// <summary>
         /// 获取应用详情
         /// </summary>
         /// <param name="id"></param>

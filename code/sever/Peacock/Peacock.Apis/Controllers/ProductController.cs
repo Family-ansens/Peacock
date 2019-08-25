@@ -93,6 +93,36 @@ namespace Peacock.Apis.Controllers
         }
 
         /// <summary>
+        /// 获取最新产品列表
+        /// </summary>
+        /// <param name="search"></param>
+        /// <returns></returns>
+        [HttpGet("newest-products")]
+        public PageResponseDto<ProductResDto> GetNewestProducts(BasePageSearch search)
+        {
+            string languageType = GetLanguage();
+            var query = dbContext.T_Pro_Product
+                                 .Include(i => i.LanguageRelationByName).ThenInclude(i => i.TSystemLanguageContent)
+                                 .Where(i => !i.IsDeleted);
+
+            int count = query.Count();
+            var entities = query.Skip(search.Skip).Take(search.size).OrderByDescending(o => o.CreatedTime).ToList();
+            var list = entities.Select(c => new ProductResDto
+            {
+                Id = c.ID,
+                Name = c.LanguageRelationByName.TSystemLanguageContent.FirstOrDefault(i => i.LanguageType == languageType).DisplayContent,
+                ImgUrl = c.ImgPath,
+            }).ToList();
+            var result = new PageResponseDto<ProductResDto>()
+            {
+                count = count,
+                rows = list,
+                success = true,
+            };
+            return result;
+        }
+
+        /// <summary>
         /// 获取商品详情
         /// </summary>
         /// <param name="id"></param>

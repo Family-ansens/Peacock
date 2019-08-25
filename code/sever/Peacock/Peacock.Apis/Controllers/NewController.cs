@@ -51,7 +51,6 @@ namespace Peacock.Apis.Controllers
         /// 
         /// </summary>
         /// <param name="id"></param>
-        /// <param name="language"></param>
         /// <returns></returns>
         [HttpGet("detail")]
         public IStatusCodeActionResult GetNewDetail(int id)
