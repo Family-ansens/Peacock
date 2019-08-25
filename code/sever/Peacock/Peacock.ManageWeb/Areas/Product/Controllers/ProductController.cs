@@ -203,19 +203,52 @@ namespace Peacock.ManageWeb.Areas.Product.Controllers
             return View("ImgList", list);
         }
 
-        [HttpPost]
-        public JsonResult SaveImg(int productId, string filePath)
+        public ActionResult EditProductImg(int id, int productId)
         {
-            var entity = new T_Pro_ProductImg()
+            ProductImgItem result = new ProductImgItem()
             {
                 ProductId = productId,
-                ImgUrl = filePath,
-                CreatedBy = userName,
-                CreatedTime = DateTime.Now,
-                LastUpdatedBy = userName,
-                LastUpdatedTime = DateTime.Now,
             };
-            peacockDbContext.T_Pro_ProductImg.Add(entity);
+            if (id > 0)
+            {
+                result = peacockDbContext.T_Pro_ProductImg.Where(i => i.ID == id)
+                            .Select(c => new ProductImgItem
+                            {
+                                Id = c.ID,
+                                OrderId = c.OrderId,
+                                ImgUrl = c.ImgUrl,
+                                ProductId = c.ProductId,
+                            }).FirstOrDefault();
+            }
+            return PartialView("ImgEdit", result);
+        }
+
+        [HttpPost]
+        public JsonResult SaveImg(ProductImgItem vm)
+        {
+            if (vm.Id > 0)
+            {
+                var entity = peacockDbContext.T_Pro_ProductImg.Where(i => i.ID == vm.Id).FirstOrDefault();
+                entity.ImgUrl = vm.ImgUrl;
+                entity.OrderId = vm.OrderId;
+                entity.LastUpdatedBy = userName;
+                entity.LastUpdatedTime = DateTime.Now;
+                peacockDbContext.Update(entity);
+            }
+            else
+            {
+                var entity = new T_Pro_ProductImg()
+                {
+                    ProductId = vm.ProductId,
+                    ImgUrl = vm.ImgUrl,
+                    OrderId = vm.OrderId,
+                    CreatedBy = userName,
+                    CreatedTime = DateTime.Now,
+                    LastUpdatedBy = userName,
+                    LastUpdatedTime = DateTime.Now,
+                };
+                peacockDbContext.T_Pro_ProductImg.Add(entity);
+            }
             peacockDbContext.SaveChanges();
             return Json(Success());
         }

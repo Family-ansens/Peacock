@@ -1,0 +1,43 @@
+﻿@model Peacock.ViewModel.Manage.ProductImgItem
+
+<div class="form-group">
+    <div class="col-md-10">
+        <span>序号：</span>
+        @Html.TextBoxFor(m => m.OrderId, new { @class = "form-control" })
+    </div>
+</div>
+<div class="j-area-upload"></div>
+
+@Html.HiddenFor(m => m.Id)
+@Html.HiddenFor(m => m.ImgUrl)
+@Html.HiddenFor(m => m.ProductId)
+
+<script type="text/javascript">
+    $(function () {
+        let productImg = new productImgHelper();
+        productImg.loadPage();
+
+
+
+    });
+
+    function productImgHelper() { };
+    productImgHelper.prototype.loadPage = function () {
+        $.ajax({
+            url: '/Base/GetUploadView',
+            method: 'GET',
+            dataType: 'HTML',
+            success: function (r) {
+                $('.j-area-upload').html(r);
+            }
+        });
+    }
+
+    // 上传图片回调
+    function uploadCallback(d) {
+        alert('上传成功');
+        $('#ImgUrl').val(d);
+    }
+</script>
+
+

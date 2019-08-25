@@ -33,9 +33,12 @@
                                             @foreach (var item in Model)
                                             {
                                                 <tr role="row" class="odd">
-                                                    <td class="sorting_1"><img src="@item.ImgUrl" /></td>
+                                                    <td class="sorting_1"><img src="@item.ImgUrl" style="width:200px;height:200px;" /></td>
                                                     <td>@item.OrderId</td>
-                                                    <td><button class="btn btn-default" onclick="deleteProductImg(@item.Id)">删除</button></td>
+                                                    <td>
+                                                        <button class="btn btn-success" onclick="editProductImg(@item.Id)">编辑</button>
+                                                        <button class="btn btn-default" onclick="deleteProductImg(@item.Id)">删除</button>
+                                                    </td>
                                                 </tr>
                                             }
                                         </tbody>
@@ -78,24 +81,31 @@
             $('.j-btn-add').on('click', function () {
                 $modal.modal('show');
                 //$('#customModal').modal('hide');
-                $modal.find('#modalLabel').text('上传图片');
+                $modal.find('#modalLabel').text('新增商品图片');
                 //$modal.find('#modal-body');
                 $.ajax({
-                    url: '/Base/GetUploadView',
+                    url: '/Product/Product/EditProductImg?id=0&productId=' + @ViewData["ProductId"],
                     method: 'GET',
                     dataType: 'HTML',
                     success: function (r) {
                         $modal.find('.modal-body').html(r);
                     }
-                })
+                });
             });
 
             $modal.find('.j-btn-save').on('click', function () {
 
+                let postData = {
+                    Id : $modal.find('#Id').val(),
+                    ImgUrl : $modal.find('#ImgUrl').val(),
+                    ProductId: $modal.find('#ProductId').val(),
+                    OrderId: $modal.find('#OrderId').val()
+                };
+
                 $.ajax({
                     url: '/Product/Product/SaveImg',
                     method: 'POST',
-                    data: { productId: productImg.productId, filePath: productImg.filePath },
+                    data: postData,
                     success: function (r) {
                         if (r.Success) {
                             $modal.modal('hide');
@@ -110,12 +120,20 @@
             });
         });
 
-        let productImg = {};
-
-        function uploadCallback(d) {
-            alert('上传成功');
-            productImg.productId = @ViewData["ProductId"];
-            productImg.filePath = d;
+        function editProductImg(id) {
+            let $modal = $('#customModal');
+            $modal.modal('show');
+                //$('#customModal').modal('hide');
+                $modal.find('#modalLabel').text('编辑商品图片');
+                //$modal.find('#modal-body');
+                $.ajax({
+                    url: '/Product/Product/EditProductImg?id='+ id +'&productId=' + @ViewData["ProductId"],
+                    method: 'GET',
+                    dataType: 'HTML',
+                    success: function (r) {
+                        $modal.find('.modal-body').html(r);
+                    }
+                });
         }
 
         function deleteProductImg(id) {
