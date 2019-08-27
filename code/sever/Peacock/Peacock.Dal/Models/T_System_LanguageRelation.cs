@@ -19,6 +19,7 @@ namespace Peacock.Dal
             ExampleGroups = new HashSet<T_Pro_ExampleGroup>();
             ExamplesWithName = new HashSet<T_Pro_Example>();
             ExamplesWithDescription = new HashSet<T_Pro_Example>();
+            CompaniesWithContent = new HashSet<T_Company>();
         }
 
         public int Id { get; set; }
@@ -39,5 +40,6 @@ namespace Peacock.Dal
         public virtual ICollection<T_Pro_ExampleGroup> ExampleGroups { get; set; }
         public virtual ICollection<T_Pro_Example> ExamplesWithName { get; set; }
         public virtual ICollection<T_Pro_Example> ExamplesWithDescription { get; set; }
+        public virtual ICollection<T_Company> CompaniesWithContent { get; set; }
     }
 }

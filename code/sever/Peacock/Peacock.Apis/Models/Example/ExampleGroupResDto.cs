@@ -22,5 +22,10 @@ namespace Peacock.Apis.Models
         /// 名称
         /// </summary>
         public string Name { get; set; }
+
+        /// <summary>
+        /// 应用列表
+        /// </summary>
+        public List<ExampleResDto> Examples { get; set; }
     }
 }

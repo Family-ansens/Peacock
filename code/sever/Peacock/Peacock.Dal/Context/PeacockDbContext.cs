@@ -6,7 +6,7 @@ namespace Peacock.Dal
 {
     public partial class PeacockDbContext : DbContext
     {
-        private const bool IS_MYSQL = false;
+        private const bool IS_MYSQL = true;
 
         public PeacockDbContext()
         {
@@ -29,6 +29,7 @@ namespace Peacock.Dal
         public virtual DbSet<T_Pro_Example> T_Pro_Example { get; set; }
         public virtual DbSet<T_Pro_ExampleGroup> T_Pro_ExampleGroup { get; set; }
         public virtual DbSet<T_Pro_ExampleImg> T_Pro_ExampleImg { get; set; }
+        public virtual DbSet<T_Company> T_Company { get; set; }
 
 
 //        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -454,6 +455,32 @@ namespace Peacock.Dal
                     .WithMany(p => p.ExampleImgs)
                     .HasForeignKey(d => d.ExampleId)
                     .HasConstraintName("FK_T_Pro_ExampleImg_T_Pro_Example");
+            });
+
+            modelBuilder.Entity<T_Company>(entity =>
+            {
+                entity.ToTable("T_Company");
+
+                entity.Property(e => e.ID).HasColumnName("ID");              
+
+                entity.Property(e => e.Content);
+
+                entity.Property(e => e.ContentLanguageId);
+
+                entity.Property(e => e.ImgPath).IsRequired().HasMaxLength(2000);
+
+                entity.Property(e => e.CreatedBy).IsRequired().HasMaxLength(50);
+
+                entity.Property(e => e.CreatedTime).HasColumnType("datetime");
+
+                entity.Property(e => e.LastUpdatedBy).IsRequired().HasMaxLength(50);
+
+                entity.Property(e => e.LastUpdatedTime).HasColumnType("datetime");
+
+                entity.HasOne(d => d.LanguageRelationByContent)
+                    .WithMany(p => p.CompaniesWithContent)
+                    .HasForeignKey(d => d.ContentLanguageId)
+                    .HasConstraintName("FK_T_Company_T_System_LanguageRelation_Content");
             });
         }
     }

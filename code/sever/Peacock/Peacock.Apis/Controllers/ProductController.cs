@@ -52,6 +52,44 @@ namespace Peacock.Apis.Controllers
         }
 
         /// <summary>
+        /// 首页获取商品分组列表
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("home/product-groups")]
+        public List<ProductGroupResDto> GetExampleGroupsByHome()
+        {
+            string languageType = GetLanguage();
+            var list = dbContext.T_Pro_ProductGroup.Include(i => i.LanguageRelationByName).ThenInclude(i => i.TSystemLanguageContent)
+                            .Where(i => !i.IsDeleted).OrderBy(o => o.OrderId)
+                            .Take(5)
+                            .Select(c => new ProductGroupResDto
+                            {
+                                ID = c.Id,
+                                Name = c.LanguageRelationByName.TSystemLanguageContent.FirstOrDefault(i => i.LanguageType == languageType).DisplayContent,
+                                Products = new List<ProductResDto>(),
+                            }).ToList();
+            var groupIdArr = list.Select(i => i.ID).ToArray();
+            var products = dbContext.T_Pro_Product.Include(i => i.LanguageRelationByName).ThenInclude(i => i.TSystemLanguageContent)
+                                    .Where(i => !i.IsDeleted && groupIdArr.Contains(i.GroupId))
+                                    .Select(c => new ProductResDto
+                                    {
+                                        Id = c.ID,
+                                        GroupId = c.GroupId,
+                                        Name = c.LanguageRelationByName.TSystemLanguageContent.FirstOrDefault(i => i.LanguageType == languageType).DisplayContent,
+                                        ImgUrl = c.ImgPath,
+                                        OrderId = c.OrderId,
+                                    }).ToList();
+
+            foreach (var item in products.GroupBy(g => g.GroupId))
+            {
+                var group = list.FirstOrDefault(i => i.ID == item.Key);
+                group.Products = item.ToList().OrderBy(o => o.OrderId).Take(6).ToList();
+            }
+
+            return list;
+        }
+
+        /// <summary>
         /// 获取产品列表
         /// </summary>
         /// <param name="search"></param>

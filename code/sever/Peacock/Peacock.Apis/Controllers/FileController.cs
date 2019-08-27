@@ -30,6 +30,7 @@ namespace Peacock.Apis.Controllers
             var apiToken = HttpContext.Request.Form["token"];
             if (string.IsNullOrEmpty(apiToken)) return Unauthorized();
 
+            DateTime today = DateTime.Today;
             var files = HttpContext.Request.Form.Files.GetFiles("file");
             var fileBasePath = Path.Combine(_env.ContentRootPath, "upload", "img");
             List<string> fileList = new List<string>();
@@ -45,13 +46,13 @@ namespace Peacock.Apis.Controllers
                 if (formFile.Length > 0)
                 {
                     string fileExtension = formFile.FileName.Split('.').Last();
-                    string fileName = Guid.NewGuid().ToString().Replace("-", string.Empty) + "." + fileExtension;
+                    string fileName = $"{today.Year}{today.Month}{today.Day}-{Guid.NewGuid().ToString().Replace("-", string.Empty)}.{fileExtension}";
                     string fileFullPath = Path.Combine(fileBasePath, fileName);
                     using (var stream = new FileStream(fileFullPath, FileMode.CreateNew))
                     {
                         fileList.Add(Request.Host + "/upload/img/" + fileName);
                         formFile.CopyTo(stream);
-                        returnPath = "/upload/img/" + fileName;
+                        returnPath = "/img/" + fileName;
                         returnPaths.Add(formFile.FileName, returnPath);
                     }
                 }
@@ -60,13 +61,20 @@ namespace Peacock.Apis.Controllers
             return Ok(returnPaths);
         }
 
-        [HttpGet("{filePath}")]
-        public ActionResult GetFile(string filePath)
+        /// <summary>
+        /// 获取图片路径
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <returns></returns>
+        [HttpGet("img/{fileName}")]
+        public ActionResult GetFile(string fileName)
         {
-            var fileFullPath = Path.Combine(_env.ContentRootPath, filePath);
+            var fileFullPath = Path.Combine(_env.ContentRootPath, "upload", "img", fileName);
+            string fileExtension = fileName.Split('.').Last().ToLower();
             if (!System.IO.File.Exists(fileFullPath)) return NotFound();
 
-            return new FileContentResult(System.IO.File.ReadAllBytes(fileFullPath), "image/jpeg");
+            string contentType = $"image/{fileExtension}";
+            return new FileContentResult(System.IO.File.ReadAllBytes(fileFullPath), contentType);
         }
     }
 }

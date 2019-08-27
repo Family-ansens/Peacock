@@ -51,6 +51,45 @@ namespace Peacock.Apis.Controllers
         }
 
         /// <summary>
+        /// 首页获取应用分组列表
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet("home/example-groups")]
+        public List<ExampleGroupResDto> GetExampleGroupsByHome()
+        {
+            string languageType = GetLanguage();
+            var list = dbContext.T_Pro_ExampleGroup.Include(i => i.LanguageRelationByName).ThenInclude(i => i.TSystemLanguageContent)
+                            .Where(i => !i.IsDeleted).OrderBy(o => o.OrderId)
+                            .Take(5)
+                            .Select(c => new ExampleGroupResDto
+                            {
+                                ID = c.ID,
+                                Code = c.Code,
+                                Name = c.LanguageRelationByName.TSystemLanguageContent.FirstOrDefault(i => i.LanguageType == languageType).DisplayContent,
+                                Examples = new List<ExampleResDto>(),
+                            }).ToList();
+            var groupIdArr = list.Select(i => i.ID).ToArray();
+            var examples = dbContext.T_Pro_Example.Include(i => i.LanguageRelationByName).ThenInclude(i => i.TSystemLanguageContent)
+                                    .Where(i => !i.IsDeleted && groupIdArr.Contains(i.GroupId))
+                                    .Select(c => new ExampleResDto
+                                    {
+                                        Id = c.ID,
+                                        GroupId = c.GroupId,
+                                        Name = c.LanguageRelationByName.TSystemLanguageContent.FirstOrDefault(i => i.LanguageType == languageType).DisplayContent,
+                                        ImgUrl = c.ImgPath,
+                                        OrderId = c.OrderId,
+                                    }).ToList();
+
+            foreach(var item in examples.GroupBy(g=>g.GroupId))
+            {
+                var group = list.FirstOrDefault(i => i.ID == item.Key);
+                group.Examples = item.ToList().OrderBy(o => o.OrderId).Take(6).ToList();
+            }
+
+            return list;
+        }
+
+        /// <summary>
         /// 获取应用列表
         /// </summary>
         /// <param name="search"></param>
@@ -146,6 +185,8 @@ namespace Peacock.Apis.Controllers
             };
             return result;
         }
+
+
 
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -21,6 +22,17 @@ namespace Peacock.Apis.Models
         /// 主图路径
         /// </summary>
         public string ImgUrl { get; set; }
+
+        /// <summary>
+        /// 分组ID
+        /// </summary>
+        [JsonIgnore]
+        public int GroupId { get; set; }
+        /// <summary>
+        /// 排序ID
+        /// </summary>
+        [JsonIgnore]
+        public int OrderId { get; set; }
     }
 
     public class ProductDetailResDto : ProductResDto

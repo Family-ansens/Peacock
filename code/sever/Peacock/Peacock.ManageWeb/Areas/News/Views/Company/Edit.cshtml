@@ -1,0 +1,127 @@
+﻿@model Peacock.ViewModel.Manage.CompanyItem
+
+<section class="content-header">
+    <h1>
+        设置公司信息
+    </h1>
+</section>
+
+<section class="content">
+    <div class="row">
+        <div class="box box-primary">
+            <form role="form" method="post" action="@Url.Action("Save", "Company", new { area = "News" })">
+                <div class="box-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="col-md-6">
+                                @Html.HiddenFor(m => m.Id)
+
+                                <div class="form-group">
+                                    @Html.HiddenFor(m => m.ImgUrl)
+                                    @Html.LabelFor(m => m.ImgUrl)
+                                    <img id="ImgArea" src='@Model.ImgUrl' class="form-control" style="height:200px;width:200px;" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="j-lang-tab">
+                                <ul class="nav nav-pills ">
+                                    <li class="active">
+                                        <a class="nav-link active" href="#tab_zh" data-toggle="tab" aria-expanded="true">中文语言</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="#tab_en" data-toggle="tab" aria-expanded="false">英文语言</a>
+                                    </li>
+                                </ul>
+                                <div class="tab-content">
+                                    <div class="tab-pane active" id="tab_zh">
+                                        <div class="col-sm-12">
+                                            @Html.LabelFor(m => m.ContentZh)
+                                            @Html.TextAreaFor(m => m.ContentZh)
+                                        </div>
+                                    </div>
+                                    <div class="tab-pane" id="tab_en">
+                                        <div class="col-sm-12">
+                                            @Html.LabelFor(m => m.ContentEn)
+                                            @Html.TextAreaFor(m => m.ContentEn)
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row text-danger">
+                        @Html.ValidationSummary()
+                    </div>
+                </div>
+
+                <div class="box-footer">
+                    <button type="submit" class="btn btn-primary">保存</button>
+                    <a href="@Url.Action("Index", "Product", new { area = "Product" })" class="btn btn-default">返回</a>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</section>
+
+@Html.Partial("_Modal")
+
+@section Scripts {
+
+    <link href="https://cdn.jsdelivr.net/npm/froala-editor@3.0.0-beta.1/css/froala_editor.pkgd.min.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/froala-editor@3.0.0-beta.1//js/froala_editor.pkgd.min.js"></script>
+
+    <script type="text/javascript">
+        $(function () {
+            new FroalaEditor('#ContentZh', {
+                // Set the image upload URL.
+                imageUploadURL: '/Base/UploadImg',
+
+                imageUploadParams: {
+                    id: 'ContentZh'
+                }
+            });
+            new FroalaEditor('#ContentEn', {
+                // Set the image upload URL.
+                imageUploadURL: '/Base/UploadImg',
+
+                imageUploadParams: {
+                    id: 'ContentEn'
+                }
+            });
+
+            // 上传图片
+            let $modal = $('#customModal');
+
+            $('#ImgArea').on('click', function () {
+                $modal.modal('show');
+                //$('#customModal').modal('hide');
+                $modal.find('#modalLabel').text('上传图片');
+                //$modal.find('#modal-body');
+                $.ajax({
+                    url: '/Base/GetUploadView',
+                    method: 'GET',
+                    dataType: 'HTML',
+                    success: function (r) {
+                        $modal.find('.modal-body').html(r);
+                    }
+                })
+            });
+
+            $modal.find('.j-btn-save').on('click', function () {
+
+                $modal.modal('hide');
+
+            });
+        });
+
+        function uploadCallback(d) {
+            alert('上传成功');
+            $('#ImgArea').attr('src', d);
+            $('#ImgUrl').val(d);
+        }
+    </script>
+}
