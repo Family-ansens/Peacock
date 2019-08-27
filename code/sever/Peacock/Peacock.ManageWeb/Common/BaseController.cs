@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
 using Peacock.Dal;
 using Peacock.ViewModel.Manage;
 
@@ -97,45 +98,49 @@ namespace Peacock.ManageWeb
         public ActionResult UploadImg([FromServices]IHostingEnvironment env, [FromServices]IConfiguration config)
         {
             var files = HttpContext.Request.Form.Files.GetFiles("file");
-            var fileBasePath = Path.Combine(env.WebRootPath, "upload", "img");
-            List<string> fileList = new List<string>();
-            string t = string.Empty;
-
             string uploadPath = HttpContext.Request.Form["uploadPath"];
-            if (!string.IsNullOrEmpty(uploadPath)) fileBasePath = Path.Combine(fileBasePath, uploadPath);
-            if (!Directory.Exists(fileBasePath)) Directory.CreateDirectory(fileBasePath);
+            string returnFilePath = string.Empty;
+            Dictionary<string, string> returnFileDict = new Dictionary<string, string>();
+
+            string apiUrl = config["ApiUrl"];
+            string remoteUploadUrl = apiUrl + "/file/uploadimg";
+            string apiToken = config["ApiToken"];
 
             foreach (var formFile in files)
             {
                 if (formFile.Length > 0)
                 {
                     string fileExtension = formFile.FileName.Split('.').Last();
-                    string fileName = Guid.NewGuid().ToString().Replace("-", string.Empty) + "." + fileExtension;
-                    string fileFullPath = Path.Combine(fileBasePath, fileName);
-                    using (var stream = new FileStream(fileFullPath, FileMode.CreateNew))
+                    using (var ms = new MemoryStream())
                     {
-                        //fileList.Add(fileName);
-                        fileList.Add(Request.Host + "/upload/img/" + fileName);
-                        formFile.CopyTo(stream);
-                        t = "/upload/img/" + fileName;
+                        formFile.CopyTo(ms);
+
+                        var content = new byte[ms.Length];
+                        ms.Write(content, 0, (int)ms.Length);
+
+                        
+                        var httpClient = new HttpClient();
+
+                        using (var multiContent = new MultipartFormDataContent())
+                        {
+                            var fileContent = new ByteArrayContent(content);
+                            multiContent.Add(fileContent, "file", Path.GetFileName(formFile.FileName));
+                            multiContent.Add(new StringContent(apiToken), "token");
+
+                            HttpResponseMessage response = httpClient.PostAsync(remoteUploadUrl, multiContent).Result;
+                            returnFileDict = JsonConvert.DeserializeObject<Dictionary<string, string>>(response.Content.ReadAsStringAsync().Result);
+                        }
+
+                        returnFilePath = apiUrl + "/file" + returnFileDict[formFile.FileName];
                     }
+
                 }
             }
 
-            string remoteUploadUrl = config["ApiUrl"] + "/file/uploadimg";
-            string apiToken = config["ApiToken"];
-            var httpClient = new HttpClient();
-            var httpContent = new MultipartFormDataContent();
-            httpContent.Add(new StringContent(apiToken), "apiToken");
-
-
-            var uploadResult = httpClient.PostAsync(remoteUploadUrl, httpContent).Result;
-
             Hashtable imageUrl = new Hashtable();
-            imageUrl.Add("link", t);
+            imageUrl.Add("link", returnFilePath);
 
             return Json(imageUrl);
-            //return Ok(new { count = files.Count, size, fileList });
         }
     }
 }

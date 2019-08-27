@@ -12,21 +12,29 @@ namespace Peacock.Apis.Controllers
     [Route("file")]
     public class FileController : ControllerBase
     {
+        private readonly IHostingEnvironment _env;
+
+        public FileController(IHostingEnvironment env)
+        {
+            _env = env;
+        }
+
         /// <summary>
         /// 上传图片
         /// </summary>
         /// <param name="env"></param>
         /// <returns></returns>
         [HttpPost("uploadimg")]
-        public ActionResult UploadImg([FromServices]IHostingEnvironment env)
+        public ActionResult UploadImg()
         {
             var apiToken = HttpContext.Request.Form["token"];
             if (string.IsNullOrEmpty(apiToken)) return Unauthorized();
 
             var files = HttpContext.Request.Form.Files.GetFiles("file");
-            var fileBasePath = Path.Combine(env.ContentRootPath, "upload", "img");
+            var fileBasePath = Path.Combine(_env.ContentRootPath, "upload", "img");
             List<string> fileList = new List<string>();
-            string t = string.Empty;
+            string returnPath = string.Empty;
+            var returnPaths = new Dictionary<string, string>();
 
             string uploadPath = HttpContext.Request.Form["uploadPath"];
             if (!string.IsNullOrEmpty(uploadPath)) fileBasePath = Path.Combine(fileBasePath, uploadPath);
@@ -41,21 +49,24 @@ namespace Peacock.Apis.Controllers
                     string fileFullPath = Path.Combine(fileBasePath, fileName);
                     using (var stream = new FileStream(fileFullPath, FileMode.CreateNew))
                     {
-                        //fileList.Add(fileName);
                         fileList.Add(Request.Host + "/upload/img/" + fileName);
                         formFile.CopyTo(stream);
-                        t = "/upload/img/" + fileName;
+                        returnPath = "/upload/img/" + fileName;
+                        returnPaths.Add(formFile.FileName, returnPath);
                     }
                 }
             }
 
-            // process uploaded files
-            // Don't rely on or trust the FileName property without validation.
+            return Ok(returnPaths);
+        }
 
-            Hashtable imageUrl = new Hashtable();
-            imageUrl.Add("link", t);
+        [HttpGet("{filePath}")]
+        public ActionResult GetFile(string filePath)
+        {
+            var fileFullPath = Path.Combine(_env.ContentRootPath, filePath);
+            if (!System.IO.File.Exists(fileFullPath)) return NotFound();
 
-            return Ok(imageUrl);
+            return new FileContentResult(System.IO.File.ReadAllBytes(fileFullPath), "image/jpeg");
         }
     }
 }
