@@ -131,6 +131,8 @@ ENGINE=InnoDB
 
 CREATE TABLE `T_Company` (
 	`ID` int(11) NOT NULL AUTO_INCREMENT,
+	`OrderId` INT(11) NULL DEFAULT NULL,
+	`IntroductionLanguageId` INT(11) NULL DEFAULT NULL,
 	`Content` TEXT NULL,
 	`ContentLanguageId` INT(11) NULL DEFAULT NULL,
 	`ImgPath` VARCHAR(2000) NULL,

@@ -10,6 +10,26 @@ namespace Peacock.ViewModel.Manage
     {
         public int Id { get; set; }
 
+        //undone: 未添加数据库字段
+        [Display(Name = "标题(中文)")]
+        [Required(ErrorMessage = "{0}为必填项")]
+        public string TitleZh { get; set; }
+
+        [Display(Name = "标题(英文)")]
+        [Required(ErrorMessage = "{0}为必填项")]
+        public string TitleEn { get; set; }
+
+        [Display(Name = "序号")]
+        public int? OrderId { get; set; }
+
+        [Display(Name = "简介(中文)")]
+        [Required(ErrorMessage = "{0}为必填项")]
+        public string IntroductionZh { get; set; }
+
+        [Display(Name = "简介(英文)")]
+        [Required(ErrorMessage = "{0}为必填项")]
+        public string IntroductionEn { get; set; }
+
         [Display(Name = "内容(中文)")]
         [Required(ErrorMessage = "{0}为必填项")]
         public string ContentZh { get; set; }
@@ -21,6 +41,18 @@ namespace Peacock.ViewModel.Manage
         [Display(Name = "宣传图")]
         [Required(ErrorMessage = "{0}为必填项")]
         public string ImgUrl { get; set; }
+
+        [JsonIgnore]
+        public Dictionary<string, string> IntroductionLanguageDict
+        {
+            get
+            {
+                Dictionary<string, string> dict = new Dictionary<string, string>();
+                dict.Add(LanguageType.ZhCn, IntroductionZh);
+                dict.Add(LanguageType.En, IntroductionEn);
+                return dict;
+            }
+        }
 
         [JsonIgnore]
         public Dictionary<string, string> ContentLanguageDict

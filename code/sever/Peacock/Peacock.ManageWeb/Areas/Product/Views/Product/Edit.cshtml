@@ -53,7 +53,11 @@
                                             </div>
                                         </div>
                                         <div class="col-sm-12">
-                                            详细说明(中文)
+                                            @Html.LabelFor(m => m.IntroductionZh)
+                                            @Html.TextAreaFor(m => m.IntroductionZh, new { @class = "form-control" })
+                                        </div>
+                                        <div class="col-sm-12">
+                                            @Html.LabelFor(m => m.DescriptionZh)
                                             @Html.TextAreaFor(m => m.DescriptionZh)
                                         </div>
                                     </div>
@@ -65,7 +69,11 @@
                                             </div>
                                         </div>
                                         <div class="col-sm-12">
-                                            详细说明(英文)
+                                            @Html.LabelFor(m => m.IntroductionEn)
+                                            @Html.TextAreaFor(m => m.IntroductionEn, new { @class = "form-control" })
+                                        </div>
+                                        <div class="col-sm-12">
+                                            @Html.LabelFor(m => m.DescriptionEn)
                                             @Html.TextAreaFor(m => m.DescriptionEn)
                                         </div>
                                     </div>

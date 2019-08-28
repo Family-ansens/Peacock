@@ -17,18 +17,33 @@ namespace Peacock.ManageWeb.Areas.News.Controllers
             //_logger = logger;
         }
 
+        public IActionResult Index()
+        {
+            return View();
+        }
+
+        public JsonResult GetList()
+        {
+            //var query = peacockDbContext.T_Company
+            return null;
+        }
+
         public ActionResult Edit()
         {
             CompanyItem vm = new CompanyItem();
             var entity = peacockDbContext.T_Company
-                                     .Include(i => i.LanguageRelationByContent).ThenInclude(i=>i.CompaniesWithContent)
+                                     .Include(i => i.LanguageRelationByIntroduction).ThenInclude(i => i.CompaniesWithIntroduction)
+                                     .Include(i => i.LanguageRelationByContent).ThenInclude(i => i.CompaniesWithContent)
                                      .FirstOrDefault();
             if (entity != null)
             {
                 vm = new CompanyItem()
                 {
                     Id = entity.ID,
+                    OrderId = entity.OrderId,
                     ImgUrl = entity.ImgPath,
+                    IntroductionZh = GetLanguageContent(entity.LanguageRelationByIntroduction, LanguageType.ZhCn),
+                    IntroductionEn = GetLanguageContent(entity.LanguageRelationByIntroduction, LanguageType.En),
                     ContentZh = entity.LanguageRelationByContent.TSystemLanguageContent.FirstOrDefault(i => i.LanguageType == LanguageType.ZhCn).DisplayContent,
                     ContentEn = entity.LanguageRelationByContent.TSystemLanguageContent.FirstOrDefault(i => i.LanguageType == LanguageType.En).DisplayContent,
                 };
@@ -50,6 +65,7 @@ namespace Peacock.ManageWeb.Areas.News.Controllers
             {
                 entity = new T_Company()
                 {
+                    OrderId = vm.OrderId,
                     Content = vm.ContentZh,
                     ImgPath = vm.ImgUrl,
                     CreatedBy = userName,
@@ -57,15 +73,18 @@ namespace Peacock.ManageWeb.Areas.News.Controllers
                     LastUpdatedBy = userName,
                     LastUpdatedTime = dtNow,
                 };
+                EditLanguageContent(entity.LanguageRelationByIntroduction, vm.IntroductionLanguageDict);
                 EditLanguageContent(entity.LanguageRelationByContent, vm.ContentLanguageDict);
                 peacockDbContext.Add(entity);
             }
             else
             {
+                entity.OrderId = vm.OrderId;
                 entity.Content = vm.ContentZh;
                 entity.LastUpdatedBy = userName;
                 entity.LastUpdatedTime = dtNow;
 
+                EditLanguageContent(entity.LanguageRelationByIntroduction, vm.IntroductionLanguageDict);
                 entity.LanguageRelationByContent = EditLanguageContent(entity.LanguageRelationByContent, vm.ContentLanguageDict);
                 peacockDbContext.Update(entity);
             }

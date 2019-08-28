@@ -24,6 +24,8 @@ namespace Peacock.Dal
 
         public int? NameLanguageId { get; set; }
 
+        public int? IntroductionLanguageId { get; set; }
+
         public int? DescriptionLanguageId { get; set; }
 
         public string ImgPath { get; set; }
@@ -41,6 +43,8 @@ namespace Peacock.Dal
         public virtual T_Pro_ProductGroup ProductGourp { get; set; }
 
         public virtual T_System_LanguageRelation LanguageRelationByName { get; set; }
+
+        public virtual T_System_LanguageRelation LanguageRelationByIntroduction { get; set; }
 
         public virtual T_System_LanguageRelation LanguageRelationByDescription { get; set; }
 

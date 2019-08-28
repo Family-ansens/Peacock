@@ -6,7 +6,7 @@ namespace Peacock.Dal
 {
     public partial class PeacockDbContext : DbContext
     {
-        private const bool IS_MYSQL = true;
+        private const bool IS_MYSQL = false;
 
         public PeacockDbContext()
         {
@@ -30,6 +30,7 @@ namespace Peacock.Dal
         public virtual DbSet<T_Pro_ExampleGroup> T_Pro_ExampleGroup { get; set; }
         public virtual DbSet<T_Pro_ExampleImg> T_Pro_ExampleImg { get; set; }
         public virtual DbSet<T_Company> T_Company { get; set; }
+        public virtual DbSet<T_Evaluation> T_Evaluation { get; set; }
 
 
 //        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -144,6 +145,8 @@ namespace Peacock.Dal
 
                 entity.Property(e => e.NameLanguageId);
 
+                entity.Property(e => e.IntroductionLanguageId);
+
                 entity.Property(e => e.DescriptionLanguageId);
 
                 if (IS_MYSQL)
@@ -163,6 +166,11 @@ namespace Peacock.Dal
                     .WithMany(p => p.ProductsWithName)
                     .HasForeignKey(d => d.NameLanguageId)
                     .HasConstraintName("FK_T_Pro_Product_T_System_LanguageRelation_Name");
+
+                entity.HasOne(d => d.LanguageRelationByIntroduction)
+                    .WithMany(p => p.ProductsWithIntroduction)
+                    .HasForeignKey(d => d.IntroductionLanguageId)
+                    .HasConstraintName("FK_T_Pro_Product_T_System_LanguageRelation_Introduction");
 
                 entity.HasOne(d => d.LanguageRelationByDescription)
                     .WithMany(p => p.ProductsWithDescription)
@@ -461,7 +469,11 @@ namespace Peacock.Dal
             {
                 entity.ToTable("T_Company");
 
-                entity.Property(e => e.ID).HasColumnName("ID");              
+                entity.Property(e => e.ID).HasColumnName("ID");
+
+                entity.Property(e => e.OrderId);
+
+                entity.Property(e => e.IntroductionLanguageId);
 
                 entity.Property(e => e.Content);
 
@@ -477,10 +489,42 @@ namespace Peacock.Dal
 
                 entity.Property(e => e.LastUpdatedTime).HasColumnType("datetime");
 
+                entity.HasOne(d => d.LanguageRelationByIntroduction)
+                    .WithMany(p => p.CompaniesWithIntroduction)
+                    .HasForeignKey(d => d.IntroductionLanguageId)
+                    .HasConstraintName("FK_T_Company_T_System_LanguageRelation_Introduction");
+
                 entity.HasOne(d => d.LanguageRelationByContent)
                     .WithMany(p => p.CompaniesWithContent)
                     .HasForeignKey(d => d.ContentLanguageId)
                     .HasConstraintName("FK_T_Company_T_System_LanguageRelation_Content");
+            });
+
+            modelBuilder.Entity<T_Evaluation>(entity =>
+            {
+                entity.ToTable("T_Evaluation");
+
+                entity.Property(e => e.ID).HasColumnName("ID");
+
+                entity.Property(e => e.Name).IsRequired().HasMaxLength(10);
+
+                entity.Property(e => e.Tel).IsRequired().HasMaxLength(20);
+
+                entity.Property(e => e.Content).IsRequired().HasMaxLength(1000);
+
+                entity.Property(e => e.Email).IsRequired().HasMaxLength(100);
+
+                entity.Property(e => e.OtherContact).IsRequired().HasMaxLength(100);
+
+                entity.Property(e => e.IpAddress).IsRequired().HasMaxLength(50);
+
+                entity.Property(e => e.CreatedBy).IsRequired().HasMaxLength(50);
+
+                entity.Property(e => e.CreatedTime).HasColumnType("datetime");
+
+                entity.Property(e => e.LastUpdatedBy).IsRequired().HasMaxLength(50);
+
+                entity.Property(e => e.LastUpdatedTime).HasColumnType("datetime");
             });
         }
     }

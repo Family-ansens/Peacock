@@ -56,6 +56,7 @@ namespace Peacock.ManageWeb.Areas.Product.Controllers
 
             var entity = peacockDbContext.T_Pro_Product
                                          .Include(i => i.LanguageRelationByName).ThenInclude(i => i.TSystemLanguageContent)
+                                         .Include(i => i.LanguageRelationByIntroduction).ThenInclude(i => i.TSystemLanguageContent)
                                          .Include(i => i.LanguageRelationByDescription).ThenInclude(i => i.TSystemLanguageContent)
                                          .FirstOrDefault(i => i.ID == id);
             if (entity != null)
@@ -63,6 +64,8 @@ namespace Peacock.ManageWeb.Areas.Product.Controllers
                 vm.Id = entity.ID;
                 vm.NameZh = entity.LanguageRelationByName.TSystemLanguageContent.FirstOrDefault(i => i.LanguageType == LanguageType.ZhCn)?.DisplayContent;
                 vm.NameEn = entity.LanguageRelationByName.TSystemLanguageContent.FirstOrDefault(i => i.LanguageType == LanguageType.En)?.DisplayContent;
+                vm.IntroductionZh = GetLanguageContent(entity.LanguageRelationByIntroduction, LanguageType.ZhCn);
+                vm.IntroductionEn = GetLanguageContent(entity.LanguageRelationByIntroduction, LanguageType.En);
                 vm.DescriptionZh = entity.LanguageRelationByDescription?.TSystemLanguageContent?.FirstOrDefault(i => i.LanguageType == LanguageType.ZhCn)?.DisplayContent ?? string.Empty;
                 vm.DescriptionEn = entity.LanguageRelationByDescription?.TSystemLanguageContent?.FirstOrDefault(i => i.LanguageType == LanguageType.En)?.DisplayContent ?? string.Empty;
                 vm.ImgPath = entity.ImgPath;
@@ -102,11 +105,17 @@ namespace Peacock.ManageWeb.Areas.Product.Controllers
                 entity.CreatedBy = userName;
                 entity.LastUpdatedTime = dtNow;
                 entity.LastUpdatedBy = userName;
+
                 //设置多语言
                 var nameLanguageDict = new Dictionary<string, string>();
                 nameLanguageDict.Add(LanguageType.ZhCn, model.NameZh);
                 nameLanguageDict.Add(LanguageType.En, model.NameEn);
                 entity.LanguageRelationByName = EditLanguageContent(entity.LanguageRelationByName, nameLanguageDict);
+
+                var introductionLanguageDict = new Dictionary<string, string>();
+                introductionLanguageDict.Add(LanguageType.ZhCn, model.IntroductionZh);
+                introductionLanguageDict.Add(LanguageType.En, model.IntroductionEn);
+                entity.LanguageRelationByDescription = EditLanguageContent(entity.LanguageRelationByIntroduction, introductionLanguageDict);
 
                 var descLanguageDict = new Dictionary<string, string>();
                 descLanguageDict.Add(LanguageType.ZhCn, model.DescriptionZh);
@@ -139,6 +148,11 @@ namespace Peacock.ManageWeb.Areas.Product.Controllers
                 nameLanguageDict.Add(LanguageType.ZhCn, model.NameZh);
                 nameLanguageDict.Add(LanguageType.En, model.NameEn);
                 entity.LanguageRelationByName = EditLanguageContent(entity.LanguageRelationByName, nameLanguageDict);
+
+                var introductionLanguageDict = new Dictionary<string, string>();
+                introductionLanguageDict.Add(LanguageType.ZhCn, model.IntroductionZh);
+                introductionLanguageDict.Add(LanguageType.En, model.IntroductionEn);
+                entity.LanguageRelationByIntroduction = EditLanguageContent(entity.LanguageRelationByIntroduction, introductionLanguageDict);
 
                 var descLanguageDict = new Dictionary<string, string>();
                 descLanguageDict.Add(LanguageType.ZhCn, model.DescriptionZh);

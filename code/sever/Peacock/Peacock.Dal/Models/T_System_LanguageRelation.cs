@@ -11,6 +11,7 @@ namespace Peacock.Dal
             TSystemMenu = new HashSet<T_System_Menu>();
             T_Pro_ProductGroups = new HashSet<T_Pro_ProductGroup>();
             ProductsWithName = new HashSet<T_Pro_Product>();
+            ProductsWithIntroduction = new HashSet<T_Pro_Product>();
             ProductsWithDescription = new HashSet<T_Pro_Product>();
             NewsWithTitle = new HashSet<T_New>();
             NewsWithContent = new HashSet<T_New>();
@@ -19,6 +20,7 @@ namespace Peacock.Dal
             ExampleGroups = new HashSet<T_Pro_ExampleGroup>();
             ExamplesWithName = new HashSet<T_Pro_Example>();
             ExamplesWithDescription = new HashSet<T_Pro_Example>();
+            CompaniesWithIntroduction = new HashSet<T_Company>();
             CompaniesWithContent = new HashSet<T_Company>();
         }
 
@@ -32,6 +34,7 @@ namespace Peacock.Dal
         public virtual ICollection<T_System_Menu> TSystemMenu { get; set; }
         public virtual ICollection<T_Pro_ProductGroup> T_Pro_ProductGroups { get; set; }
         public virtual ICollection<T_Pro_Product> ProductsWithName { get; set; }
+        public virtual ICollection<T_Pro_Product> ProductsWithIntroduction { get; set; }
         public virtual ICollection<T_Pro_Product> ProductsWithDescription { get; set; }
         public virtual ICollection<T_New> NewsWithTitle { get; set; }
         public virtual ICollection<T_New> NewsWithContent { get; set; }
@@ -40,6 +43,7 @@ namespace Peacock.Dal
         public virtual ICollection<T_Pro_ExampleGroup> ExampleGroups { get; set; }
         public virtual ICollection<T_Pro_Example> ExamplesWithName { get; set; }
         public virtual ICollection<T_Pro_Example> ExamplesWithDescription { get; set; }
+        public virtual ICollection<T_Company> CompaniesWithIntroduction { get; set; }
         public virtual ICollection<T_Company> CompaniesWithContent { get; set; }
     }
 }

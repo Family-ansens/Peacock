@@ -17,6 +17,11 @@
                                 @Html.HiddenFor(m => m.Id)
 
                                 <div class="form-group">
+                                    @Html.LabelFor(m => m.OrderId)
+                                    @Html.TextBoxFor(m => m.OrderId, new { @class = "form-control" })
+                                </div>
+
+                                <div class="form-group">
                                     @Html.HiddenFor(m => m.ImgUrl)
                                     @Html.LabelFor(m => m.ImgUrl)
                                     <img id="ImgArea" src='@Model.ImgUrl' class="form-control" style="height:200px;width:200px;" />
@@ -38,11 +43,19 @@
                                 <div class="tab-content">
                                     <div class="tab-pane active" id="tab_zh">
                                         <div class="col-sm-12">
+                                            @Html.LabelFor(m => m.IntroductionZh)
+                                            @Html.TextAreaFor(m => m.IntroductionZh, new { @class = "form-control" })
+                                        </div>
+                                        <div class="col-sm-12">
                                             @Html.LabelFor(m => m.ContentZh)
                                             @Html.TextAreaFor(m => m.ContentZh)
                                         </div>
                                     </div>
                                     <div class="tab-pane" id="tab_en">
+                                        <div class="col-sm-12">
+                                            @Html.LabelFor(m => m.IntroductionEn)
+                                            @Html.TextAreaFor(m => m.IntroductionEn, new { @class = "form-control" })
+                                        </div>
                                         <div class="col-sm-12">
                                             @Html.LabelFor(m => m.ContentEn)
                                             @Html.TextAreaFor(m => m.ContentEn)

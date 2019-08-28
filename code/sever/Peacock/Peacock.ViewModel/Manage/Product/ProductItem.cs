@@ -22,6 +22,14 @@ namespace Peacock.ViewModel.Manage
         [Required(ErrorMessage = "{0}为必填项")]
         public int OrderId { get; set; }
 
+        [Display(Name = "商品简介(中文)")]
+        [Required(ErrorMessage = "{0}为必填项")]
+        public string IntroductionZh { get; set; }
+
+        [Display(Name = "商品简介(英文)")]
+        [Required(ErrorMessage = "{0}为必填项")]
+        public string IntroductionEn { get; set; }
+
         [Display(Name = "商品详情(中文)")]
         [Required(ErrorMessage = "{0}为必填项")]
         public string DescriptionZh { get; set; }
