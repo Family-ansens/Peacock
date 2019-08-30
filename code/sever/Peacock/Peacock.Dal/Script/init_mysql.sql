@@ -132,10 +132,12 @@ ENGINE=InnoDB
 CREATE TABLE `T_Company` (
 	`ID` int(11) NOT NULL AUTO_INCREMENT,
 	`OrderId` INT(11) NULL DEFAULT NULL,
+	`TitleLanguageId` INT(11) NULL DEFAULT NULL,
 	`IntroductionLanguageId` INT(11) NULL DEFAULT NULL,
 	`Content` TEXT NULL,
 	`ContentLanguageId` INT(11) NULL DEFAULT NULL,
 	`ImgPath` VARCHAR(2000) NULL,
+	`IsDeleted` BIT(1) NOT NULL DEFAULT b'0',
 	`CreatedBy` VARCHAR(50) NOT NULL,
 	`CreatedTime` DATETIME NOT NULL,
 	`LastUpdatedBy` VARCHAR(50) NOT NULL,

@@ -45,20 +45,31 @@ namespace Peacock.Apis
         public void ConfigureServices(IServiceCollection services)
         {
             //注入数据库DbContext
-            //string sqlConnectionStr = Configuration.GetConnectionString("PeacockMysqlProvider");
-            //services.AddDbContext<PeacockDbContext>(options =>
-            //    options.UseMySQL(sqlConnectionStr)
-            //);
-            string sqlConnectionStr = Configuration.GetConnectionString("PeacockSqlSeverProvider");
+            string sqlConnectionStr = Configuration.GetConnectionString("PeacockMysqlProvider");
             services.AddDbContext<PeacockDbContext>(options =>
-                options.UseSqlServer(sqlConnectionStr)
+                options.UseMySQL(sqlConnectionStr)
             );
+            //string sqlConnectionStr = Configuration.GetConnectionString("PeacockSqlSeverProvider");
+            //services.AddDbContext<PeacockDbContext>(options =>
+            //    options.UseSqlServer(sqlConnectionStr)
+            //);
 
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new Info { Title = "Peacock.Apis", Version = "v1.0.0" });
                 c.IncludeXmlComments(Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Peacock.Apis.xml"));
                 c.OperationFilter<SwaggerHttpHeaderOperation>();
+            });
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy("allow_all", builder =>
+                {
+                    builder.AllowAnyOrigin() //允许任何来源的主机访问
+                           .AllowAnyMethod()
+                           .AllowAnyHeader()
+                           .AllowCredentials();//指定处理cookie
+                });
             });
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
@@ -80,6 +91,7 @@ namespace Peacock.Apis
                 c.SwaggerEndpoint("/swagger/v1/swagger.json", "Peacock.Apis v1.0.0");
             });
 
+            app.UseCors("allow_all");
             app.UseMvc();
             //app.UseMvc(routes =>
             //{

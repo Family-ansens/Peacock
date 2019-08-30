@@ -10,7 +10,6 @@ namespace Peacock.ViewModel.Manage
     {
         public int Id { get; set; }
 
-        //undone: 未添加数据库字段
         [Display(Name = "标题(中文)")]
         [Required(ErrorMessage = "{0}为必填项")]
         public string TitleZh { get; set; }
@@ -41,6 +40,20 @@ namespace Peacock.ViewModel.Manage
         [Display(Name = "宣传图")]
         [Required(ErrorMessage = "{0}为必填项")]
         public string ImgUrl { get; set; }
+
+        public DateTime LastUpdatedTime { get; set; }
+
+        [JsonIgnore]
+        public Dictionary<string, string> TitleLanguageDict
+        {
+            get
+            {
+                Dictionary<string, string> dict = new Dictionary<string, string>();
+                dict.Add(LanguageType.ZhCn, TitleZh);
+                dict.Add(LanguageType.En, TitleEn);
+                return dict;
+            }
+        }
 
         [JsonIgnore]
         public Dictionary<string, string> IntroductionLanguageDict

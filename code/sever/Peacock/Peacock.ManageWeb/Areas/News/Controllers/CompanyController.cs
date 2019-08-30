@@ -24,17 +24,35 @@ namespace Peacock.ManageWeb.Areas.News.Controllers
 
         public JsonResult GetList()
         {
-            //var query = peacockDbContext.T_Company
-            return null;
+            var query = peacockDbContext.T_Company
+                .Include(i => i.LanguageRelationByTitle).ThenInclude(i => i.CompaniesWithTitle)
+                .Where(i => !i.IsDeleted);
+            int count = query.Count();
+            var list = query.OrderBy(o => o.OrderId)
+                .Select(c => new CompanyItem
+                {
+                    Id = c.ID,
+                    OrderId = c.OrderId,
+                    TitleZh = c.LanguageRelationByTitle.TSystemLanguageContent.FirstOrDefault(i => i.LanguageType == LanguageType.ZhCn).DisplayContent,
+                    ImgUrl = c.ImgPath,
+                    LastUpdatedTime = c.LastUpdatedTime,
+                }).ToList();
+            return Json(new { total = count, rows = list });
         }
 
-        public ActionResult Edit()
+        public ActionResult Edit(int id)
         {
+            if (id == 0)
+            {
+                return View(new CompanyItem());
+            }
+
             CompanyItem vm = new CompanyItem();
             var entity = peacockDbContext.T_Company
-                                     .Include(i => i.LanguageRelationByIntroduction).ThenInclude(i => i.CompaniesWithIntroduction)
-                                     .Include(i => i.LanguageRelationByContent).ThenInclude(i => i.CompaniesWithContent)
-                                     .FirstOrDefault();
+                                     .Include(i => i.LanguageRelationByTitle).ThenInclude(i => i.TSystemLanguageContent)
+                                     .Include(i => i.LanguageRelationByIntroduction).ThenInclude(i => i.TSystemLanguageContent)
+                                     .Include(i => i.LanguageRelationByContent).ThenInclude(i => i.TSystemLanguageContent)
+                                     .FirstOrDefault(i => i.ID == id);
             if (entity != null)
             {
                 vm = new CompanyItem()
@@ -42,10 +60,12 @@ namespace Peacock.ManageWeb.Areas.News.Controllers
                     Id = entity.ID,
                     OrderId = entity.OrderId,
                     ImgUrl = entity.ImgPath,
+                    TitleZh = GetLanguageContent(entity.LanguageRelationByTitle, LanguageType.ZhCn),
+                    TitleEn = GetLanguageContent(entity.LanguageRelationByTitle, LanguageType.En),
                     IntroductionZh = GetLanguageContent(entity.LanguageRelationByIntroduction, LanguageType.ZhCn),
                     IntroductionEn = GetLanguageContent(entity.LanguageRelationByIntroduction, LanguageType.En),
-                    ContentZh = entity.LanguageRelationByContent.TSystemLanguageContent.FirstOrDefault(i => i.LanguageType == LanguageType.ZhCn).DisplayContent,
-                    ContentEn = entity.LanguageRelationByContent.TSystemLanguageContent.FirstOrDefault(i => i.LanguageType == LanguageType.En).DisplayContent,
+                    ContentZh = GetLanguageContent(entity.LanguageRelationByContent, LanguageType.ZhCn),
+                    ContentEn = GetLanguageContent(entity.LanguageRelationByContent, LanguageType.En),
                 };
             }
             return View(vm);
@@ -58,8 +78,10 @@ namespace Peacock.ManageWeb.Areas.News.Controllers
             if (!ModelState.IsValid) return View("Edit", vm);
 
             var entity = peacockDbContext.T_Company
+                                     .Include(i => i.LanguageRelationByTitle).ThenInclude(i => i.CompaniesWithTitle)
+                                     .Include(i => i.LanguageRelationByIntroduction).ThenInclude(i => i.CompaniesWithIntroduction)
                                      .Include(i => i.LanguageRelationByContent).ThenInclude(i => i.CompaniesWithContent)
-                                     .FirstOrDefault();
+                                     .FirstOrDefault(i => i.ID == vm.Id);
 
             if (entity == null)
             {
@@ -73,8 +95,9 @@ namespace Peacock.ManageWeb.Areas.News.Controllers
                     LastUpdatedBy = userName,
                     LastUpdatedTime = dtNow,
                 };
-                EditLanguageContent(entity.LanguageRelationByIntroduction, vm.IntroductionLanguageDict);
-                EditLanguageContent(entity.LanguageRelationByContent, vm.ContentLanguageDict);
+                entity.LanguageRelationByTitle = EditLanguageContent(entity.LanguageRelationByTitle, vm.TitleLanguageDict);
+                entity.LanguageRelationByIntroduction = EditLanguageContent(entity.LanguageRelationByIntroduction, vm.IntroductionLanguageDict);
+                entity.LanguageRelationByContent = EditLanguageContent(entity.LanguageRelationByContent, vm.ContentLanguageDict);
                 peacockDbContext.Add(entity);
             }
             else
@@ -84,12 +107,23 @@ namespace Peacock.ManageWeb.Areas.News.Controllers
                 entity.LastUpdatedBy = userName;
                 entity.LastUpdatedTime = dtNow;
 
-                EditLanguageContent(entity.LanguageRelationByIntroduction, vm.IntroductionLanguageDict);
+                entity.LanguageRelationByTitle = EditLanguageContent(entity.LanguageRelationByTitle, vm.TitleLanguageDict);
+                entity.LanguageRelationByIntroduction = EditLanguageContent(entity.LanguageRelationByIntroduction, vm.IntroductionLanguageDict);
                 entity.LanguageRelationByContent = EditLanguageContent(entity.LanguageRelationByContent, vm.ContentLanguageDict);
                 peacockDbContext.Update(entity);
             }
             peacockDbContext.SaveChanges();
-            return RedirectToAction("Edit");
+            return RedirectToAction("Edit", new { id = entity.ID });
+        }
+
+        [HttpPost]
+        public JsonResult DeleteByIds(int id)
+        {
+            var entity = peacockDbContext.T_Company.FirstOrDefault(i => i.ID == id);
+            if (entity == null) return Json(Fail("不存在记录"));
+            peacockDbContext.T_Company.Remove(entity);
+            peacockDbContext.SaveChanges();
+            return Json(Success("删除成功"));
         }
     }
 }

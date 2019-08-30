@@ -6,7 +6,7 @@ namespace Peacock.Dal
 {
     public partial class PeacockDbContext : DbContext
     {
-        private const bool IS_MYSQL = false;
+        private const bool IS_MYSQL = true;
 
         public PeacockDbContext()
         {
@@ -473,6 +473,8 @@ namespace Peacock.Dal
 
                 entity.Property(e => e.OrderId);
 
+                entity.Property(e => e.TitleLanguageId);
+
                 entity.Property(e => e.IntroductionLanguageId);
 
                 entity.Property(e => e.Content);
@@ -481,6 +483,11 @@ namespace Peacock.Dal
 
                 entity.Property(e => e.ImgPath).IsRequired().HasMaxLength(2000);
 
+                if (IS_MYSQL)
+                {
+                    entity.Property(e => e.IsDeleted).HasColumnType("bit(1)").HasDefaultValue(false);
+                }
+
                 entity.Property(e => e.CreatedBy).IsRequired().HasMaxLength(50);
 
                 entity.Property(e => e.CreatedTime).HasColumnType("datetime");
@@ -488,6 +495,11 @@ namespace Peacock.Dal
                 entity.Property(e => e.LastUpdatedBy).IsRequired().HasMaxLength(50);
 
                 entity.Property(e => e.LastUpdatedTime).HasColumnType("datetime");
+
+                entity.HasOne(d => d.LanguageRelationByTitle)
+                    .WithMany(p => p.CompaniesWithTitle)
+                    .HasForeignKey(d => d.TitleLanguageId)
+                    .HasConstraintName("FK_T_Company_T_System_LanguageRelation_Title");
 
                 entity.HasOne(d => d.LanguageRelationByIntroduction)
                     .WithMany(p => p.CompaniesWithIntroduction)

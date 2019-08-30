@@ -29,6 +29,7 @@ namespace Peacock.Apis.Controllers
         {
             var apiToken = HttpContext.Request.Form["token"];
             if (string.IsNullOrEmpty(apiToken)) return Unauthorized();
+            var fileSeverUrl = Request.IsHttps ? $"https://{Request.Host}/file" : $"http://{Request.Host}/file";
 
             DateTime today = DateTime.Today;
             var files = HttpContext.Request.Form.Files.GetFiles("file");
@@ -58,7 +59,10 @@ namespace Peacock.Apis.Controllers
                 }
             }
 
-            return Ok(returnPaths);
+            Hashtable result = new Hashtable();
+            result.Add("link", $"{fileSeverUrl}{returnPath}");
+            return new JsonResult(result);
+            //return Ok(returnPaths);
         }
 
         /// <summary>

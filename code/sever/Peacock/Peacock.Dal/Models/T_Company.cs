@@ -10,6 +10,8 @@ namespace Peacock.Dal
 
         public int? OrderId { get; set; }
 
+        public int? TitleLanguageId { get; set; }
+
         public int? IntroductionLanguageId { get; set; }
 
         public string Content { get; set; }
@@ -18,6 +20,8 @@ namespace Peacock.Dal
 
         public string ImgPath { get; set; }
 
+        public bool IsDeleted { get; set; }
+
         public string CreatedBy { get; set; }
 
         public DateTime CreatedTime { get; set; }
@@ -25,6 +29,8 @@ namespace Peacock.Dal
         public string LastUpdatedBy { get; set; }
 
         public DateTime LastUpdatedTime { get; set; }
+
+        public virtual T_System_LanguageRelation LanguageRelationByTitle { get; set; }
 
         public virtual T_System_LanguageRelation LanguageRelationByIntroduction { get; set; }
 

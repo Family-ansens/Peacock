@@ -22,9 +22,10 @@
             var formData = new FormData();
 
             formData.append("file", $('#uploadFile')[0].files[0]);
+            formData.append('token', systemConfig.ImgUploadSetting.UploadToken);
 
             $.ajax({
-                url: '/Base/UploadImg',
+                url: systemConfig.ImgUploadSetting.UploadUrl,
                 data: formData,
                 method: 'POST',
                 dataType: 'JSON',

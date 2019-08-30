@@ -136,10 +136,12 @@ GO
 CREATE TABLE [dbo].T_Company(
 	[ID] [int] IDENTITY(1,1) NOT NULL,
 	OrderId int null,
+	TitleLanguageId int null,
 	IntroductionLanguageId int null,
 	[Content] TEXT NULL,
 	ContentLanguageId [int] NULL,
 	ImgPath [nvarchar](500) NOT NULL,
+	[IsDeleted] [bit] NOT NULL,
 	[CreatedBy] [nvarchar](50) NOT NULL,
 	[CreatedTime] [datetime] NOT NULL,
 	[LastUpdatedBy] [nvarchar](50) NOT NULL,

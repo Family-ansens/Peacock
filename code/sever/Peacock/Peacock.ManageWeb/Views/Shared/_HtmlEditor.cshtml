@@ -1,0 +1,23 @@
+﻿<link href="https://cdn.jsdelivr.net/npm/froala-editor@3.0.0-beta.1/css/froala_editor.pkgd.min.css" rel="stylesheet" type="text/css" />
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/froala-editor@3.0.0-beta.1//js/froala_editor.pkgd.min.js"></script>
+
+<script type="text/javascript">
+    if (typeof HtmlEditorHelper == 'undefined') {
+        HtmlEditorHelper = function () { }
+        HtmlEditorHelper.prototype.Create = function (selector) {
+            new FroalaEditor(selector, {
+                // Set the image upload URL.
+                imageUploadURL: systemConfig.ImgUploadSetting.UploadUrl,
+
+                imageUploadParams: {
+                    id: selector,
+                    token: systemConfig.ImgUploadSetting.UploadToken
+                }
+            });
+        }
+    }
+
+    if (typeof htmlEditorHelper == 'undefined') {
+        htmlEditorHelper = new HtmlEditorHelper();
+    }
+</script>

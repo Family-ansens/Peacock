@@ -22,7 +22,7 @@ namespace Peacock.Apis.Controllers
         /// </summary>
         /// <param name="search"></param>
         /// <returns></returns>
-        [HttpGet("news")]
+        [HttpGet("list")]
         public PageResponseDto<NewResDto> GetNews(BasePageSearch search)
         {
             string languageType = GetLanguage();

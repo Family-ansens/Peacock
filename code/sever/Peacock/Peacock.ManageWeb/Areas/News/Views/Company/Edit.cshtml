@@ -20,7 +20,6 @@
                                     @Html.LabelFor(m => m.OrderId)
                                     @Html.TextBoxFor(m => m.OrderId, new { @class = "form-control" })
                                 </div>
-
                                 <div class="form-group">
                                     @Html.HiddenFor(m => m.ImgUrl)
                                     @Html.LabelFor(m => m.ImgUrl)
@@ -43,6 +42,10 @@
                                 <div class="tab-content">
                                     <div class="tab-pane active" id="tab_zh">
                                         <div class="col-sm-12">
+                                            @Html.LabelFor(m => m.TitleZh)
+                                            @Html.TextAreaFor(m => m.TitleZh, new { @class = "form-control" })
+                                        </div>
+                                        <div class="col-sm-12">
                                             @Html.LabelFor(m => m.IntroductionZh)
                                             @Html.TextAreaFor(m => m.IntroductionZh, new { @class = "form-control" })
                                         </div>
@@ -52,6 +55,10 @@
                                         </div>
                                     </div>
                                     <div class="tab-pane" id="tab_en">
+                                        <div class="col-sm-12">
+                                            @Html.LabelFor(m => m.TitleEn)
+                                            @Html.TextAreaFor(m => m.TitleEn, new { @class = "form-control" })
+                                        </div>
                                         <div class="col-sm-12">
                                             @Html.LabelFor(m => m.IntroductionEn)
                                             @Html.TextAreaFor(m => m.IntroductionEn, new { @class = "form-control" })
@@ -72,7 +79,7 @@
 
                 <div class="box-footer">
                     <button type="submit" class="btn btn-primary">保存</button>
-                    <a href="@Url.Action("Index", "Product", new { area = "Product" })" class="btn btn-default">返回</a>
+                    <a href="@Url.Action("Index", "Company", new { area = "News" })" class="btn btn-default">返回</a>
                 </div>
 
             </form>
@@ -81,30 +88,15 @@
 </section>
 
 @Html.Partial("_Modal")
+@Html.Partial("_HtmlEditor")
 
 @section Scripts {
 
-    <link href="https://cdn.jsdelivr.net/npm/froala-editor@3.0.0-beta.1/css/froala_editor.pkgd.min.css" rel="stylesheet" type="text/css" />
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/froala-editor@3.0.0-beta.1//js/froala_editor.pkgd.min.js"></script>
 
     <script type="text/javascript">
         $(function () {
-            new FroalaEditor('#ContentZh', {
-                // Set the image upload URL.
-                imageUploadURL: '/Base/UploadImg',
-
-                imageUploadParams: {
-                    id: 'ContentZh'
-                }
-            });
-            new FroalaEditor('#ContentEn', {
-                // Set the image upload URL.
-                imageUploadURL: '/Base/UploadImg',
-
-                imageUploadParams: {
-                    id: 'ContentEn'
-                }
-            });
+            htmlEditorHelper.Create('#ContentZh');
+            htmlEditorHelper.Create('#ContentEn');
 
             // 上传图片
             let $modal = $('#customModal');

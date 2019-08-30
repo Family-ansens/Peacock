@@ -13,6 +13,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Remove="Areas\News\Views\Company\Index.cshtml" />
     <Content Remove="Views\Shared\_Layout.cshtml" />
     <Content Remove="Views\Shared\_Upload.cshtml" />
   </ItemGroup>
@@ -34,6 +35,7 @@
 
 
   <ItemGroup>
+    <None Include="Areas\News\Views\Company\Index.cshtml" />
     <None Include="Views\Shared\_Layout.cshtml" />
     <None Include="Views\Shared\_Upload.cshtml" />
     <None Include="wwwroot\lib\ckeditor\adapters\jquery.js" />
