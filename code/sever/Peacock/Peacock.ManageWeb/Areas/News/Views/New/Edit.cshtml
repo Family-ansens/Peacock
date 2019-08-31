@@ -14,22 +14,27 @@
         <div class="box box-primary">
             <form role="form" method="post" action="@Url.Action("Save", "New", new { area = "News" })">
                 <div class="box-body">
-                    @*<div class="row">
-                            <div class="col-md-12">
-                                <div class="col-md-6">
-                                    @Html.HiddenFor(m => m.Id)
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="col-md-6">
+                                @Html.HiddenFor(m => m.Id)
 
-                                    <div class="form-group">
-                                        @Html.LabelFor(m => m.Code)
-                                        @Html.TextBoxFor(m => m.Code, new { @class = "form-control" })
-                                    </div>
-                                    <div class="form-group">
-                                        @Html.LabelFor(m => m.OrderId)
-                                        @Html.TextBoxFor(m => m.OrderId, new { @class = "form-control" })
-                                    </div>
+                                <div class="form-group">
+                                    @Html.HiddenFor(m => m.ImgUrl)
+                                    @Html.LabelFor(m => m.ImgUrl)
+                                    <img id="ImgArea" src='@Model.ImgUrl' class="form-control" style="height:200px;width:200px;" />
                                 </div>
+                                @*<div class="form-group">
+            @Html.LabelFor(m => m.Code)
+            @Html.TextBoxFor(m => m.Code, new { @class = "form-control" })
+        </div>*@
+                                @*<div class="form-group">
+            @Html.LabelFor(m => m.OrderId)
+            @Html.TextBoxFor(m => m.OrderId, new { @class = "form-control" })
+        </div>*@
                             </div>
-                        </div>*@
+                        </div>
+                    </div>
                     <div class="row">
                         <div class="col-md-12">
                             <div class="j-lang-tab">
@@ -50,8 +55,12 @@
                                             </div>
                                         </div>
                                         <div class="col-sm-12">
+                                            @Html.LabelFor(m => m.IntroductionZh)
+                                            @Html.TextAreaFor(m => m.IntroductionZh, new { @class = "form-control" })
+                                        </div>
+                                        <div class="col-sm-12">
                                             @Html.LabelFor(m => m.ContentZh)
-                                            @Html.TextAreaFor(m => m.ContentZh)
+                                            @Html.TextAreaFor(m => m.ContentZh, new { @class = "form-control" })
                                         </div>
                                     </div>
                                     <div class="tab-pane" id="tab_en">
@@ -62,8 +71,12 @@
                                             </div>
                                         </div>
                                         <div class="col-sm-12">
+                                            @Html.LabelFor(m => m.IntroductionEn)
+                                            @Html.TextAreaFor(m => m.IntroductionEn, new { @class = "form-control" })
+                                        </div>
+                                        <div class="col-sm-12">
                                             @Html.LabelFor(m => m.ContentEn)
-                                            @Html.TextAreaFor(m => m.ContentEn)
+                                            @Html.TextAreaFor(m => m.ContentEn, new { @class = "form-control" })
                                         </div>
                                     </div>
                                 </div>
@@ -84,29 +97,45 @@
     </div>
 </section>
 
+@Html.Partial("_Modal")
+@Html.Partial("_HtmlEditor")
+
 @section Scripts {
-
-    <link href="https://cdn.jsdelivr.net/npm/froala-editor@3.0.0-beta.1/css/froala_editor.pkgd.min.css" rel="stylesheet" type="text/css" />
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/froala-editor@3.0.0-beta.1//js/froala_editor.pkgd.min.js"></script>
-
     <script type="text/javascript">
         $(function () {
-            new FroalaEditor('#ContentZh', {
-                // Set the image upload URL.
-                imageUploadURL: '/Base/UploadImg',
+            htmlEditorHelper.Create('#ContentZh');
+            htmlEditorHelper.Create('#ContentEn');
 
-                imageUploadParams: {
-                    id: 'ContentZh'
-                }
+            // 上传图片
+            let $modal = $('#customModal');
+
+            $('#ImgArea').on('click', function () {
+                $modal.modal('show');
+                //$('#customModal').modal('hide');
+                $modal.find('#modalLabel').text('上传图片');
+                //$modal.find('#modal-body');
+                $.ajax({
+                    url: '/Base/GetUploadView',
+                    method: 'GET',
+                    dataType: 'HTML',
+                    success: function (r) {
+                        $modal.find('.modal-body').html(r);
+                    }
+                })
             });
-            new FroalaEditor('#ContentEn', {
-                // Set the image upload URL.
-                imageUploadURL: '/Base/UploadImg',
 
-                imageUploadParams: {
-                    id: 'ContentEn'
-                }
+            $modal.find('.j-btn-save').on('click', function () {
+
+                $modal.modal('hide');
+
             });
         });
+
+        function uploadCallback(d) {
+            alert('上传成功');
+            $('#ImgArea').attr('src', d);
+            $('#ImgUrl').val(d);
+            $('#customModal').modal('hide');
+        }
     </script>
 }

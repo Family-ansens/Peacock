@@ -35,8 +35,8 @@ namespace Peacock.Apis.Controllers
                 Name = model.Name,
                 Tel = model.Tel,
                 Email = model.Email,
-                IpAddress = string.Empty,
-                OtherContact = model.OtherContcat,
+                IpAddress = GetClientUserIp(),
+                OtherContact = model.OtherContact,
                 CreatedBy = "-1",
                 CreatedTime = DateTime.Now,
                 LastUpdatedBy = "-1",
@@ -44,6 +44,7 @@ namespace Peacock.Apis.Controllers
             };
             entity.Content = System.Web.HttpUtility.UrlEncode(model.Content);
             dbContext.Add(entity);
+            dbContext.SaveChanges();
             return Ok();
         }
 

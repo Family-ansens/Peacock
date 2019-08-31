@@ -13,6 +13,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
+using Peacock.Apis.Filter;
 using Peacock.Apis.Swagger;
 using Peacock.Dal;
 using Swashbuckle.AspNetCore.Swagger;
@@ -45,14 +46,21 @@ namespace Peacock.Apis
         public void ConfigureServices(IServiceCollection services)
         {
             //注入数据库DbContext
-            string sqlConnectionStr = Configuration.GetConnectionString("PeacockMysqlProvider");
-            services.AddDbContext<PeacockDbContext>(options =>
-                options.UseMySQL(sqlConnectionStr)
-            );
-            //string sqlConnectionStr = Configuration.GetConnectionString("PeacockSqlSeverProvider");
-            //services.AddDbContext<PeacockDbContext>(options =>
-            //    options.UseSqlServer(sqlConnectionStr)
-            //);
+            string dbType = Configuration["DbType"];
+            if (dbType.Equals("SqlSever"))
+            {
+                string sqlConnectionStr = Configuration.GetConnectionString("PeacockSqlSeverProvider");
+                services.AddDbContext<PeacockDbContext>(options =>
+                    options.UseSqlServer(sqlConnectionStr)
+                );
+            }
+            else if (dbType.Equals("MySql"))
+            {
+                string sqlConnectionStr = Configuration.GetConnectionString("PeacockMysqlProvider");
+                services.AddDbContext<PeacockDbContext>(options =>
+                    options.UseMySQL(sqlConnectionStr)
+                );
+            }
 
             services.AddSwaggerGen(c =>
             {
@@ -72,7 +80,10 @@ namespace Peacock.Apis
                 });
             });
 
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
+            services.AddMvc(options =>
+            {
+                options.Filters.Add<ExceptionFilter>();
+            }).SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

@@ -24,8 +24,4 @@
     <ProjectReference Include="..\Peacock.ViewModel\Peacock.ViewModel.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Filter\" />
-  </ItemGroup>
-
 </Project>

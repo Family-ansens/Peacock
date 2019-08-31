@@ -18,7 +18,7 @@ namespace Peacock.ViewModel.Manage
         [Required(ErrorMessage = "{0}为必填项")]
         public string NameEn { get; set; }
 
-        [Display(Name = "商品分组序号")]
+        [Display(Name = "商品序号")]
         [Required(ErrorMessage = "{0}为必填项")]
         public int OrderId { get; set; }
 

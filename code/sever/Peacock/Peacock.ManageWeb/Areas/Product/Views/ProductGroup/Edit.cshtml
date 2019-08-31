@@ -46,10 +46,10 @@
                                                 @Html.TextBoxFor(m => m.NameZh, new { @class = "form-control" })
                                             </div>
                                         </div>
-                                        <div class="col-sm-12">
+                                        @*<div class="col-sm-12">
                                             @Html.LabelFor(m=>m.DescriptionZh)
                                             @Html.TextAreaFor(m => m.DescriptionZh)
-                                        </div>
+                                        </div>*@
                                     </div>
                                     <div class="tab-pane" id="tab_en">
                                         <div class="col-sm-6">
@@ -58,10 +58,10 @@
                                                 @Html.TextBoxFor(m => m.NameEn, new { @class = "form-control" })
                                             </div>
                                         </div>
-                                        <div class="col-sm-12">
+                                        @*<div class="col-sm-12">
                                             @Html.LabelFor(m => m.DescriptionEn)
                                             @Html.TextAreaFor(m => m.DescriptionEn)
-                                        </div>
+                                        </div>*@
                                     </div>
                                 </div>
                             </div>
@@ -81,14 +81,14 @@
     </div>
 </section>
 
-@Html.Partial("_HtmlEditor")
+@*@Html.Partial("_HtmlEditor")*@
 
 @section Scripts {
 
     <script type="text/javascript">
         $(function () {
-            htmlEditorHelper.Create('#DescriptionZh');
-            htmlEditorHelper.Create('#DescriptionEn');
+            //htmlEditorHelper.Create('#DescriptionZh');
+            //htmlEditorHelper.Create('#DescriptionEn');
         });
         
     </script>

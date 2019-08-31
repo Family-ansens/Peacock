@@ -26,5 +26,19 @@ namespace Peacock.Apis.Controllers
         {
             return Request.GetLanguage();
         }
+
+        /// <summary>
+        /// 获取客户端ip
+        /// </summary>
+        /// <returns></returns>
+        protected string GetClientUserIp()
+        {
+            var ip = Request.Headers["X-Forwarded-For"].FirstOrDefault();
+            if (string.IsNullOrEmpty(ip))
+            {
+                ip = Request.HttpContext.Connection.RemoteIpAddress.ToString();
+            }
+            return ip;
+        }
     }
 }

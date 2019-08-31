@@ -38,13 +38,17 @@ namespace Peacock.ManageWeb.Areas.News
                 return View(vm);
             var entity = peacockDbContext.T_New
                                          .Include(i => i.LanguageRelationByTitle).ThenInclude(i => i.TSystemLanguageContent)
+                                         .Include(i => i.LanguageRelationByIntroduction).ThenInclude(i => i.TSystemLanguageContent)
                                          .Include(i => i.LanguageRelationByContent).ThenInclude(i => i.TSystemLanguageContent)
                                          .FirstOrDefault(i => i.ID == id);
             if (entity != null)
             {
                 vm.Id = entity.ID;
+                vm.ImgUrl = entity.ImgUrl;
                 vm.TitleZh = GetLanguageContent(entity.LanguageRelationByTitle, LanguageType.ZhCn);
                 vm.TitleEn = GetLanguageContent(entity.LanguageRelationByTitle, LanguageType.En);
+                vm.IntroductionZh = GetLanguageContent(entity.LanguageRelationByIntroduction, LanguageType.ZhCn);
+                vm.IntroductionEn = GetLanguageContent(entity.LanguageRelationByIntroduction, LanguageType.En);
                 vm.ContentZh = GetLanguageContent(entity.LanguageRelationByContent, LanguageType.ZhCn);
                 vm.ContentEn = GetLanguageContent(entity.LanguageRelationByContent, LanguageType.En);
             }
@@ -69,6 +73,7 @@ namespace Peacock.ManageWeb.Areas.News
                 entity.Title = model.TitleZh;
                 entity.IsDeleted = false;
                 entity.IsPublish = false;
+                entity.ImgUrl = model.ImgUrl;
                 entity.Content = model.ContentZh;
                 entity.CreatedBy = userName;
                 entity.CreatedTime = dtNow;
@@ -76,6 +81,7 @@ namespace Peacock.ManageWeb.Areas.News
                 entity.LastUpdatedTime = dtNow;
                 //设置多语言
                 entity.LanguageRelationByTitle = EditLanguageContent(entity.LanguageRelationByTitle, model.TitleLanguageDict);
+                entity.LanguageRelationByIntroduction = EditLanguageContent(entity.LanguageRelationByIntroduction, model.IntroductionLanguageDict);
                 entity.LanguageRelationByContent = EditLanguageContent(entity.LanguageRelationByContent, model.ContentLanguageDict);
 
                 peacockDbContext.Add(entity);
@@ -83,6 +89,7 @@ namespace Peacock.ManageWeb.Areas.News
             else
             {
                 entity = peacockDbContext.T_New.Include(i => i.LanguageRelationByTitle).ThenInclude(i => i.TSystemLanguageContent)
+                                         .Include(i => i.LanguageRelationByIntroduction).ThenInclude(i => i.TSystemLanguageContent)
                                          .Include(i => i.LanguageRelationByContent).ThenInclude(i => i.TSystemLanguageContent)
                                          .FirstOrDefault(i => i.ID == model.Id);
 
@@ -94,10 +101,12 @@ namespace Peacock.ManageWeb.Areas.News
 
                 entity.Title = model.TitleZh;
                 entity.Content = model.ContentZh;
+                entity.ImgUrl = model.ImgUrl;
                 entity.LastUpdatedTime = dtNow;
                 entity.LastUpdatedBy = userName;
 
                 entity.LanguageRelationByTitle = EditLanguageContent(entity.LanguageRelationByTitle, model.TitleLanguageDict);
+                entity.LanguageRelationByIntroduction = EditLanguageContent(entity.LanguageRelationByIntroduction, model.IntroductionLanguageDict);
                 entity.LanguageRelationByContent = EditLanguageContent(entity.LanguageRelationByContent, model.ContentLanguageDict);
 
                 peacockDbContext.Update(entity);

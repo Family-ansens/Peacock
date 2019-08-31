@@ -19,6 +19,11 @@ namespace Peacock.Apis.Models
         public string Name { get; set; }
 
         /// <summary>
+        /// 商品简介
+        /// </summary>
+        public string Introduction { get; set; }
+
+        /// <summary>
         /// 主图路径
         /// </summary>
         public string ImgUrl { get; set; }

@@ -24,9 +24,9 @@ namespace Peacock.ViewModel.Manage.ProductGroup
         [Display(Name = "商品分组序号")]
         [Required(ErrorMessage = "{0}为必填项")]
         public int OrderId { get; set; }
-        [Display(Name = "详细说明(中文)")]
-        public string DescriptionZh { get; set; }
-        [Display(Name = "详细说明(英文)")]
-        public string DescriptionEn { get; set; }
+        //[Display(Name = "详细说明(中文)")]
+        //public string DescriptionZh { get; set; }
+        //[Display(Name = "详细说明(英文)")]
+        //public string DescriptionEn { get; set; }
     }
 }

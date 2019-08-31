@@ -34,6 +34,6 @@ namespace Peacock.Apis.Models
         /// <summary>
         /// 其他联系方式
         /// </summary>
-        public string OtherContcat { get; set; }
+        public string OtherContact { get; set; }
     }
 }

@@ -23,8 +23,8 @@ namespace Peacock.Apis.Models
         /// </summary>
         public string ImgUrl { get; set; }
         /// <summary>
-        /// 描述
+        /// 简介
         /// </summary>
-        public string Desc { get; set; }
+        public string Introduction { get; set; }
     }
 }

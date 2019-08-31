@@ -33,7 +33,7 @@ namespace Peacock.Apis.Controllers
                                 .Include(i => i.LanguageRelationByName).ThenInclude(i => i.TSystemLanguageContent)
                                 .Where(i => !i.IsDeleted);
             int count = query.Count();
-            var list = query.OrderBy(o => o.Id)
+            var list = query.OrderByDescending(o => o.Id)
                                 .Skip(search.Skip)
                                 .Take(search.size)
                                 .Select(c => new ProductGroupResDto
@@ -60,7 +60,7 @@ namespace Peacock.Apis.Controllers
         {
             string languageType = GetLanguage();
             var list = dbContext.T_Pro_ProductGroup.Include(i => i.LanguageRelationByName).ThenInclude(i => i.TSystemLanguageContent)
-                            .Where(i => !i.IsDeleted).OrderBy(o => o.OrderId)
+                            .Where(i => !i.IsDeleted).OrderByDescending(o => o.OrderId)
                             .Take(5)
                             .Select(c => new ProductGroupResDto
                             {
@@ -69,13 +69,16 @@ namespace Peacock.Apis.Controllers
                                 Products = new List<ProductResDto>(),
                             }).ToList();
             var groupIdArr = list.Select(i => i.ID).ToArray();
-            var products = dbContext.T_Pro_Product.Include(i => i.LanguageRelationByName).ThenInclude(i => i.TSystemLanguageContent)
+            var products = dbContext.T_Pro_Product
+                                    .Include(i => i.LanguageRelationByName).ThenInclude(i => i.TSystemLanguageContent)
+                                    .Include(i => i.LanguageRelationByIntroduction).ThenInclude(i => i.TSystemLanguageContent)
                                     .Where(i => !i.IsDeleted && groupIdArr.Contains(i.GroupId))
                                     .Select(c => new ProductResDto
                                     {
                                         Id = c.ID,
                                         GroupId = c.GroupId,
                                         Name = c.LanguageRelationByName.TSystemLanguageContent.FirstOrDefault(i => i.LanguageType == languageType).DisplayContent,
+                                        Introduction = c.LanguageRelationByIntroduction.TSystemLanguageContent.FirstOrDefault(i => i.LanguageType == languageType).DisplayContent,
                                         ImgUrl = c.ImgPath,
                                         OrderId = c.OrderId,
                                     }).ToList();
@@ -83,7 +86,7 @@ namespace Peacock.Apis.Controllers
             foreach (var item in products.GroupBy(g => g.GroupId))
             {
                 var group = list.FirstOrDefault(i => i.ID == item.Key);
-                group.Products = item.ToList().OrderBy(o => o.OrderId).Take(6).ToList();
+                group.Products = item.ToList().OrderByDescending(o => o.OrderId).Take(6).ToList();
             }
 
             return list;
@@ -100,6 +103,7 @@ namespace Peacock.Apis.Controllers
             string languageType = GetLanguage();
             var query = dbContext.T_Pro_Product
                                  .Include(i => i.LanguageRelationByName).ThenInclude(i => i.TSystemLanguageContent)
+                                 .Include(i => i.LanguageRelationByIntroduction).ThenInclude(i => i.TSystemLanguageContent)
                                  .Include(i => i.LanguageRelationByDescription).ThenInclude(i => i.TSystemLanguageContent)
                                  .Include(i => i.ProductGourp).ThenInclude(i => i.LanguageRelationByName).ThenInclude(i => i.TSystemLanguageContent)
                                  .Where(i => !i.IsDeleted);
@@ -111,14 +115,17 @@ namespace Peacock.Apis.Controllers
                                          || i.LanguageRelationByDescription.TSystemLanguageContent
                                                .Any(a => a.DisplayContent.Contains(search.Query))
                                          || i.ProductGourp.LanguageRelationByName.TSystemLanguageContent
+                                                .Any(a => a.DisplayContent.Contains(search.Query))
+                                         || i.LanguageRelationByIntroduction.TSystemLanguageContent
                                                 .Any(a => a.DisplayContent.Contains(search.Query)));
             }
             int count = query.Count();
-            var entities = query.Skip(search.Skip).Take(search.size).OrderBy(o => o.OrderId).ToList();
+            var entities = query.Skip(search.Skip).Take(search.size).OrderByDescending(o => o.OrderId).ToList();
             var list = entities.Select(c => new ProductResDto
             {
                 Id = c.ID,
                 Name = c.LanguageRelationByName.TSystemLanguageContent.FirstOrDefault(i => i.LanguageType == languageType).DisplayContent,
+                Introduction = c.LanguageRelationByIntroduction.TSystemLanguageContent.FirstOrDefault(i => i.LanguageType == languageType).DisplayContent,
                 ImgUrl = c.ImgPath,
             }).ToList();
             var result = new PageResponseDto<ProductResDto>()
@@ -141,6 +148,7 @@ namespace Peacock.Apis.Controllers
             string languageType = GetLanguage();
             var query = dbContext.T_Pro_Product
                                  .Include(i => i.LanguageRelationByName).ThenInclude(i => i.TSystemLanguageContent)
+                                 .Include(i => i.LanguageRelationByIntroduction).ThenInclude(i => i.TSystemLanguageContent)
                                  .Where(i => !i.IsDeleted);
 
             int count = query.Count();
@@ -149,6 +157,7 @@ namespace Peacock.Apis.Controllers
             {
                 Id = c.ID,
                 Name = c.LanguageRelationByName.TSystemLanguageContent.FirstOrDefault(i => i.LanguageType == languageType).DisplayContent,
+                Introduction = c.LanguageRelationByIntroduction.TSystemLanguageContent.FirstOrDefault(i => i.LanguageType == languageType).DisplayContent,
                 ImgUrl = c.ImgPath,
             }).ToList();
             var result = new PageResponseDto<ProductResDto>()
@@ -185,7 +194,7 @@ namespace Peacock.Apis.Controllers
                 Name = entity.LanguageRelationByName.TSystemLanguageContent.FirstOrDefault(i => i.LanguageType == languageType).DisplayContent,
                 ImgUrl = entity.ImgPath,
                 Desc = entity.LanguageRelationByDescription.TSystemLanguageContent.FirstOrDefault(i => i.LanguageType == languageType).DisplayContent,
-                ImgList = entity.ProductImgs.Select(c => c.ImgUrl).ToList(),
+                ImgList = entity.ProductImgs.OrderByDescending(o => o.OrderId).Select(c => c.ImgUrl).ToList(),
             };
             return result;
         }
@@ -203,16 +212,16 @@ namespace Peacock.Apis.Controllers
                                  .Include(i => i.Product)
                                  .ThenInclude(i => i.LanguageRelationByName).ThenInclude(i => i.TSystemLanguageContent)
                                  .Include(i => i.Product)
-                                 .ThenInclude(i => i.LanguageRelationByDescription).ThenInclude(i => i.TSystemLanguageContent)
-                                 .OrderBy(i => i.OrderId);
+                                 .ThenInclude(i => i.LanguageRelationByIntroduction).ThenInclude(i => i.TSystemLanguageContent)
+                                 .OrderByDescending(i => i.OrderId);
             int count = query.Count();
-            var list = query.Skip(search.Skip).Take(search.size).OrderBy(o => o.OrderId)
+            var list = query.Skip(search.Skip).Take(search.size).OrderByDescending(o => o.OrderId)
                 .Select(c => new HotSaleProductResDto
                 {
                     ProductId = c.ID,
                     ProductName = c.Product.LanguageRelationByName.TSystemLanguageContent.FirstOrDefault(i => i.LanguageType == languageType).DisplayContent,
                     ImgUrl = c.Product.ImgPath,
-                    Desc = c.Product.LanguageRelationByDescription.TSystemLanguageContent.FirstOrDefault(i => i.LanguageType == languageType).DisplayContent,
+                    Introduction = c.Product.LanguageRelationByIntroduction.TSystemLanguageContent.FirstOrDefault(i => i.LanguageType == languageType).DisplayContent,
                 }).ToList();
             var result = new PageResponseDto<HotSaleProductResDto>()
             {

@@ -14,7 +14,11 @@ namespace Peacock.Dal
 
         public int? TitleLanguageId { get; set; }
 
+        public int IntroductionLanguageId { get; set; }
+
         public int? ContentLanguageId { get; set; }
+
+        public string ImgUrl { get; set; }
 
         public bool IsDeleted { get; set; }
 
@@ -31,6 +35,8 @@ namespace Peacock.Dal
         public DateTime LastUpdatedTime { get; set; }
 
         public virtual T_System_LanguageRelation LanguageRelationByTitle { get; set; }
+
+        public virtual T_System_LanguageRelation LanguageRelationByIntroduction { get; set; }
 
         public virtual T_System_LanguageRelation LanguageRelationByContent { get; set; }
     }

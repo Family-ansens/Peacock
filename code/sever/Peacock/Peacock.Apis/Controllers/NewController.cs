@@ -29,6 +29,7 @@ namespace Peacock.Apis.Controllers
             var query = dbContext.T_New.Where(i => i.IsPublish && !i.IsDeleted);
             int count = query.Count();
             var list = query.Include(i => i.LanguageRelationByTitle).ThenInclude(i => i.TSystemLanguageContent)
+                            .Include(i => i.LanguageRelationByIntroduction).ThenInclude(i => i.TSystemLanguageContent)
                             .OrderByDescending(o => o.PublishTime)
                             .Skip(search.Skip)
                             .Take(search.size)
@@ -36,6 +37,8 @@ namespace Peacock.Apis.Controllers
                             {
                                 ID = c.ID,
                                 Title = c.LanguageRelationByTitle.TSystemLanguageContent.FirstOrDefault(i => i.LanguageType == languageType).DisplayContent,
+                                Introduction = c.LanguageRelationByIntroduction.TSystemLanguageContent.FirstOrDefault(i => i.LanguageType == languageType).DisplayContent,
+                                ImgUrl = c.ImgUrl,
                                 PublishTime = c.PublishTime,
                             }).ToList();
             var result = new PageResponseDto<NewResDto>()
@@ -48,7 +51,7 @@ namespace Peacock.Apis.Controllers
         }
 
         /// <summary>
-        /// 
+        /// 获取新闻详情
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
@@ -65,6 +68,7 @@ namespace Peacock.Apis.Controllers
             {
                 ID = entity.ID,
                 Title = GetLanguageContent(entity.LanguageRelationByTitle, languageType),
+                ImgUrl = entity.ImgUrl,
                 Content = GetLanguageContent(entity.LanguageRelationByContent, languageType),
                 PublishTime = entity.PublishTime,
             };

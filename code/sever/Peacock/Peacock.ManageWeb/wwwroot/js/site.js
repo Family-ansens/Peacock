@@ -6,7 +6,8 @@ function PeacockPage() { };
 
 PeacockPage.prototype.ImgUploadSetting = {
     //UploadUrl: 'http://localhost:8901/file/uploadimg',
-    UploadUrl: 'http://192.168.1.107:8901/file/uploadimg',
+    //UploadUrl: 'http://192.168.1.107:8901/file/uploadimg',
+    UploadUrl: 'http://www.puwiremesh.com:2000/file/uploadimg',
     UploadToken: '123'
 };
 

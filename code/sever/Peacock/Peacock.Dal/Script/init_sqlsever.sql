@@ -29,8 +29,10 @@ CREATE TABLE [dbo].[T_New](
 	[ID] [int] IDENTITY(1,1) NOT NULL,
 	[Title] [nvarchar](500) NOT NULL,
 	[Content] [text] NULL,
+	[IntroductionLanguageId] [int] NULL,
 	[TitleLanguageId] [int] NULL,
 	[ContentLanguageId] [int] NULL,
+	[ImgUrl] [nvarchar](500) NOT NULL,
 	[IsDeleted] [bit] NOT NULL,
 	[IsPublish] [bit] NOT NULL,
 	[PublishTime] [datetime] NULL,
@@ -147,6 +149,25 @@ CREATE TABLE [dbo].T_Company(
 	[LastUpdatedBy] [nvarchar](50) NOT NULL,
 	[LastUpdatedTime] [datetime] NOT NULL,
  CONSTRAINT [PK_T_Company] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+CREATE TABLE [dbo].T_Evaluation(
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[Name] nvarchar(20) NOT NULL,
+	[Tel] nvarchar(20) null,
+	[Content] TEXT NULL,
+	[Email] nvarchar(100) NULL,
+	[OtherContact] [nvarchar](500) NOT NULL,
+	[IpAddress] nvarchar(50) NOT NULL,
+	[CreatedBy] [nvarchar](50) NOT NULL,
+	[CreatedTime] [datetime] NOT NULL,
+	[LastUpdatedBy] [nvarchar](50) NOT NULL,
+	[LastUpdatedTime] [datetime] NOT NULL,
+ CONSTRAINT [PK_T_Evaluation] PRIMARY KEY CLUSTERED 
 (
 	[ID] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]

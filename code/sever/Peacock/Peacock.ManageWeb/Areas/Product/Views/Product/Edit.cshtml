@@ -96,30 +96,14 @@
 </section>
 
 @Html.Partial("_Modal")
+@Html.Partial("_HtmlEditor")
 
 @section Scripts {
 
-    <link href="https://cdn.jsdelivr.net/npm/froala-editor@3.0.0-beta.1/css/froala_editor.pkgd.min.css" rel="stylesheet" type="text/css" />
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/froala-editor@3.0.0-beta.1//js/froala_editor.pkgd.min.js"></script>
-
     <script type="text/javascript">
         $(function () {
-            new FroalaEditor('#DescriptionZh', {
-                // Set the image upload URL.
-                imageUploadURL: '/Base/UploadImg',
-
-                imageUploadParams: {
-                    id: 'DescriptionZh'
-                }
-            });
-            new FroalaEditor('#DescriptionEn', {
-                // Set the image upload URL.
-                imageUploadURL: '/Base/UploadImg',
-
-                imageUploadParams: {
-                    id: 'DescriptionEn'
-                }
-            });
+            htmlEditorHelper.Create('#DescriptionZh');
+            htmlEditorHelper.Create('#DescriptionEn');
 
             // 上传图片
             let $modal = $('#customModal');
@@ -144,13 +128,14 @@
                 $modal.modal('hide');
 
             });
-        
+
         });
 
         function uploadCallback(d) {
             alert('上传成功');
             $('#ImgArea').attr('src', d);
             $('#ImgPath').val(d);
+            $('#customModal').modal('hide');
         }
     </script>
 }

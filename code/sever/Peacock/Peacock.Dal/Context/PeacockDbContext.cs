@@ -6,7 +6,7 @@ namespace Peacock.Dal
 {
     public partial class PeacockDbContext : DbContext
     {
-        private const bool IS_MYSQL = true;
+        private const bool IS_MYSQL = false;
 
         public PeacockDbContext()
         {
@@ -15,6 +15,7 @@ namespace Peacock.Dal
         public PeacockDbContext(DbContextOptions<PeacockDbContext> options)
             : base(options)
         {
+            
         }
 
         public virtual DbSet<T_Pro_Product> T_Pro_Product { get; set; }
@@ -62,6 +63,8 @@ namespace Peacock.Dal
 
                 entity.Property(e => e.TitleLanguageId);
 
+                entity.Property(e => e.IntroductionLanguageId);
+
                 entity.Property(e => e.ContentLanguageId);
 
                 if (IS_MYSQL)
@@ -72,7 +75,7 @@ namespace Peacock.Dal
 
                 entity.Property(e => e.PublishTime).HasColumnType("datetime");
 
-                
+                entity.Property(e => e.ImgUrl);
 
                 entity.Property(e => e.CreatedBy).IsRequired().HasMaxLength(50);
 
@@ -86,6 +89,11 @@ namespace Peacock.Dal
                     .WithMany(p => p.NewsWithTitle)
                     .HasForeignKey(d => d.TitleLanguageId)
                     .HasConstraintName("FK_T_New_T_System_LanguageRelation_Title");
+
+                entity.HasOne(d => d.LanguageRelationByIntroduction)
+                    .WithMany(p => p.NewsWithIntroduction)
+                    .HasForeignKey(d => d.IntroductionLanguageId)
+                    .HasConstraintName("FK_T_New_T_System_LanguageRelation_Instroduction");
 
                 entity.HasOne(d => d.LanguageRelationByContent)
                     .WithMany(p => p.NewsWithContent)

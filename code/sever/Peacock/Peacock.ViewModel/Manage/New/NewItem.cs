@@ -10,6 +10,10 @@ namespace Peacock.ViewModel.Manage
     {
         public int Id { get; set; }
 
+        //[Display(Name = "新闻序号")]
+        //[Required(ErrorMessage = "{0}为必填项")]
+        //public int OrderId { get; set; }
+
         [Display(Name = "标题(中文)")]
         [Required(ErrorMessage = "{0}为必填项")]
         public string TitleZh { get; set; }
@@ -17,6 +21,18 @@ namespace Peacock.ViewModel.Manage
         [Display(Name = "标题(英文)")]
         [Required(ErrorMessage = "{0}为必填项")]
         public string TitleEn { get; set; }
+
+        [Display(Name = "简介(中文)")]
+        [Required(ErrorMessage = "{0}为必填项")]
+        public string IntroductionZh { get; set; }
+
+        [Display(Name = "简介(英文)")]
+        [Required(ErrorMessage = "{0}为必填项")]
+        public string IntroductionEn { get; set; }
+
+        [Display(Name = "宣传图")]
+        [Required(ErrorMessage = "{0}为必填项")]
+        public string ImgUrl { get; set; }
 
         public DateTime PublishTime { get; set; }
 
@@ -36,6 +52,18 @@ namespace Peacock.ViewModel.Manage
                 Dictionary<string, string> dict = new Dictionary<string, string>();
                 dict.Add(LanguageType.ZhCn, TitleZh);
                 dict.Add(LanguageType.En, TitleEn);
+                return dict;
+            }
+        }
+
+        [JsonIgnore]
+        public Dictionary<string, string> IntroductionLanguageDict
+        {
+            get
+            {
+                Dictionary<string, string> dict = new Dictionary<string, string>();
+                dict.Add(LanguageType.ZhCn, IntroductionZh);
+                dict.Add(LanguageType.En, IntroductionEn);
                 return dict;
             }
         }

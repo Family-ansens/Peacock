@@ -66,8 +66,8 @@ namespace Peacock.ManageWeb.Areas.Product.Controllers
                 vm.NameEn = entity.LanguageRelationByName.TSystemLanguageContent.FirstOrDefault(i => i.LanguageType == LanguageType.En)?.DisplayContent;
                 vm.IntroductionZh = GetLanguageContent(entity.LanguageRelationByIntroduction, LanguageType.ZhCn);
                 vm.IntroductionEn = GetLanguageContent(entity.LanguageRelationByIntroduction, LanguageType.En);
-                vm.DescriptionZh = entity.LanguageRelationByDescription?.TSystemLanguageContent?.FirstOrDefault(i => i.LanguageType == LanguageType.ZhCn)?.DisplayContent ?? string.Empty;
-                vm.DescriptionEn = entity.LanguageRelationByDescription?.TSystemLanguageContent?.FirstOrDefault(i => i.LanguageType == LanguageType.En)?.DisplayContent ?? string.Empty;
+                vm.DescriptionZh = GetLanguageContent(entity.LanguageRelationByDescription, LanguageType.ZhCn);
+                vm.DescriptionEn = GetLanguageContent(entity.LanguageRelationByDescription, LanguageType.En);
                 vm.ImgPath = entity.ImgPath;
                 vm.OrderId = entity.OrderId;
                 vm.GroupId = entity.GroupId.ToString();

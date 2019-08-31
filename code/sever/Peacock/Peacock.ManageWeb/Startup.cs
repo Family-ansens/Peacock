@@ -45,14 +45,21 @@ namespace Peacock.ManageWeb
         public void ConfigureServices(IServiceCollection services)
         {
             //×¢ÈëÊý¾Ý¿âDbContext
-            //string sqlConnectionStr = Configuration.GetConnectionString("PeacockSqlSeverProvider");
-            //services.AddDbContext<PeacockDbContext>(options =>
-            //    options.UseSqlServer(sqlConnectionStr)
-            //);
-            string sqlConnectionStr = Configuration.GetConnectionString("PeacockMysqlProvider");
-            services.AddDbContext<PeacockDbContext>(options =>
-                options.UseMySQL(sqlConnectionStr)
-            );
+            string dbType = Configuration["DbType"];
+            if (dbType.Equals("SqlSever"))
+            {
+                string sqlConnectionStr = Configuration.GetConnectionString("PeacockSqlSeverProvider");
+                services.AddDbContext<PeacockDbContext>(options =>
+                    options.UseSqlServer(sqlConnectionStr)
+                );
+            }
+            else if (dbType.Equals("MySql"))
+            {
+                string sqlConnectionStr = Configuration.GetConnectionString("PeacockMysqlProvider");
+                services.AddDbContext<PeacockDbContext>(options =>
+                    options.UseMySQL(sqlConnectionStr)
+                );
+            }
 
             services.AddLogging();
 
