@@ -40,7 +40,7 @@ namespace Peacock.Apis.Controllers
                                 {
                                     ID = c.Id,
                                     Code = c.Code,
-                                    Name = c.LanguageRelationByName.TSystemLanguageContent.FirstOrDefault(i => i.LanguageType == languageType).DisplayContent,
+                                    Title = c.LanguageRelationByName.TSystemLanguageContent.FirstOrDefault(i => i.LanguageType == languageType).DisplayContent,
                                 }).ToList();
             var result = new PageResponseDto<ProductGroupResDto>()
             {
@@ -65,7 +65,7 @@ namespace Peacock.Apis.Controllers
                             .Select(c => new ProductGroupResDto
                             {
                                 ID = c.Id,
-                                Name = c.LanguageRelationByName.TSystemLanguageContent.FirstOrDefault(i => i.LanguageType == languageType).DisplayContent,
+                                Title = c.LanguageRelationByName.TSystemLanguageContent.FirstOrDefault(i => i.LanguageType == languageType).DisplayContent,
                                 Products = new List<ProductResDto>(),
                             }).ToList();
             var groupIdArr = list.Select(i => i.ID).ToArray();
@@ -83,11 +83,27 @@ namespace Peacock.Apis.Controllers
                                         OrderId = c.OrderId,
                                     }).ToList();
 
-            foreach (var item in products.GroupBy(g => g.GroupId))
+            //undone: 添加测试数据
+            for (var times = 0; times <= 6; times++)
             {
-                var group = list.FirstOrDefault(i => i.ID == item.Key);
-                group.Products = item.ToList().OrderByDescending(o => o.OrderId).Take(6).ToList();
+                var group = list.FirstOrDefault();
+                foreach (var item in products.GroupBy(g => g.GroupId))
+                {
+                    var newGroup = new ProductGroupResDto()
+                    {
+                        ID = group.ID + times,
+                        Title = group.Title + times,
+                        Products = products,
+                    };
+                    list.Add(newGroup);
+                }
             }
+
+            //foreach (var item in products.GroupBy(g => g.GroupId))
+            //{
+            //    var group = list.FirstOrDefault(i => i.ID == item.Key);
+            //    group.Products = item.ToList().OrderByDescending(o => o.OrderId).Take(6).ToList();
+            //}
 
             return list;
         }
@@ -197,6 +213,32 @@ namespace Peacock.Apis.Controllers
                 ImgList = entity.ProductImgs.OrderByDescending(o => o.OrderId).Select(c => c.ImgUrl).ToList(),
             };
             return result;
+        }
+
+        /// <summary>
+        /// 相关商品
+        /// </summary>
+        /// <param name="id">商品ID</param>
+        /// <returns></returns>
+        [HttpGet("get-relate/{id}")]
+        public IActionResult GetRelateProducts(int id)
+        {
+            string languageType = GetLanguage();
+            var productEntity = dbContext.T_Pro_Product.Where(i => i.ID == id && !i.IsDeleted).FirstOrDefault();
+            if (productEntity == null) return NotFound();
+
+            int productGroupId = productEntity.GroupId;
+            var result = dbContext.T_Pro_Product.Where(i => i.GroupId == productGroupId && i.ID != productEntity.ID && !i.IsDeleted)
+                                  .Include(i => i.LanguageRelationByName).ThenInclude(i => i.TSystemLanguageContent)
+                                  .OrderByDescending(o => o.OrderId)
+                                  .Select(c => new ProductResDto
+                                  {
+                                      Id = c.ID,
+                                      GroupId = c.GroupId,
+                                      ImgUrl = c.ImgPath,
+                                      Name = c.LanguageRelationByName.TSystemLanguageContent.FirstOrDefault(i => i.LanguageType == languageType).DisplayContent,
+                                  }).ToList();
+            return Ok(result);
         }
 
         /// <summary>

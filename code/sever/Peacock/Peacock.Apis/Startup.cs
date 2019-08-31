@@ -69,6 +69,11 @@ namespace Peacock.Apis
                 c.OperationFilter<SwaggerHttpHeaderOperation>();
             });
 
+            services.AddLogging(options =>
+            {
+                options.AddConsole();
+            });
+
             services.AddCors(options =>
             {
                 options.AddPolicy("allow_all", builder =>
@@ -82,7 +87,7 @@ namespace Peacock.Apis
 
             services.AddMvc(options =>
             {
-                options.Filters.Add<ExceptionFilter>();
+                //options.Filters.Add<ExceptionFilter>();
             }).SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
         }
 

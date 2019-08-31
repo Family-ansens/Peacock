@@ -32,6 +32,7 @@ namespace Peacock.Dal
         public virtual DbSet<T_Pro_ExampleImg> T_Pro_ExampleImg { get; set; }
         public virtual DbSet<T_Company> T_Company { get; set; }
         public virtual DbSet<T_Evaluation> T_Evaluation { get; set; }
+        public virtual DbSet<T_Advertise> T_Advertise { get; set; }
 
 
 //        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
@@ -537,6 +538,30 @@ namespace Peacock.Dal
                 entity.Property(e => e.OtherContact).IsRequired().HasMaxLength(100);
 
                 entity.Property(e => e.IpAddress).IsRequired().HasMaxLength(50);
+
+                entity.Property(e => e.CreatedBy).IsRequired().HasMaxLength(50);
+
+                entity.Property(e => e.CreatedTime).HasColumnType("datetime");
+
+                entity.Property(e => e.LastUpdatedBy).IsRequired().HasMaxLength(50);
+
+                entity.Property(e => e.LastUpdatedTime).HasColumnType("datetime");
+            });
+
+            modelBuilder.Entity<T_Advertise>(entity =>
+            {
+                entity.ToTable("T_Advertise");
+
+                entity.Property(e => e.ID).HasColumnName("ID");
+
+                entity.Property(e => e.OrderId);
+
+                entity.Property(e => e.ImgUrl).IsRequired().HasMaxLength(200);
+
+                if (IS_MYSQL)
+                {
+                    entity.Property(e => e.IsDeleted).HasColumnType("bit(1)").HasDefaultValue(false);
+                }
 
                 entity.Property(e => e.CreatedBy).IsRequired().HasMaxLength(50);
 

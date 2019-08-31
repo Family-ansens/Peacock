@@ -21,7 +21,7 @@ namespace Peacock.Apis.Models
         /// <summary>
         /// 名称
         /// </summary>
-        public string Name { get; set; }
+        public string Title { get; set; }
 
         /// <summary>
         /// 商品列表
