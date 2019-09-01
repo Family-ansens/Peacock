@@ -110,6 +110,7 @@
             var id = value;
             var result = "<div class='j-area-action' data-id='" + id + "'>";
             result += "<a href='javascript:;' class='btn btn-xs green' title='图片列表' data-action='img'><span class='fa fa-fw fa-eye'></span></a>";
+            result += "<a href='javascript:;' class='btn btn-xs green' title='关联商品' data-action='productRelation'><span class='fa fa-fw fa-object-ungroup'></span></a>";
             result += "<a href='javascript:;' class='btn btn-xs blue' title='编辑' data-action='edit'><span class='fa fa-fw fa-edit'></span></a>";
             result += "<a href='javascript:;' class='btn btn-xs red' title='删除' data-action='remove'><span class='fa fa-fw fa-close'></span></a>";
             result += "</div>";
@@ -137,7 +138,9 @@
                 } else if ($action == 'edit') {
                     window.location.href = '/Product/Example/Edit?id=' + $recordId;
                 } else if ($action == 'img') {
-                    window.location.href = '/Product/Example/GetImgList?productId=' + $recordId;
+                    window.location.href = '/Product/Example/GetImgList?exampleId=' + $recordId;
+                } else if ($action == 'productRelation') {
+                    window.location.href = '/Product/Example/ProductExampleRelationList?exampleId=' + $recordId;
                 }
             });
         }

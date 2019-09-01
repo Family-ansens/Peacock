@@ -83,27 +83,11 @@ namespace Peacock.Apis.Controllers
                                         OrderId = c.OrderId,
                                     }).ToList();
 
-            //undone: 添加测试数据
-            for (var times = 0; times <= 6; times++)
+            foreach (var item in products.GroupBy(g => g.GroupId))
             {
-                var group = list.FirstOrDefault();
-                foreach (var item in products.GroupBy(g => g.GroupId))
-                {
-                    var newGroup = new ProductGroupResDto()
-                    {
-                        ID = group.ID + times,
-                        Title = group.Title + times,
-                        Products = products,
-                    };
-                    list.Add(newGroup);
-                }
+                var group = list.FirstOrDefault(i => i.ID == item.Key);
+                group.Products = item.ToList().OrderByDescending(o => o.OrderId).Take(6).ToList();
             }
-
-            //foreach (var item in products.GroupBy(g => g.GroupId))
-            //{
-            //    var group = list.FirstOrDefault(i => i.ID == item.Key);
-            //    group.Products = item.ToList().OrderByDescending(o => o.OrderId).Take(6).ToList();
-            //}
 
             return list;
         }
@@ -134,6 +118,10 @@ namespace Peacock.Apis.Controllers
                                                 .Any(a => a.DisplayContent.Contains(search.Query))
                                          || i.LanguageRelationByIntroduction.TSystemLanguageContent
                                                 .Any(a => a.DisplayContent.Contains(search.Query)));
+            }
+            if (search.GroupId > 0)
+            {
+                query = query.Where(i => i.GroupId == search.GroupId);
             }
             int count = query.Count();
             var entities = query.Skip(search.Skip).Take(search.size).OrderByDescending(o => o.OrderId).ToList();
@@ -257,7 +245,9 @@ namespace Peacock.Apis.Controllers
                                  .ThenInclude(i => i.LanguageRelationByIntroduction).ThenInclude(i => i.TSystemLanguageContent)
                                  .OrderByDescending(i => i.OrderId);
             int count = query.Count();
-            var list = query.Skip(search.Skip).Take(search.size).OrderByDescending(o => o.OrderId)
+            var list = query
+                //.Skip(search.Skip).Take(search.size)
+                .OrderByDescending(o => o.OrderId)
                 .Select(c => new HotSaleProductResDto
                 {
                     ProductId = c.ID,

@@ -18,14 +18,14 @@ namespace Peacock.Apis.Controllers
         }
 
         /// <summary>
-        /// 获取宣传图列表
+        /// 获取走马灯
         /// </summary>
         /// <returns></returns>
         [HttpGet("list")]
         public List<string> Get()
         {
-            string path = "/file/img/SAM_1040.JPG";
-            return new List<string>() { path, path, path, path, path };
+            var list = dbContext.T_Advertise.Where(i => !i.IsDeleted).OrderByDescending(o => o.OrderId).Select(i => i.ImgUrl).ToList();
+            return list;
         }
     }
 }

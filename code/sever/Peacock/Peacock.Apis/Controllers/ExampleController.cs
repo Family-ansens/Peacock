@@ -100,6 +100,7 @@ namespace Peacock.Apis.Controllers
             string languageType = GetLanguage();
             var query = dbContext.T_Pro_Example
                                  .Include(i => i.LanguageRelationByName).ThenInclude(i => i.TSystemLanguageContent)
+                                 .Include(i => i.LanguageRelationByIntroduction).ThenInclude(i => i.TSystemLanguageContent)
                                  .Include(i => i.LanguageRelationByDescription).ThenInclude(i => i.TSystemLanguageContent)
                                  .Where(i => !i.IsDeleted);
             if (!string.IsNullOrEmpty(search.Query))
@@ -107,8 +108,14 @@ namespace Peacock.Apis.Controllers
                 search.Query = search.Query.Replace(" ", string.Empty);
                 query = query.Where(i => i.LanguageRelationByName.TSystemLanguageContent
                                                 .Any(a => a.DisplayContent.Contains(search.Query))
+                                        || i.LanguageRelationByIntroduction.TSystemLanguageContent
+                                                .Any(a => a.DisplayContent.Contains(search.Query))
                                         || i.LanguageRelationByDescription.TSystemLanguageContent
                                                 .Any(a => a.DisplayContent.Contains(search.Query)));
+            }
+            if (search.GroupId > 0)
+            {
+                query = query.Where(i => i.GroupId == search.GroupId);
             }
             int count = query.Count();
             var entities = query.Skip(search.Skip).Take(search.size).OrderBy(o => o.OrderId).ToList();
@@ -116,6 +123,7 @@ namespace Peacock.Apis.Controllers
                         {
                             Id = c.ID,
                             Name = c.LanguageRelationByName.TSystemLanguageContent.FirstOrDefault(i => i.LanguageType == languageType).DisplayContent,
+                            Introduction = c.LanguageRelationByIntroduction.TSystemLanguageContent.FirstOrDefault(i => i.LanguageType == languageType).DisplayContent,
                             ImgUrl = c.ImgPath,
                         }).ToList();
             var result = new PageResponseDto<ExampleResDto>()
@@ -128,7 +136,7 @@ namespace Peacock.Apis.Controllers
         }
 
         /// <summary>
-        /// 获取应用列表
+        /// 获取最新应用列表
         /// </summary>
         /// <param name="search"></param>
         /// <returns></returns>
@@ -138,6 +146,7 @@ namespace Peacock.Apis.Controllers
             string languageType = GetLanguage();
             var query = dbContext.T_Pro_Example
                                  .Include(i => i.LanguageRelationByName).ThenInclude(i => i.TSystemLanguageContent)
+                                 .Include(i => i.LanguageRelationByIntroduction).ThenInclude(i => i.TSystemLanguageContent)
                                  .Where(i => !i.IsDeleted);
             int count = query.Count();
             var entities = query.Skip(search.Skip).Take(search.size).OrderByDescending(o => o.CreatedTime).ToList();
@@ -145,6 +154,7 @@ namespace Peacock.Apis.Controllers
             {
                 Id = c.ID,
                 Name = c.LanguageRelationByName.TSystemLanguageContent.FirstOrDefault(i => i.LanguageType == languageType).DisplayContent,
+                Introduction = c.LanguageRelationByIntroduction.TSystemLanguageContent.FirstOrDefault(i => i.LanguageType == languageType).DisplayContent,
                 ImgUrl = c.ImgPath,
             }).ToList();
             var result = new PageResponseDto<ExampleResDto>()
@@ -162,27 +172,38 @@ namespace Peacock.Apis.Controllers
         /// <param name="id"></param>
         /// <returns></returns>
         [HttpGet("get/{id}")]
-        public ProductDetailResDto GetExample(int id)
+        public ExampleDetailResDto GetExample(int id)
         {
             string languageType = GetLanguage();
             var query = dbContext.T_Pro_Example
                                  .Include(i => i.LanguageRelationByName).ThenInclude(i => i.TSystemLanguageContent)
+                                 .Include(i => i.LanguageRelationByIntroduction).ThenInclude(i => i.TSystemLanguageContent)
                                  .Include(i => i.LanguageRelationByDescription).ThenInclude(i => i.TSystemLanguageContent)
                                  .Include(i => i.ExampleImgs)
                                  .Where(i => !i.IsDeleted && i.ID == id);
             var entity = query.FirstOrDefault();
             if (entity == null)
             {
-                return new ProductDetailResDto();
+                return new ExampleDetailResDto();
             }
-            ProductDetailResDto result = new ProductDetailResDto()
+            ExampleDetailResDto result = new ExampleDetailResDto()
             {
                 Id = entity.ID,
                 Name = entity.LanguageRelationByName.TSystemLanguageContent.FirstOrDefault(i => i.LanguageType == languageType).DisplayContent,
+                Introduction = entity.LanguageRelationByIntroduction.TSystemLanguageContent.FirstOrDefault(i => i.LanguageType == languageType).DisplayContent,
                 ImgUrl = entity.ImgPath,
                 Desc = entity.LanguageRelationByDescription.TSystemLanguageContent.FirstOrDefault(i => i.LanguageType == languageType).DisplayContent,
-                ImgList = entity.ExampleImgs.Select(c => c.ImgUrl).ToList(),
+                ImgList = entity.ExampleImgs.OrderByDescending(o => o.OrderId).Select(c => c.ImgUrl).ToList(),
             };
+            var relationProducts = dbContext.T_Pro_ExampleProductRelation
+                                            .Include(i => i.Product)
+                                            .Where(i => i.ExampleId == id)
+                                            .Select(c => new ExampleProductItem
+                                            {
+                                                ProductId = c.ProductId,
+                                                ImgUrl = c.Product.ImgPath,
+                                            }).ToList();
+            result.RelationProducts = relationProducts;
             return result;
         }
 

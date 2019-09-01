@@ -10,6 +10,7 @@ namespace Peacock.Dal
         {
             ProductImgs = new HashSet<T_Pro_ProductImg>();
             HotSaleProducts = new HashSet<T_Pro_HotSaleProduct>();
+            ExampleProductRelations = new HashSet<T_Pro_ExampleProductRelation>();
         }
 
         public int ID { get; set; }
@@ -51,5 +52,7 @@ namespace Peacock.Dal
         public HashSet<T_Pro_ProductImg> ProductImgs { get; set; }
 
         public HashSet<T_Pro_HotSaleProduct> HotSaleProducts { get; set; }
+
+        public HashSet<T_Pro_ExampleProductRelation> ExampleProductRelations { get; set; }
     }
 }

@@ -14,5 +14,10 @@ namespace Peacock.Apis.Models
         /// 搜索字段，模糊搜索
         /// </summary>
         public string Query { get; set; }
+
+        /// <summary>
+        /// 商品分组ID
+        /// </summary>
+        public int GroupId { get; set; }
     }
 }

@@ -101,6 +101,7 @@ CREATE TABLE `T_Pro_Example` (
 	`Description` TEXT NULL,
 	`OrderId` INT(11) NOT NULL,
 	`NameLanguageId` INT(11) NULL DEFAULT NULL,
+	`IntroductionLanguageId` INT(11) NULL DEFAULT NULL,
 	`DescriptionLanguageId` INT(11) NULL DEFAULT NULL,
 	`ImgPath` VARCHAR(2000) NULL,
 	`IsDeleted` BIT(1) NOT NULL DEFAULT b'0',
@@ -156,6 +157,35 @@ CREATE TABLE `T_Evaluation` (
 	`Email` VARCHAR(100) NOT NULL,
 	`OtherContact` VARCHAR(500) NULL,
 	`IpAddress` VARCHAR(50) NULL,
+	`CreatedBy` VARCHAR(50) NOT NULL,
+	`CreatedTime` DATETIME NOT NULL,
+	`LastUpdatedBy` VARCHAR(50) NOT NULL,
+	`LastUpdatedTime` DATETIME NOT NULL,
+	PRIMARY KEY (`ID`)
+)
+COLLATE='utf8_general_ci'
+ENGINE=InnoDB
+;
+
+CREATE TABLE `T_Advertise` (
+	`ID` int(11) NOT NULL AUTO_INCREMENT,
+	`OrderId` INT(11) NOT NULL,
+	`ImgUrl` VARCHAR(200) NULL DEFAULT NULL,
+	`IsDeleted` BIT(1) NOT NULL DEFAULT b'0',
+	`CreatedBy` VARCHAR(50) NOT NULL,
+	`CreatedTime` DATETIME NOT NULL,
+	`LastUpdatedBy` VARCHAR(50) NOT NULL,
+	`LastUpdatedTime` DATETIME NOT NULL,
+	PRIMARY KEY (`ID`)
+)
+COLLATE='utf8_general_ci'
+ENGINE=InnoDB
+;
+
+CREATE TABLE `T_Pro_ExampleProductRelation` (
+	`ID` int(11) NOT NULL AUTO_INCREMENT,
+	`ProductId` INT(11) NOT NULL,
+	`ExampleId` INT(11) NOT NULL,
 	`CreatedBy` VARCHAR(50) NOT NULL,
 	`CreatedTime` DATETIME NOT NULL,
 	`LastUpdatedBy` VARCHAR(50) NOT NULL,

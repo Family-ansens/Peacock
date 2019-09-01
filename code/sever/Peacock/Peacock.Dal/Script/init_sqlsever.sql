@@ -105,6 +105,7 @@ CREATE TABLE [dbo].[T_Pro_Example](
 	[Description] [text] NULL,
 	[OrderId] [int] NOT NULL,
 	[NameLanguageId] [int] NULL,
+	[IntroductionLanguageId] [int] NULL,
 	[DescriptionLanguageId] [int] NULL,
 	[ImgPath] [nvarchar](2000) NULL,
 	[IsDeleted] [bit] NOT NULL,
@@ -182,10 +183,26 @@ CREATE TABLE [dbo].[T_Advertise](
 	[CreatedBy] [nvarchar](50) NOT NULL,
 	[CreatedTime] [datetime] NOT NULL,
 	[LastUpdatedBy] [nvarchar](50) NOT NULL,
-	[LastUpdatedDate] [datetime] NOT NULL,
+	[LastUpdatedTime] [datetime] NOT NULL,
  CONSTRAINT [PK_T_Advertise] PRIMARY KEY CLUSTERED 
 (
 	[ID] ASC
 )WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
 ) ON [PRIMARY]
 GO
+
+CREATE TABLE [dbo].[T_Pro_ExampleProductRelation](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[ProductId] [int] NOT NULL,
+	[ExampleId] [int] NOT NULL,
+	[CreatedBy] [nvarchar](50) NOT NULL,
+	[CreatedTime] [datetime] NOT NULL,
+	[LastUpdatedBy] [nvarchar](50) NOT NULL,
+	[LastUpdatedTime] [datetime] NOT NULL,
+ CONSTRAINT [PK_T_Pro_ExampleProductRelation] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+

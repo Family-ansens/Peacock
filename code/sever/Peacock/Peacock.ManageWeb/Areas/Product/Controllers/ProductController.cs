@@ -115,7 +115,7 @@ namespace Peacock.ManageWeb.Areas.Product.Controllers
                 var introductionLanguageDict = new Dictionary<string, string>();
                 introductionLanguageDict.Add(LanguageType.ZhCn, model.IntroductionZh);
                 introductionLanguageDict.Add(LanguageType.En, model.IntroductionEn);
-                entity.LanguageRelationByDescription = EditLanguageContent(entity.LanguageRelationByIntroduction, introductionLanguageDict);
+                entity.LanguageRelationByIntroduction = EditLanguageContent(entity.LanguageRelationByIntroduction, introductionLanguageDict);
 
                 var descLanguageDict = new Dictionary<string, string>();
                 descLanguageDict.Add(LanguageType.ZhCn, model.DescriptionZh);

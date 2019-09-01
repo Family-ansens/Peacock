@@ -9,6 +9,7 @@ namespace Peacock.Dal
         public T_Pro_Example()
         {
             ExampleImgs = new HashSet<T_Pro_ExampleImg>();
+            ExampleProductRelations = new HashSet<T_Pro_ExampleProductRelation>();
         }
 
         public int ID { get; set; }
@@ -22,6 +23,8 @@ namespace Peacock.Dal
         public int OrderId { get; set; }
 
         public int? NameLanguageId { get; set; }
+
+        public int? IntroductionLanguageId { get; set; }
 
         public int? DescriptionLanguageId { get; set; }
 
@@ -41,8 +44,12 @@ namespace Peacock.Dal
 
         public virtual T_System_LanguageRelation LanguageRelationByName { get; set; }
 
+        public virtual T_System_LanguageRelation LanguageRelationByIntroduction { get; set; }
+
         public virtual T_System_LanguageRelation LanguageRelationByDescription { get; set; }
 
         public HashSet<T_Pro_ExampleImg> ExampleImgs { get; set; }
+
+        public HashSet<T_Pro_ExampleProductRelation> ExampleProductRelations { get; set; }
     }
 }

@@ -19,6 +19,11 @@ namespace Peacock.Apis.Models
         public string Name { get; set; }
 
         /// <summary>
+        /// 应用简介
+        /// </summary>
+        public string Introduction { get; set; }
+
+        /// <summary>
         /// 主图路径
         /// </summary>
         public string ImgUrl { get; set; }
@@ -49,5 +54,22 @@ namespace Peacock.Apis.Models
         /// 图片列表
         /// </summary>
         public List<string> ImgList { get; set; }
+
+        /// <summary>
+        /// 相关产品
+        /// </summary>
+        public List<ExampleProductItem> RelationProducts { get; set; }
+    }
+
+    public class ExampleProductItem
+    {
+        /// <summary>
+        /// 商品Id
+        /// </summary>
+        public int ProductId { get; set; }
+        /// <summary>
+        /// 商品宣传图
+        /// </summary>
+        public string ImgUrl { get; set; }
     }
 }

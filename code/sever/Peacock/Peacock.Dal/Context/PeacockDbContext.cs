@@ -20,6 +20,7 @@ namespace Peacock.Dal
 
         public virtual DbSet<T_Pro_Product> T_Pro_Product { get; set; }
         public virtual DbSet<T_Pro_ProductGroup> T_Pro_ProductGroup { get; set; }
+        public virtual DbSet<T_Pro_ExampleProductRelation> T_Pro_ExampleProductRelation { get; set; }
         public virtual DbSet<T_Pro_ProductImg> T_Pro_ProductImg { get; set; }
         public virtual DbSet<T_Pro_HotSaleProduct> T_Pro_HotSaleProduct { get; set; }
         public virtual DbSet<T_System_LanguageContent> T_System_LanguageContent { get; set; }
@@ -382,6 +383,8 @@ namespace Peacock.Dal
 
                 entity.Property(e => e.NameLanguageId);
 
+                entity.Property(e => e.IntroductionLanguageId);
+
                 entity.Property(e => e.DescriptionLanguageId);
 
                 if (IS_MYSQL)
@@ -401,6 +404,11 @@ namespace Peacock.Dal
                     .WithMany(p => p.ExamplesWithName)
                     .HasForeignKey(d => d.NameLanguageId)
                     .HasConstraintName("FK_T_Pro_Example_T_System_LanguageRelation_Name");
+
+                entity.HasOne(d => d.LanguageRelationByIntroduction)
+                    .WithMany(p => p.ExamplesWithIntroduction)
+                    .HasForeignKey(d => d.IntroductionLanguageId)
+                    .HasConstraintName("FK_T_Pro_Example_T_System_LanguageRelation_Introduction");
 
                 entity.HasOne(d => d.LanguageRelationByDescription)
                     .WithMany(p => p.ExamplesWithDescription)
@@ -570,6 +578,35 @@ namespace Peacock.Dal
                 entity.Property(e => e.LastUpdatedBy).IsRequired().HasMaxLength(50);
 
                 entity.Property(e => e.LastUpdatedTime).HasColumnType("datetime");
+            });
+
+            modelBuilder.Entity<T_Pro_ExampleProductRelation>(entity =>
+            {
+                entity.ToTable("T_Pro_ExampleProductRelation");
+
+                entity.Property(e => e.ID).HasColumnName("ID");
+
+                entity.Property(e => e.ExampleId);
+
+                entity.Property(e => e.ProductId);
+
+                entity.Property(e => e.CreatedBy).IsRequired().HasMaxLength(50);
+
+                entity.Property(e => e.CreatedTime).HasColumnType("datetime");
+
+                entity.Property(e => e.LastUpdatedBy).IsRequired().HasMaxLength(50);
+
+                entity.Property(e => e.LastUpdatedTime).HasColumnType("datetime");
+
+                entity.HasOne(d => d.Product)
+                    .WithMany(p => p.ExampleProductRelations)
+                    .HasForeignKey(d => d.ProductId)
+                    .HasConstraintName("FK_T_Pro_ExampleProductRelation_T_Pro_Product");
+
+                entity.HasOne(d => d.Example)
+                    .WithMany(p => p.ExampleProductRelations)
+                    .HasForeignKey(d => d.ExampleId)
+                    .HasConstraintName("FK_T_Pro_ExampleProductRelation_T_Pro_Example");
             });
         }
     }
