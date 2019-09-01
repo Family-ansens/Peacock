@@ -1,13 +1,18 @@
-﻿
-insert into T_System_Menu(ParentId,Code,Name,Url,Seq,LanguageRelationId,IsDeleted,CreatedBy,CreatedTime,LastUpdatedBy,LastUpdatedDate)
-values(0,'New','新闻管理','/News/New/Index',3,null,0,-1,GETDATE(),-1,GETDATE());
-
-insert into T_System_Menu(ParentId,Code,Name,Url,Seq,LanguageRelationId,IsDeleted,CreatedBy,CreatedTime,LastUpdatedBy,LastUpdatedDate)
-values(0,'New','公告管理','/News/Announcement/Index',3,null,0,-1,GETDATE(),-1,GETDATE());
-
-insert into T_System_Menu(ParentId,Code,Name,Url,Seq,LanguageRelationId,IsDeleted,CreatedBy,CreatedTime,LastUpdatedBy,LastUpdatedDate)
+﻿insert into T_System_Menu(ParentId,Code,Name,Url,Seq,LanguageRelationId,IsDeleted,CreatedBy,CreatedTime,LastUpdatedBy,LastUpdatedDate)
 values(0,'BUsinessManagement','业务管理','',1,null,0,-1,GETDATE(),-1,GETDATE());
 
+insert into T_System_Menu(ParentId,Code,Name,Url,Seq,LanguageRelationId,IsDeleted,CreatedBy,CreatedTime,LastUpdatedBy,LastUpdatedDate)
+values(9,'New','新闻管理','/News/New/Index',3,null,0,-1,GETDATE(),-1,GETDATE());
+
+insert into T_System_Menu(ParentId,Code,Name,Url,Seq,LanguageRelationId,IsDeleted,CreatedBy,CreatedTime,LastUpdatedBy,LastUpdatedDate)
+values(9,'New','公告管理','/News/Announcement/Index',3,null,0,-1,GETDATE(),-1,GETDATE());
+
+insert into T_System_Menu(ParentId,Code,Name,Url,Seq,LanguageRelationId,IsDeleted,CreatedBy,CreatedTime,LastUpdatedBy,LastUpdatedDate)
+values
+(9,'HotSaleProduct','热销商品','/Product/HotSaleProduct/Index',1,NULL,0,'-1',GetDate(),'-1',GetDate()),
+(9,'Company','公司管理','/News/Company/Index',1,NULL,0,'-1',GetDate(),'-1',GetDate()),
+(9,'Evaluation','评论管理','/News/Evaluation/Index',1,NULL,0,'-1',GetDate(),'-1',GetDate()),
+(9,'Advertise','走马灯','/News/Advertise/Index',1,NULL,0,'-1',GetDate(),'-1',GetDate());
 
 CREATE TABLE [dbo].[T_Pro_ProductImg](
 	[ID] [int] IDENTITY(1,1) NOT NULL,

@@ -1,0 +1,75 @@
+﻿@model Peacock.ViewModel.Manage.EvaluationItem
+
+
+<section class="content-header">
+    <h1>查看留言</h1>
+</section>
+
+<section class="content">
+    <div class="row">
+        <div class="box box-primary">
+            <form role="form" method="post" action="@Url.Action("Save", "New", new { area = "News" })">
+                <div class="box-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="col-md-6">
+                                @Html.HiddenFor(m => m.Id)
+
+                                <div class="form-group">
+                                    @Html.LabelFor(m => m.Name)
+                                    @Html.TextBoxFor(m => m.Name, new { @readonly = "readonly", @class = "form-control" })
+                                </div>
+                                <div class="form-group">
+                                    @Html.LabelFor(m => m.Tel)
+                                    @Html.TextBoxFor(m => m.Tel, new { @readonly = "readonly", @class = "form-control" })
+                                </div>
+                                <div class="form-group">
+                                    @Html.LabelFor(m => m.Email)
+                                    @Html.TextBoxFor(m => m.Email, new { @readonly = "readonly", @class = "form-control" })
+                                </div>
+                                <div class="form-group">
+                                    @Html.LabelFor(m => m.OtherContact)
+                                    @Html.TextBoxFor(m => m.OtherContact, new { @readonly = "readonly", @class = "form-control" })
+                                </div>
+                                <div class="form-group">
+                                    @Html.LabelFor(m => m.IpAddress)
+                                    @Html.TextBoxFor(m => m.IpAddress, new { @readonly = "readonly", @class = "form-control" })
+                                </div>
+                                <div class="form-group">
+                                    @Html.LabelFor(m => m.CreatedTime)
+                                    @Html.TextBoxFor(m => m.CreatedTime, new { @readonly = "readonly", @class = "form-control" })
+                                </div>
+                                <div class="form-group">
+                                    @Html.LabelFor(m => m.Content)
+                                    @Html.TextAreaFor(m => m.Content, new { @readonly = "readonly", @class = "form-control" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="j-lang-tab">
+                                <ul class="nav nav-pills ">
+                                    <li class="active">
+                                        <a class="nav-link active" href="#tab_zh" data-toggle="tab" aria-expanded="true">中文语言</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="#tab_en" data-toggle="tab" aria-expanded="false">英文语言</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row text-danger">
+                        @Html.ValidationSummary()
+                    </div>
+                </div>
+
+                <div class="box-footer">
+                    <button type="submit" class="btn btn-primary">保存</button>
+                    <a href="@Url.Action("Index", "Evaluation", new { area = "News" })" class="btn btn-default">返回</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
