@@ -39,7 +39,7 @@ namespace Peacock.Apis.Controllers
                             {
                                 ID = c.ID,
                                 Code = c.Code,
-                                Name = c.LanguageRelationByName.TSystemLanguageContent.FirstOrDefault(i => i.LanguageType == languageType).DisplayContent,
+                                Title = c.LanguageRelationByName.TSystemLanguageContent.FirstOrDefault(i => i.LanguageType == languageType).DisplayContent,
                             }).ToList();
             var result = new PageResponseDto<ExampleGroupResDto>()
             {
@@ -65,7 +65,7 @@ namespace Peacock.Apis.Controllers
                             {
                                 ID = c.ID,
                                 Code = c.Code,
-                                Name = c.LanguageRelationByName.TSystemLanguageContent.FirstOrDefault(i => i.LanguageType == languageType).DisplayContent,
+                                Title = c.LanguageRelationByName.TSystemLanguageContent.FirstOrDefault(i => i.LanguageType == languageType).DisplayContent,
                                 Examples = new List<ExampleResDto>(),
                             }).ToList();
             var groupIdArr = list.Select(i => i.ID).ToArray();

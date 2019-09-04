@@ -19,9 +19,9 @@ namespace Peacock.Apis.Models
         /// </summary>
         public string Code { get; set; }
         /// <summary>
-        /// 名称
+        /// 标题
         /// </summary>
-        public string Name { get; set; }
+        public string Title { get; set; }
 
         /// <summary>
         /// 应用列表
