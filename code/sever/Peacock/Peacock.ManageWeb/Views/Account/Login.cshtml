@@ -1,5 +1,6 @@
 ﻿@{
     Layout = null;
+    string errorMsg = ViewData["error"]?.ToString() ?? string.Empty;
 }
 
 @model Peacock.ManageWeb.Models.LoginModel
@@ -40,7 +41,7 @@
             <div class="wrap-login100">
                 <div class="login100-form-title" style="background-image: url(/lib/loginview/images/bg-01.jpg);">
                     <span class="login100-form-title-1">
-                        欢迎
+                        优瑞丝网机械 欢迎您
                     </span>
                 </div>
 
@@ -57,6 +58,11 @@
                         <input class="input100" type="password" name="password" placeholder="请输入密码(123)">
                         <span class="focus-input100"></span>
                     </div>
+
+                    @if (!string.IsNullOrEmpty(errorMsg))
+                    {
+                        <span style="color:red">@errorMsg</span>
+                    }
 
                     <div class="flex-sb-m w-full p-b-30">
                         <div class="contact100-form-checkbox">

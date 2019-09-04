@@ -18,6 +18,7 @@ namespace Peacock.Dal
             
         }
 
+        public virtual DbSet<T_User> T_User { get; set; }
         public virtual DbSet<T_Pro_Product> T_Pro_Product { get; set; }
         public virtual DbSet<T_Pro_ProductGroup> T_Pro_ProductGroup { get; set; }
         public virtual DbSet<T_Pro_ExampleProductRelation> T_Pro_ExampleProductRelation { get; set; }
@@ -52,6 +53,26 @@ namespace Peacock.Dal
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             //modelBuilder.HasAnnotation("ProductVersion", "2.2.6-servicing-10079");
+
+            modelBuilder.Entity<T_User>(entity =>
+            {
+                entity.ToTable("T_User");
+
+                entity.Property(e => e.ID).HasColumnName("ID");
+
+                entity.Property(e => e.UserName).IsRequired().HasMaxLength(50);
+
+                entity.Property(e => e.Password).IsRequired().HasMaxLength(50);
+
+                if (IS_MYSQL)
+                {
+                    entity.Property(e => e.Status).HasColumnType("bit(1)").HasDefaultValue(true);
+                }
+
+                entity.Property(e => e.CreatedTime).HasColumnType("datetime");
+
+                entity.Property(e => e.LastUpdatedTime).HasColumnType("datetime");
+            });
 
             modelBuilder.Entity<T_New>(entity =>
             {

@@ -7,13 +7,19 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Peacock.Dal;
 using Peacock.ManageWeb.Models;
 
 namespace Peacock.ManageWeb.Controllers
 {
     [Authorize]
-    public class AccountController : Controller
+    public class AccountController : BaseController
     {
+        public AccountController(PeacockDbContext peacockDbContext) :base(peacockDbContext)
+        {
+
+        }
+
         public IActionResult Index()
         {
             return View();
@@ -31,31 +37,45 @@ namespace Peacock.ManageWeb.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginModel model)
         {
-            if (model.UserName.Equals("admin", StringComparison.InvariantCultureIgnoreCase) && model.Password.Equals("123"))
+            string pwd = BaseIdentityService.HashPassword(model.Password);
+            var userEntity = peacockDbContext.T_User.FirstOrDefault(i => i.UserName == model.UserName && i.Password == pwd);
+            if (userEntity == null)
             {
-                //登陆授权
-                var claims = new List<Claim>();
-                claims.Add(new Claim(ClaimTypes.Name, model.UserName));
-                var indentity = new ClaimsIdentity(claims, "PeacockManageWeb");
-                var principal = new ClaimsPrincipal(indentity);
-                await HttpContext.SignInAsync(
-                    CookieAuthenticationDefaults.AuthenticationScheme,
-                    principal);
-
-                string redirectAction = Url.Action("Index");
-                if (!string.IsNullOrEmpty(HttpContext.Request.Query["ReturnUrl"].FirstOrDefault()))
-                {
-                    redirectAction = HttpContext.Request.Query["ReturnUrl"].FirstOrDefault();
-                }
-                else
-                {
-                    redirectAction = Url.Action("Index","GroupGroup", new { area = "Product" });
-                }
-
-                return Redirect(redirectAction);
+                ViewData["error"] = "无效用户名或密码";
+                return View(model);
             }
-            return View(model);
+
+            if (!userEntity.Status)
+            {
+                ViewData["error"] = "用户已被禁用，请联系管理员";
+                return View(model);
+            }
+
+            //登陆授权
+            var claims = new List<Claim>();
+            claims.Add(new Claim(ClaimTypes.Name, userEntity.UserName));
+            var indentity = new ClaimsIdentity(claims, "PeacockManageWeb");
+            var principal = new ClaimsPrincipal(indentity);
+            await HttpContext.SignInAsync(
+                CookieAuthenticationDefaults.AuthenticationScheme,
+                principal);
+
+            string redirectAction = Url.Action("Index");
+            if (!string.IsNullOrEmpty(HttpContext.Request.Query["ReturnUrl"].FirstOrDefault()))
+            {
+                redirectAction = HttpContext.Request.Query["ReturnUrl"].FirstOrDefault();
+            }
+            else
+            {
+                redirectAction = Url.Action("Index", "GroupGroup", new { area = "Product" });
+            }
+
+            return Redirect(redirectAction);
         }
+
+
+        
+        
 
         public async Task<IActionResult> Logout()
         {

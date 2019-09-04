@@ -20,12 +20,22 @@ namespace Peacock.ManageWeb
     public class BaseController : Controller
     {
         protected readonly PeacockDbContext peacockDbContext;
-        protected readonly string userName;
+        public string userName
+        {
+            get
+            {
+                if (string.IsNullOrEmpty(_userName))
+                {
+                    _userName = User?.Identity?.Name ?? string.Empty;
+                }
+                return _userName;
+            }
+        }
+        private string _userName; 
 
         public BaseController(PeacockDbContext peacockDbContext)
         {
             this.peacockDbContext = peacockDbContext;
-            userName = User?.Identity?.Name ?? string.Empty;
         }
 
         protected T_System_LanguageContent CreateLanguageContentEntity(string content, string languageType)
