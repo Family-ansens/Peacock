@@ -60,6 +60,7 @@ namespace Peacock.Apis.Controllers
         {
             string languageType = GetLanguage();
             var entity = dbContext.T_New.Include(i => i.LanguageRelationByTitle).ThenInclude(i => i.TSystemLanguageContent)
+                                         .Include(i => i.LanguageRelationByIntroduction).ThenInclude(i => i.TSystemLanguageContent)
                                          .Include(i => i.LanguageRelationByContent).ThenInclude(i => i.TSystemLanguageContent)
                                          .FirstOrDefault(i => i.ID == id && !i.IsDeleted && i.IsPublish);
             if (entity == null) return NotFound();
@@ -68,6 +69,7 @@ namespace Peacock.Apis.Controllers
             {
                 ID = entity.ID,
                 Title = GetLanguageContent(entity.LanguageRelationByTitle, languageType),
+                Introduction = GetLanguageContent(entity.LanguageRelationByIntroduction, languageType),
                 ImgUrl = entity.ImgUrl,
                 Content = GetLanguageContent(entity.LanguageRelationByContent, languageType),
                 PublishTime = entity.PublishTime,

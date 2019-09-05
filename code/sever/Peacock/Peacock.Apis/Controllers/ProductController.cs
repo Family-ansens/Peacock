@@ -184,6 +184,7 @@ namespace Peacock.Apis.Controllers
             string languageType = GetLanguage();
             var query = dbContext.T_Pro_Product
                                  .Include(i => i.LanguageRelationByName).ThenInclude(i => i.TSystemLanguageContent)
+                                 .Include(i => i.LanguageRelationByIntroduction).ThenInclude(i => i.TSystemLanguageContent)
                                  .Include(i => i.LanguageRelationByDescription).ThenInclude(i => i.TSystemLanguageContent)
                                  .Include(i => i.ProductImgs)
                                  .Where(i => !i.IsDeleted && i.ID == id);
@@ -196,6 +197,7 @@ namespace Peacock.Apis.Controllers
             {
                 Id = entity.ID,
                 Name = entity.LanguageRelationByName.TSystemLanguageContent.FirstOrDefault(i => i.LanguageType == languageType).DisplayContent,
+                Introduction = entity.LanguageRelationByIntroduction.TSystemLanguageContent.FirstOrDefault(i => i.LanguageType == languageType).DisplayContent,
                 ImgUrl = entity.ImgPath,
                 Desc = entity.LanguageRelationByDescription.TSystemLanguageContent.FirstOrDefault(i => i.LanguageType == languageType).DisplayContent,
                 ImgList = entity.ProductImgs.OrderByDescending(o => o.OrderId).Select(c => c.ImgUrl).ToList(),

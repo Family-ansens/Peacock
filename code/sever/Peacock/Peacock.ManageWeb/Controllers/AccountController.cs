@@ -73,10 +73,6 @@ namespace Peacock.ManageWeb.Controllers
             return Redirect(redirectAction);
         }
 
-
-        
-        
-
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync();
