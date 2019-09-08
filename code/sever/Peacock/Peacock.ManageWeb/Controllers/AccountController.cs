@@ -54,20 +54,17 @@ namespace Peacock.ManageWeb.Controllers
             //登陆授权
             var claims = new List<Claim>();
             claims.Add(new Claim(ClaimTypes.Name, userEntity.UserName));
+            claims.Add(new Claim(ClaimTypes.NameIdentifier, userEntity.ID.ToString()));
             var indentity = new ClaimsIdentity(claims, "PeacockManageWeb");
             var principal = new ClaimsPrincipal(indentity);
             await HttpContext.SignInAsync(
                 CookieAuthenticationDefaults.AuthenticationScheme,
                 principal);
 
-            string redirectAction = Url.Action("Index");
+            string redirectAction = Url.Action("Index", "User");
             if (!string.IsNullOrEmpty(HttpContext.Request.Query["ReturnUrl"].FirstOrDefault()))
             {
                 redirectAction = HttpContext.Request.Query["ReturnUrl"].FirstOrDefault();
-            }
-            else
-            {
-                redirectAction = Url.Action("Index", "GroupGroup", new { area = "Product" });
             }
 
             return Redirect(redirectAction);

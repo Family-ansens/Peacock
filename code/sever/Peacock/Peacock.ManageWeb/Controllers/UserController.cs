@@ -102,7 +102,7 @@ namespace Peacock.ManageWeb.Controllers
 
             var entity = new T_User()
             {
-                UserName =model.UserName,
+                UserName = model.UserName,
                 Password = BaseIdentityService.HashPassword(model.Password),
                 Status = true,
                 CreatedTime = DateTime.Now,
@@ -111,6 +111,52 @@ namespace Peacock.ManageWeb.Controllers
             peacockDbContext.T_User.Add(entity);
             peacockDbContext.SaveChanges();
             return Json(Success("创建用户成功"));
+        }
+
+        [HttpGet]
+        public IActionResult ChangePwd()
+        {
+            return PartialView(new ChangePwdModel());
+        }
+
+        [HttpPost]
+        public IActionResult ChangePwd(ChangePwdModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return PartialView(model);
+            }
+
+            if (!model.ConfirmPassword.Equals(model.Password))
+            {
+                ModelState.AddModelError("Password", "两次密码输入不一致");
+                ModelState.AddModelError("ConfirmPassword", "");
+                return PartialView(model);
+            }
+
+            if (model.OldPassword.Equals(model.Password))
+            {
+                ModelState.AddModelError("Password", "旧密码和新密码完全一致");
+                ModelState.AddModelError("ConfirmPassword", "");
+                ModelState.AddModelError("OldPassword", "");
+                return PartialView(model);
+            }
+
+            var oldPwd = BaseIdentityService.HashPassword(model.OldPassword);
+            var entity = peacockDbContext.T_User.FirstOrDefault(i => i.ID == userId && i.Password == oldPwd);
+            if (entity == null)
+            {
+                ModelState.AddModelError("OldPassword", "旧密码错误");
+                return PartialView(model);
+            }
+
+            var newPwd = BaseIdentityService.HashPassword(model.Password);
+            entity.Password = newPwd;
+            entity.LastUpdatedTime = DateTime.Now;
+            peacockDbContext.Update(entity);
+            peacockDbContext.SaveChanges();
+
+            return RedirectToAction("Index");
         }
     }
 }
