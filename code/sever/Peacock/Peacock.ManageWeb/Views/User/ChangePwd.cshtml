@@ -1,0 +1,48 @@
+﻿@model Peacock.ManageWeb.Models.ChangePwdModel
+
+@{
+    Layout = "_Layout";
+}
+
+<section class="content-header">
+    <h1>
+        修改密码
+    </h1>
+</section>
+
+
+<section class="content">
+    <div class="row">
+        <div class="box box-primary">
+            <form role="form" method="post" action="@Url.Action("ChangePwd", "User")">
+                <div class="box-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    @Html.LabelFor(m => m.OldPassword)
+                                    @Html.PasswordFor(m => m.OldPassword, new { @class = "form-control" })
+                                </div>
+                                <div class="form-group">
+                                    @Html.LabelFor(m => m.Password)
+                                    @Html.PasswordFor(m => m.Password, new { @class = "form-control" })
+                                </div>
+                                <div class="form-group">
+                                    @Html.LabelFor(m => m.ConfirmPassword)
+                                    @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control" })
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row text-danger">
+                        @Html.ValidationSummary()
+                    </div>
+                </div>
+
+                <div class="box-footer">
+                    <button type="submit" class="btn btn-primary">保存</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>

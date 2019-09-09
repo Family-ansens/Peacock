@@ -54,6 +54,7 @@ namespace Peacock.ManageWeb.Controllers
             //登陆授权
             var claims = new List<Claim>();
             claims.Add(new Claim(ClaimTypes.Name, userEntity.UserName));
+            claims.Add(new Claim(ClaimTypes.NameIdentifier, userEntity.ID.ToString()));
             var indentity = new ClaimsIdentity(claims, "PeacockManageWeb");
             var principal = new ClaimsPrincipal(indentity);
             await HttpContext.SignInAsync(
@@ -65,11 +66,7 @@ namespace Peacock.ManageWeb.Controllers
             {
                 redirectAction = HttpContext.Request.Query["ReturnUrl"].FirstOrDefault();
             }
-            else
-            {
-                redirectAction = Url.Action("Index", "User");
-            }
-
+            
             return Redirect(redirectAction);
         }
 

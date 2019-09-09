@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
@@ -31,7 +32,21 @@ namespace Peacock.ManageWeb
                 return _userName;
             }
         }
-        private string _userName; 
+        private string _userName;
+
+        private int _userId;
+        public int userId
+        {
+            get
+            {
+                if (_userId == 0)
+                {
+                    var id = User.Claims.FirstOrDefault(i => i.Type == ClaimTypes.NameIdentifier).Value;
+                    _userId = int.Parse(id);
+                }
+                return _userId;
+            }
+        }
 
         public BaseController(PeacockDbContext peacockDbContext)
         {
