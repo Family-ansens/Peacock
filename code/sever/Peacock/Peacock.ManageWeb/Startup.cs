@@ -108,11 +108,11 @@ namespace Peacock.ManageWeb
             {
                 routes.MapRoute(
                     name: "areaRoute",
-                    template: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
+                    template: "{area:exists}/{controller=User}/{action=Index}/{id?}");
 
                 routes.MapRoute(
                    name: "default",
-                   template: "{controller=Home}/{action=Demo}/{id?}");
+                   template: "{controller=User}/{action=Index}/{id?}");
             });
         }
     }

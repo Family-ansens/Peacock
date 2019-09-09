@@ -15,7 +15,7 @@ namespace Peacock.ManageWeb.Controllers
     [Authorize]
     public class AccountController : BaseController
     {
-        public AccountController(PeacockDbContext peacockDbContext) :base(peacockDbContext)
+        public AccountController(PeacockDbContext peacockDbContext) : base(peacockDbContext)
         {
 
         }
@@ -60,14 +60,14 @@ namespace Peacock.ManageWeb.Controllers
                 CookieAuthenticationDefaults.AuthenticationScheme,
                 principal);
 
-            string redirectAction = Url.Action("Index");
+            string redirectAction = Url.Action("Index", "User");
             if (!string.IsNullOrEmpty(HttpContext.Request.Query["ReturnUrl"].FirstOrDefault()))
             {
                 redirectAction = HttpContext.Request.Query["ReturnUrl"].FirstOrDefault();
             }
             else
             {
-                redirectAction = Url.Action("Index", "GroupGroup", new { area = "Product" });
+                redirectAction = Url.Action("Index", "User");
             }
 
             return Redirect(redirectAction);
