@@ -1,5 +1,7 @@
 /code/sever/Peacock/.vs
+*.user
 
 bin
 obj
 upload
+PublishProfiles
