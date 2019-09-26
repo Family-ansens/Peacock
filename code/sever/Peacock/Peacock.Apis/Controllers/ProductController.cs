@@ -33,7 +33,7 @@ namespace Peacock.Apis.Controllers
                                 .Include(i => i.LanguageRelationByName).ThenInclude(i => i.TSystemLanguageContent)
                                 .Where(i => !i.IsDeleted);
             int count = query.Count();
-            var list = query.OrderByDescending(o => o.Id)
+            var list = query.OrderByDescending(o => o.OrderId)
                                 .Skip(search.Skip)
                                 .Take(search.size)
                                 .Select(c => new ProductGroupResDto
