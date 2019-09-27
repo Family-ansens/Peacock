@@ -122,7 +122,7 @@ namespace Peacock.ManageWeb
         [HttpPost]
         public ActionResult UploadImg([FromServices]IHostingEnvironment env, [FromServices]IConfiguration config)
         {
-            var files = HttpContext.Request.Form.Files.GetFiles("file");
+            var files = HttpContext.Request.Form.Files.GetFiles("imgFile");
             string uploadPath = HttpContext.Request.Form["uploadPath"];
             string returnFilePath = string.Empty;
             Dictionary<string, string> returnFileDict = new Dictionary<string, string>();
@@ -142,7 +142,6 @@ namespace Peacock.ManageWeb
 
                         var content = new byte[ms.Length];
                         ms.Write(content, 0, (int)ms.Length);
-
                         
                         var httpClient = new HttpClient();
 
@@ -158,14 +157,15 @@ namespace Peacock.ManageWeb
 
                         returnFilePath = apiUrl + "/file" + returnFileDict[formFile.FileName];
                     }
-
                 }
             }
 
-            Hashtable imageUrl = new Hashtable();
-            imageUrl.Add("link", returnFilePath);
+            Hashtable uploadResponse = new Hashtable();
+            //uploadResponse.Add("link", returnFilePath);
+            uploadResponse.Add("error", 0);
+            uploadResponse.Add("url", returnFilePath);
 
-            return Json(imageUrl);
+            return Json(uploadResponse);
         }
     }
 }

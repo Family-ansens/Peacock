@@ -27,12 +27,12 @@ namespace Peacock.Apis.Controllers
         [HttpPost("uploadimg")]
         public ActionResult UploadImg()
         {
-            var apiToken = HttpContext.Request.Form["token"];
-            if (string.IsNullOrEmpty(apiToken)) return Unauthorized();
+            //var apiToken = HttpContext.Request.Form["token"];
+            //if (string.IsNullOrEmpty(apiToken)) return Unauthorized();
             var fileSeverUrl = Request.IsHttps ? $"https://{Request.Host}/file" : $"http://{Request.Host}/file";
 
             DateTime today = DateTime.Today;
-            var files = HttpContext.Request.Form.Files.GetFiles("file");
+            var files = HttpContext.Request.Form.Files.GetFiles("imgFile");
             var fileBasePath = Path.Combine(_env.ContentRootPath, "upload", "img");
             List<string> fileList = new List<string>();
             string returnPath = string.Empty;
@@ -59,9 +59,13 @@ namespace Peacock.Apis.Controllers
                 }
             }
 
-            Hashtable result = new Hashtable();
-            result.Add("link", $"{fileSeverUrl}{returnPath}");
-            return new JsonResult(result);
+            Hashtable uploadResponse = new Hashtable();
+            //result.Add("link", $"{fileSeverUrl}{returnPath}");
+
+            uploadResponse.Add("error", 0);
+            uploadResponse.Add("url", $"{fileSeverUrl}{returnPath}");
+
+            return new JsonResult(uploadResponse);
             //return Ok(returnPaths);
         }
 
