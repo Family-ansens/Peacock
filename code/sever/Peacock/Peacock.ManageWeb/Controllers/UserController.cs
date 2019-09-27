@@ -93,7 +93,7 @@ namespace Peacock.ManageWeb.Controllers
                 return PartialView("Edit", model);
             }
 
-            bool isExists = peacockDbContext.T_User.Any(i => i.UserName == model.UserName);
+            bool isExists = peacockDbContext.T_User.Count(i => i.UserName == model.UserName) > 0;
             if (isExists)
             {
                 ModelState.AddModelError("UserName", "用户名已存在");
@@ -104,7 +104,7 @@ namespace Peacock.ManageWeb.Controllers
             {
                 UserName = model.UserName,
                 Password = BaseIdentityService.HashPassword(model.Password),
-                Status = true,
+                Status = false,
                 CreatedTime = DateTime.Now,
                 LastUpdatedTime = DateTime.Now,
             };
