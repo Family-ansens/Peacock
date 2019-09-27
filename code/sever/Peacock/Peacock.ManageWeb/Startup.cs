@@ -76,6 +76,16 @@ namespace Peacock.ManageWeb
             // 注入服务
             services.AddTransient<MenuService>();
 
+            services.AddCors(options =>
+            {
+                options.AddPolicy("allow_all", builder =>
+                {
+                    builder.AllowAnyOrigin() //允许任何来源的主机访问
+                           .AllowAnyMethod()
+                           .AllowAnyHeader()
+                           .AllowCredentials();//指定处理cookie
+                });
+            });
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
                     .AddJsonOptions(options => {
@@ -104,6 +114,7 @@ namespace Peacock.ManageWeb
 
             app.UseAuthentication();
 
+            app.UseCors("allow_all");
             app.UseMvc(routes =>
             {
                 routes.MapRoute(

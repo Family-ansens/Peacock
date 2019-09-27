@@ -2,12 +2,14 @@
 // for details on configuring this project to bundle and minify static web assets.
 
 // Write your Javascript code.
-function PeacockPage() { };
+function PeacockPage() { }
 
 PeacockPage.prototype.ImgUploadSetting = {
-    //UploadUrl: 'http://localhost:8901/file/uploadimg',
+    //UploadUrl: 'http://localhost:8901/base/uploadimg',
+    //UploadUrl: 'http://localhost:5000/base/uploadimg',
     //UploadUrl: 'http://192.168.1.107:8901/file/uploadimg',
     UploadUrl: 'http://www.puwiremesh.com:2000/file/uploadimg',
+    KindEditorUploadUrl: 'http://www.puwiremesh.com:2000/file/kindeditor-uploadimg',
     UploadToken: '123'
 };
 
