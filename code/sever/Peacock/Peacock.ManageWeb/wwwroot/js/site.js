@@ -8,8 +8,8 @@ PeacockPage.prototype.ImgUploadSetting = {
     //UploadUrl: 'http://localhost:8901/base/uploadimg',
     //UploadUrl: 'http://localhost:5000/base/uploadimg',
     //UploadUrl: 'http://192.168.1.107:8901/file/uploadimg',
-    UploadUrl: 'http://www.puwiremesh.com:2000/file/uploadimg',
-    KindEditorUploadUrl: 'http://www.puwiremesh.com:2000/file/kindeditor-uploadimg',
+    UploadUrl: 'http://www.puwiremesh.com:8901/file/uploadimg',
+    KindEditorUploadUrl: 'http://www.puwiremesh.com:5000/Base/UploadImg4KindEditor',
     UploadToken: '123'
 };
 

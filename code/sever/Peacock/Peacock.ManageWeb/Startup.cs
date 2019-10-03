@@ -75,6 +75,7 @@ namespace Peacock.ManageWeb
 
             // ×¢Èë·şÎñ
             services.AddTransient<MenuService>();
+            services.AddScoped<CloudUploadService>();
 
             services.AddCors(options =>
             {
