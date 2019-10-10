@@ -106,6 +106,7 @@ namespace Peacock.ManageWeb.Areas.News.Controllers
                 entity.Content = vm.ContentZh;
                 entity.LastUpdatedBy = userName;
                 entity.LastUpdatedTime = dtNow;
+                entity.ImgPath = vm.ImgUrl;
 
                 entity.LanguageRelationByTitle = EditLanguageContent(entity.LanguageRelationByTitle, vm.TitleLanguageDict);
                 entity.LanguageRelationByIntroduction = EditLanguageContent(entity.LanguageRelationByIntroduction, vm.IntroductionLanguageDict);
