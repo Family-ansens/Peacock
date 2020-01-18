@@ -1,18 +1,46 @@
-﻿<link href="https://cdn.jsdelivr.net/npm/froala-editor@3.0.0-beta.1/css/froala_editor.pkgd.min.css" rel="stylesheet" type="text/css" />
-<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/froala-editor@3.0.0-beta.1//js/froala_editor.pkgd.min.js"></script>
+﻿@*<link href="https://cdn.jsdelivr.net/npm/froala-editor@3.0.0-beta.1/css/froala_editor.pkgd.min.css" rel="stylesheet" type="text/css" />
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/froala-editor@3.0.0-beta.1//js/froala_editor.pkgd.min.js"></script>*@
+
+<script type="text/javascript" src="~/lib/kindEditor/kindeditor-all.js"></script>
 
 <script type="text/javascript">
     if (typeof HtmlEditorHelper == 'undefined') {
         HtmlEditorHelper = function () { }
         HtmlEditorHelper.prototype.Create = function (selector) {
-            new FroalaEditor(selector, {
-                // Set the image upload URL.
-                imageUploadURL: systemConfig.ImgUploadSetting.UploadUrl,
+            //new FroalaEditor(selector, {
+            //    // Set the image upload URL.
+            //    imageUploadURL: systemConfig.ImgUploadSetting.UploadUrl,
 
-                imageUploadParams: {
-                    id: selector,
-                    token: systemConfig.ImgUploadSetting.UploadToken
-                }
+            //    imageUploadParams: {
+            //        id: selector,
+            //        token: systemConfig.ImgUploadSetting.UploadToken
+            //    }
+            //});
+            //debugger;
+            //KindEditor.ready(function (K) {
+            //    debugger;
+            //    window.editor = K.create(selector, {
+            //        width: '100%',
+            //        height: '300px'
+            //    });
+            //});
+            window.editor = KindEditor.create(selector, {
+                width: '100%',
+                height: '300px',
+                //uploadJson: systemConfig.ImgUploadSetting.UploadUrl,
+                //uploadJson: '/Base/KindEditorUploadImg?domainhost=' + window.location.host,
+                uploadJson: systemConfig.ImgUploadSetting.KindEditorUploadUrl,
+                //fileManagerJson: systemConfig.ImgUploadSetting.UploadUrl,
+                allowFileManager: false,
+                items: [
+                    'source', '|', 'undo', 'redo', '|', 'preview', 'print', 'template', 'code', 'cut', 'copy', 'paste',
+                    'plainpaste', 'wordpaste', '|', 'justifyleft', 'justifycenter', 'justifyright',
+                    'justifyfull', 'insertorderedlist', 'insertunorderedlist', 'indent', 'outdent', 'subscript',
+                    'superscript', 'clearhtml', 'quickformat', 'selectall', '|', 'fullscreen', '/',
+                    'formatblock', 'fontname', 'fontsize', '|', 'forecolor', 'hilitecolor', 'bold',
+                    'italic', 'underline', 'strikethrough', 'lineheight', 'removeformat', '|', 'image', 'insertfile', 'table', 'hr', 'emoticons', 'baidumap', 'pagebreak',
+                    'anchor', 'link', 'unlink', '|', 'about'
+                ]
             });
         }
     }

@@ -25,7 +25,7 @@ namespace Peacock.ManageWeb.Areas.News.Controllers
         public JsonResult GetList()
         {
             var query = peacockDbContext.T_Company
-                .Include(i => i.LanguageRelationByTitle).ThenInclude(i => i.CompaniesWithTitle)
+                .Include(i => i.LanguageRelationByTitle).ThenInclude(i => i.TSystemLanguageContent)
                 .Where(i => !i.IsDeleted);
             int count = query.Count();
             var list = query.OrderBy(o => o.OrderId)
@@ -78,9 +78,9 @@ namespace Peacock.ManageWeb.Areas.News.Controllers
             if (!ModelState.IsValid) return View("Edit", vm);
 
             var entity = peacockDbContext.T_Company
-                                     .Include(i => i.LanguageRelationByTitle).ThenInclude(i => i.CompaniesWithTitle)
-                                     .Include(i => i.LanguageRelationByIntroduction).ThenInclude(i => i.CompaniesWithIntroduction)
-                                     .Include(i => i.LanguageRelationByContent).ThenInclude(i => i.CompaniesWithContent)
+                                     .Include(i => i.LanguageRelationByTitle).ThenInclude(i => i.TSystemLanguageContent)
+                                     .Include(i => i.LanguageRelationByIntroduction).ThenInclude(i => i.TSystemLanguageContent)
+                                     .Include(i => i.LanguageRelationByContent).ThenInclude(i => i.TSystemLanguageContent)
                                      .FirstOrDefault(i => i.ID == vm.Id);
 
             if (entity == null)
@@ -106,6 +106,7 @@ namespace Peacock.ManageWeb.Areas.News.Controllers
                 entity.Content = vm.ContentZh;
                 entity.LastUpdatedBy = userName;
                 entity.LastUpdatedTime = dtNow;
+                entity.ImgPath = vm.ImgUrl;
 
                 entity.LanguageRelationByTitle = EditLanguageContent(entity.LanguageRelationByTitle, vm.TitleLanguageDict);
                 entity.LanguageRelationByIntroduction = EditLanguageContent(entity.LanguageRelationByIntroduction, vm.IntroductionLanguageDict);

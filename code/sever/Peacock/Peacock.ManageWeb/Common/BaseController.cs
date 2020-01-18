@@ -3,8 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Security.Claims;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
@@ -12,6 +14,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Peacock.Dal;
 using Peacock.ViewModel.Manage;
 
@@ -119,53 +122,37 @@ namespace Peacock.ManageWeb
             return PartialView("_Upload");
         }
 
-        [HttpPost]
-        public ActionResult UploadImg([FromServices]IHostingEnvironment env, [FromServices]IConfiguration config)
+        /// <summary>
+        /// KindEditor控件上传图片
+        /// </summary>
+        /// <returns></returns>
+        public ActionResult UploadImg4KindEditor([FromServices]CloudUploadService uploadService)
         {
-            var files = HttpContext.Request.Form.Files.GetFiles("file");
-            string uploadPath = HttpContext.Request.Form["uploadPath"];
-            string returnFilePath = string.Empty;
-            Dictionary<string, string> returnFileDict = new Dictionary<string, string>();
+            var crossDomain = !string.IsNullOrEmpty(Request.Form["domainhost"]) ? Request.Form["domainhost"].ToString() : Request.Host.ToString();
 
-            string apiUrl = config["ApiUrl"];
-            string remoteUploadUrl = apiUrl + "/file/uploadimg";
-            string apiToken = config["ApiToken"];
+            var files = HttpContext.Request.Form.Files.GetFiles("imgFile");
+            var file = files[0];
 
-            foreach (var formFile in files)
+            var model = new CloudUploadImgModel()
             {
-                if (formFile.Length > 0)
-                {
-                    string fileExtension = formFile.FileName.Split('.').Last();
-                    using (var ms = new MemoryStream())
-                    {
-                        formFile.CopyTo(ms);
+                File = file,
+            };
+            var returnFilePath = uploadService.UploadImg2Cloud(model);
 
-                        var content = new byte[ms.Length];
-                        ms.Write(content, 0, (int)ms.Length);
+            Hashtable uploadResponse = new Hashtable();
 
-                        
-                        var httpClient = new HttpClient();
+            uploadResponse.Add("error", 0);
+            uploadResponse.Add("url", returnFilePath);
 
-                        using (var multiContent = new MultipartFormDataContent())
-                        {
-                            var fileContent = new ByteArrayContent(content);
-                            multiContent.Add(fileContent, "file", Path.GetFileName(formFile.FileName));
-                            multiContent.Add(new StringContent(apiToken), "token");
+            var responseText = new StringBuilder();
 
-                            HttpResponseMessage response = httpClient.PostAsync(remoteUploadUrl, multiContent).Result;
-                            returnFileDict = JsonConvert.DeserializeObject<Dictionary<string, string>>(response.Content.ReadAsStringAsync().Result);
-                        }
+            responseText.Append($"<script type='text/javascript'>document.domain = '{crossDomain}'</script>");
+            responseText.Append($"<pre>{JsonConvert.SerializeObject(uploadResponse)}</pre>");
 
-                        returnFilePath = apiUrl + "/file" + returnFileDict[formFile.FileName];
-                    }
+            Response.Headers.Add("Content-Type", "text/html; charset=UTF-8");
 
-                }
-            }
-
-            Hashtable imageUrl = new Hashtable();
-            imageUrl.Add("link", returnFilePath);
-
-            return Json(imageUrl);
+            return Content(responseText.ToString());
         }
+
     }
 }

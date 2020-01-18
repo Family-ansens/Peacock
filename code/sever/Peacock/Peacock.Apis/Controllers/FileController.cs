@@ -5,7 +5,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace Peacock.Apis.Controllers
 {
@@ -22,7 +24,6 @@ namespace Peacock.Apis.Controllers
         /// <summary>
         /// 上传图片
         /// </summary>
-        /// <param name="env"></param>
         /// <returns></returns>
         [HttpPost("uploadimg")]
         public ActionResult UploadImg()
@@ -66,7 +67,48 @@ namespace Peacock.Apis.Controllers
         }
 
         /// <summary>
-        /// 获取图片路径
+        /// 上传图片
+        /// </summary>
+        /// <returns></returns>
+        [HttpPost("cloud-uploadimg")]
+        public ActionResult CloudUploadImg()
+        {
+            var apiToken = HttpContext.Request.Form["token"];
+            if (string.IsNullOrEmpty(apiToken)) return Unauthorized();
+            var fileSeverUrl = Request.IsHttps ? $"https://{Request.Host}/file" : $"http://{Request.Host}/file";
+
+            DateTime today = DateTime.Today;
+            var fileContent = HttpContext.Request.Form["base64"];
+            if (string.IsNullOrEmpty(fileContent)) return new JsonResult(new object());
+
+            var buffer = Convert.FromBase64String(fileContent.ToString());
+
+            var fileBasePath = Path.Combine(_env.ContentRootPath, "upload", "img");
+            List<string> fileList = new List<string>();
+            string returnPath = string.Empty;
+
+            string uploadPath = HttpContext.Request.Form["uploadPath"];
+            if (!string.IsNullOrEmpty(uploadPath)) fileBasePath = Path.Combine(fileBasePath, uploadPath);
+            if (!Directory.Exists(fileBasePath)) Directory.CreateDirectory(fileBasePath);
+
+            string fileExtension = HttpContext.Request.Form["suffixType"];
+            string fileName = $"{today.Year}{today.Month}{today.Day}-{Guid.NewGuid().ToString().Replace("-", string.Empty)}.{fileExtension}";
+            string fileFullPath = Path.Combine(fileBasePath, fileName);
+            using (var stream = new FileStream(fileFullPath, FileMode.CreateNew))
+            {
+                stream.Write(buffer, 0, buffer.Length);
+                fileList.Add(Request.Host + "/upload/img/" + fileName);
+                returnPath = "/img/" + fileName;
+            }
+
+            Hashtable uploadResponse = new Hashtable();
+            uploadResponse.Add("link", $"{fileSeverUrl}{returnPath}");
+
+            return new JsonResult(uploadResponse);
+        }
+
+        /// <summary>
+        /// 获取图片
         /// </summary>
         /// <param name="fileName"></param>
         /// <returns></returns>

@@ -104,7 +104,7 @@ namespace Peacock.ManageWeb.Controllers
             {
                 UserName = model.UserName,
                 Password = BaseIdentityService.HashPassword(model.Password),
-                Status = true,
+                Status = false,
                 CreatedTime = DateTime.Now,
                 LastUpdatedTime = DateTime.Now,
             };
