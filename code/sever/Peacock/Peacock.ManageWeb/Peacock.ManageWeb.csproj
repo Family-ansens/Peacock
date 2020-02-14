@@ -320,6 +320,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Peacock.BusinessLogic\Peacock.BusinessLogic.csproj" />
+    <ProjectReference Include="..\Peacock.Common\Peacock.Common.csproj" />
     <ProjectReference Include="..\Peacock.Dal\Peacock.Dal.csproj" />
     <ProjectReference Include="..\Peacock.ViewModel\Peacock.ViewModel.csproj" />
   </ItemGroup>

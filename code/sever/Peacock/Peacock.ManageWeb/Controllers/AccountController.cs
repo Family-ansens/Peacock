@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Peacock.Common;
 using Peacock.Dal;
 using Peacock.ManageWeb.Models;
 
@@ -74,6 +75,14 @@ namespace Peacock.ManageWeb.Controllers
         {
             await HttpContext.SignOutAsync();
             return Redirect(Url.Action("Login"));
+        }
+
+        [AllowAnonymous]
+        public IActionResult GetVerifyPic()
+        {
+            var verifyCode = VerifyCodeHelper.GetSingleObj().CreateVerifyCode(VerifyCodeHelper.VerifyCodeType.MixVerifyCode, 6);
+            var picByte = VerifyCodeHelper.GetSingleObj().CreateByteByImgVerifyCode(verifyCode, 140, 85);
+            return File(picByte, "image/jpeg");
         }
     }
 }

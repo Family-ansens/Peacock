@@ -59,6 +59,12 @@
                         <span class="focus-input100"></span>
                     </div>
 
+                    <div class="wrap-input100 validate-input m-b-18" data-validate="请输入验证码">
+                        <img src="@Url.Action("GetVerifyPic","Account")" class="label-input100" />
+                        <input class="input100" type="text" name="verifycode" placeholder="请输入验证码">
+                        <span class="focus-input100"></span>
+                    </div>
+
                     @if (!string.IsNullOrEmpty(errorMsg))
                     {
                         <span style="color:red">@errorMsg</span>
